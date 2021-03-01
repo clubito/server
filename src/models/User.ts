@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
 import { UserInterface } from "./Interfaces/UserInterface";
 import { CLUB_ROLE, JOIN_REQUEST_STATUS } from "./enums";
-import { SALT_ROUNDS } from "secrets"; 
+import { SALT_ROUNDS } from "@secrets"; 
 import bcrypt from "bcrypt";
-import Club, { ClubDocument } from "./Club";
 
 const saltRounds = SALT_ROUNDS;
 
