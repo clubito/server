@@ -8,6 +8,6 @@ export interface UserInterface {
     isDisabled: boolean;
     isConfirmed: boolean;
     profilePicture: string;
-    clubs: [{type: mongoose.Schema.Types.ObjectId, role: string}] | [ClubDocument],
-    joinRequests: [{type: mongoose.Schema.Types.ObjectId, status: string}] | [ClubDocument]
+    clubs: {type: mongoose.Schema.Types.ObjectId, role: string}[] | ClubDocument[],
+    joinRequests: {type: mongoose.Schema.Types.ObjectId, status: string}[] | ClubDocument[]
 }

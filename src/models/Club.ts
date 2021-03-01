@@ -4,7 +4,7 @@ import { ClubInterface } from "./Interfaces/ClubInterface";
 
 export type ClubDocument = mongoose.Document & ClubInterface;
 
-const clubSchema = new mongoose.Schema<ClubDocument>(
+export const clubSchema = new mongoose.Schema<ClubDocument>(
     {
         name: {type: String, required: true},
         logo: String,

@@ -1,3 +1,3 @@
-// import {postLogin, postRegister, postLogout} from "./auth";
+import {postLogin, postRegister} from "./auth";
 
-// export {postLogin, postRegister, postLogout};
+export {postLogin, postRegister};

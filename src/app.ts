@@ -6,7 +6,7 @@ import { MONGODB_URI } from "./util/secrets";
 
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
-// import * as authController from "./controllers/auth";
+import * as authController from "./controllers/auth";
 // import * as homeController from "./controllers/home";
 // import * as homeController from "./controllers/home";
 
@@ -55,6 +55,10 @@ app.use(bodyParser.urlencoded({extended: true}));
  */
 app.get("/", homeController.index);
 
-// app.post("/login", authController.postLogin);
+// User authentication routes
+app.post("/login", authController.postLogin);
+app.post("/register", authController.postRegister);
+
+
 
 export default app;

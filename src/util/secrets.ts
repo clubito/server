@@ -15,3 +15,8 @@ if (!MONGODB_URI) {
     logger.error("No mongo connection string. Set MONGODB_URI environment variable.");
     process.exit(1);
 }
+
+
+// Used as bcrypt salt
+// Defaults to 10 if not defined in .env
+export const SALT_ROUNDS: number = parseInt(process.env["SALT_ROUNDS"] || "10"); 
