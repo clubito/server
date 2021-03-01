@@ -1,0 +1,64 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build-ts": "tsc",
+    "build": "npm run build-ts && npm run lint",
+    "debug": "npm run build && npm run watch-debug",
+    "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
+    "serve-debug": "nodemon --inspect dist/server.js | pino-pretty",
+    "serve": "node dist/server.js",
+    "start": "npm run serve",
+    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\"",
+    "watch-node": "nodemon dist/server.js",
+    "watch-test": "npm run test -- --watchAll",
+    "watch-ts": "tsc -w",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clubito/server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/clubito/server/issues"
+  },
+  "homepage": "https://github.com/clubito/server#readme",
+  "dependencies": {
+    "@types/errorhandler": "^1.5.0",
+    "@types/mongodb": "^3.6.8",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "errorhandler": "^1.5.1",
+    "express": "^4.17.1",
+    "express-pino-logger": "^6.0.0",
+    "helmet": "^4.4.1",
+    "lodash": "^4.17.20",
+    "mongoose": "^5.11.17",
+    "pino": "^6.11.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.10",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.11",
+    "@types/express-pino-logger": "^4.0.2",
+    "@types/helmet": "^4.0.0",
+    "@types/mongoose": "^5.10.3",
+    "@types/node": "^14.14.28",
+    "@types/pino": "^6.3.6",
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
+    "concurrently": "^5.3.0",
+    "eslint": "^7.20.0",
+    "eslint-config-google": "^0.14.0",
+    "nodemon": "^2.0.7",
+    "pino-pretty": "^4.5.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
+  }
+}
