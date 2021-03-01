@@ -19,4 +19,6 @@ const clubSchema = new mongoose.Schema<ClubDocument>(
     { timestamps: true },
 );
 
-export const Club = mongoose.model<ClubDocument>("Club", clubSchema);
+const Club = mongoose.model<ClubDocument>("Club", clubSchema);
+
+export default Club;
