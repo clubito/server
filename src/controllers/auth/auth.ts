@@ -16,7 +16,7 @@ const loginSchema = joi.object().keys({
 });
 
 export const postLogin = (req: Request, res: Response) : void => {
-    const {error} = registerSchema.validate(req.body);
+    const {error} = loginSchema.validate(req.body);
 
     if (error) {
         res.status(400).json({"error": error.message});
