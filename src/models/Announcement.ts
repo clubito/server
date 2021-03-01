@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import {AnnouncementInterface} from "./Interfaces/AnnouncementInterface";
+import {AnnouncementInterface} from "./Interfaces/IAnnouncementInterface";
 
 export type AnnouncementDocument = mongoose.Document & AnnouncementInterface;
 

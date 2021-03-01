@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ClubInterface } from "./Interfaces/ClubInterface";
+import { ClubInterface } from "./Interfaces/IClubInterface";
 
 export type EventDocument = mongoose.Document & ClubInterface;
 

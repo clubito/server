@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import express from "express";
 import mongoose from "mongoose";
 import logger from "./util/logger";
-import { MONGODB_URI } from "./util/secrets";
+import { MONGODB_URI } from "@secrets";
 
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";

@@ -20,3 +20,10 @@ if (!MONGODB_URI) {
 // Used as bcrypt salt
 // Defaults to 10 if not defined in .env
 export const SALT_ROUNDS: number = parseInt(process.env["SALT_ROUNDS"] || "10"); 
+
+export const JWT_SECRET: string = process.env["JWT_SECRET"] ?? "";
+
+if (!JWT_SECRET) {
+    logger.error("No JWT secret specific. Set JWT_SECRET environment variable.");
+    process.exit(1);
+}

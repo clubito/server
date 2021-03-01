@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
-import { UserInterface } from "./Interfaces/UserInterface";
+import { IUserInterface } from "./Interfaces/IUserInterface";
 import { CLUB_ROLE, JOIN_REQUEST_STATUS } from "./enums";
 import { SALT_ROUNDS } from "@secrets"; 
 import bcrypt from "bcrypt";
 
 const saltRounds = SALT_ROUNDS;
 
-export type UserDocument = mongoose.Document & UserInterface;
+export interface IUser extends IUserInterface {
+    validatePassword(password: string): Promise<boolean>;
+}
 
-const userSchema = new mongoose.Schema<UserDocument>(
+const userSchema = new mongoose.Schema<IUser>(
     {
         name: String,
         email: {type: String, required: true, unique: true},
@@ -43,11 +45,11 @@ userSchema.pre("save", async function save(next) {
     }
 });
 
-userSchema.methods.validatePassword = async function validatePassword(data) {
-    return bcrypt.compare(data, this.password);
+userSchema.methods.validatePassword = async function validatePassword(password) {
+    return bcrypt.compare(password, this.password);
 };
 
 
-const User = mongoose.model<UserDocument>("User", userSchema);
+const User = mongoose.model<IUser>("User", userSchema);
 
 export default User;
