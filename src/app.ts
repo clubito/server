@@ -8,6 +8,10 @@ import { MONGODB_URI } from "@secrets";
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
 import * as authController from "./controllers/auth";
+import User from "@models/User";
+import Club from "@models/Club";
+import Announcement from "@models/Announcement";
+import Event from "@models/Event";
 // import * as homeController from "./controllers/home";
 // import * as homeController from "./controllers/home";
 
@@ -19,8 +23,51 @@ const app = express();
 // // Connect to MongoDB
 const mongoUrl = MONGODB_URI;
 
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true } ).then(
-  () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ },
+const eraseDatabaseOnSync = false;
+
+
+mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true } ).then(async () => {
+  if (eraseDatabaseOnSync) {
+    await Promise.all([
+      User.deleteMany({}),
+      Club.deleteMany({}),
+      Announcement.deleteMany({}),
+      Event.deleteMany({})
+    ]);
+    const user1 = new User({
+      email: "aaumir@purdue.edu",
+      password: "testpass1"
+    });
+    const user2 = new User({
+      email: "lin854@purdue.edu",
+      password: "testpass1"
+    });
+    const user3 = new User({
+      email: "pramanik@purdue.edu",
+      password: "testpass1"
+    });
+    const user4 = new User({
+      email: "sriniv58@purdue.edu",
+      password: "testpass1"
+    });
+    await user1.save();
+    await user2.save();
+    await user3.save();
+    await user4.save();
+
+    const club1 = new Club({
+      name: "Drone Club",
+      description: "A club for all drone enthusiasts at Purdue. Planes and multicopter pilots alike are welcome!",
+    });
+    const club2 = new Club({
+      name: "PUDM",
+      description: "PUDM is the largest student-run philanthropy on campus, raising over $9 million for Riley Hospital for Children to date!"
+    });
+    await club1.save();
+    await club2.save();
+    
+  }
+},
 )
 .then(() => {
   /** ready to use. The `mongoose.connect()` promise resolves to undefined. */

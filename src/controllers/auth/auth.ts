@@ -16,10 +16,12 @@ const loginSchema = joi.object().keys({
 });
 
 export const postLogin = (req: Request, res: Response) : void => {
-    const {error} = loginSchema.validate(req.body);
+    logger.debug("Attempting to log in", req.body);
 
+    const {error} = loginSchema.validate(req.body);
     if (error) {
         res.status(400).json({"error": error.message});
+        logger.debug(error);
         return;
     }
 
@@ -28,6 +30,7 @@ export const postLogin = (req: Request, res: Response) : void => {
     User.findOne({"email": email}).exec((err, user) => {
         if (err) {
             res.status(500).json({"error": "Error authenticating user: " + err});
+            logger.debug(err);
             return;
         } else if (!user) {
             res.status(400).json({"error": "Invalid username/password"});
@@ -37,6 +40,8 @@ export const postLogin = (req: Request, res: Response) : void => {
         user.validatePassword(password).then(result => {
             if (!result) {
                 res.status(400).json({"error" : "Invalid username/password"});
+                logger.debug("Attempted login with invalid username/password");
+                
                 return;
             }
 
@@ -49,6 +54,7 @@ export const postLogin = (req: Request, res: Response) : void => {
                 "message": "Successfully authenticated",
                 token
             });
+            logger.debug("Successfully authenticated", token);
             return;
         });
     });
@@ -69,6 +75,7 @@ export const postRegister = (req: Request, res: Response) : void => {
         password
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     newUser.save((err: any, user) => {
         if (err || !user) {
             if (err.code == 11000) {
