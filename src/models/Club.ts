@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { CLUB_TAGS } from "./enums";
 import { IClubInterface } from "./Interfaces/IClubInterface";
 
 
@@ -18,6 +19,7 @@ export const clubSchema = new mongoose.Schema<IClub>(
             customTitle: String
         }],
         theme: String,
+        tags: [{type: String, enum: CLUB_TAGS}]
         
     },
     { timestamps: true },
