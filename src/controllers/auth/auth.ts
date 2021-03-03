@@ -15,12 +15,7 @@ const loginSchema = joi.object().keys({
     password: joi.string().required()
 });
 
-
-
-
 export const postLogin = (req: Request, res: Response) : void => {
-    logger.debug("Attempting to log in", req.body);
-
     const {error} = loginSchema.validate(req.body);
     if (error) {
         res.status(400).json({"error": error.message});
