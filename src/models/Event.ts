@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import { ClubInterface } from "./Interfaces/IClubInterface";
+import { IEventInterface } from "./Interfaces/IEventInterface";
 
-export type EventDocument = mongoose.Document & ClubInterface;
+export type IEvent = IEventInterface;
 
-const eventSchema = new mongoose.Schema<EventDocument>(
+const eventSchema = new mongoose.Schema<IEvent>(
     {
         name: {type: String, required: true},
         description: String,
@@ -19,6 +19,6 @@ const eventSchema = new mongoose.Schema<EventDocument>(
     { timestamps: true },
 );
 
-const Event = mongoose.model<EventDocument>("Event", eventSchema);
+const Event = mongoose.model<IEvent>("Event", eventSchema);
 
 export default Event;

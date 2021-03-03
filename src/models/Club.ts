@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import { ClubInterface } from "./Interfaces/IClubInterface";
+import { IClubInterface } from "./Interfaces/IClubInterface";
 
 
-export type ClubDocument = mongoose.Document & ClubInterface;
+export type IClub = IClubInterface;
 
-export const clubSchema = new mongoose.Schema<ClubDocument>(
+export const clubSchema = new mongoose.Schema<IClub>(
     {
         name: {type: String, required: true},
         logo: String,
@@ -12,6 +12,7 @@ export const clubSchema = new mongoose.Schema<ClubDocument>(
         members: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
         events: [{type: mongoose.Schema.Types.ObjectId, ref: "Event"}],
         joinRequests: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
+        announcements: [{type: mongoose.Schema.Types.ObjectId, ref: "Announcement"}],
         roles: String,
         theme: String,
         
@@ -19,6 +20,6 @@ export const clubSchema = new mongoose.Schema<ClubDocument>(
     { timestamps: true },
 );
 
-const Club = mongoose.model<ClubDocument>("Club", clubSchema);
+const Club = mongoose.model<IClub>("Club", clubSchema);
 
 export default Club;

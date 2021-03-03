@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ClubDocument } from "../Club";
+import { IClub } from "../Club";
 
 export interface IUserInterface extends mongoose.Document {
     name: string;
@@ -8,6 +8,6 @@ export interface IUserInterface extends mongoose.Document {
     isDisabled: boolean;
     isConfirmed: boolean;
     profilePicture: string;
-    clubs: {type: mongoose.Schema.Types.ObjectId, role: string}[] | ClubDocument[],
-    joinRequests: {type: mongoose.Schema.Types.ObjectId, status: string}[] | ClubDocument[]
+    clubs: {type: mongoose.Schema.Types.ObjectId, role: string}[] | IClub[],
+    joinRequests: {type: mongoose.Schema.Types.ObjectId, status: string}[] | IClub[]
 }

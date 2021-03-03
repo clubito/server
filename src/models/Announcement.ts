@@ -1,17 +1,18 @@
 import mongoose from "mongoose";
-import {AnnouncementInterface} from "./Interfaces/IAnnouncementInterface";
+import {IAnnouncementInterface} from "./Interfaces/IAnnouncementInterface";
 
-export type AnnouncementDocument = mongoose.Document & AnnouncementInterface;
 
-const announcementSchema = new mongoose.Schema<AnnouncementDocument>(
+export type IAnnouncement = IAnnouncementInterface
+
+const announcementSchema = new mongoose.Schema<IAnnouncement>(
     {
         club: {type: mongoose.Schema.Types.ObjectId, ref: "Club"},
-        timestamp: Date,
+        timestamp: {type: Date, default: Date.now},
         message: String
     },
     { timestamps: true },
 );
 
-const Announcement = mongoose.model<AnnouncementDocument>("Announcement", announcementSchema);
+const Announcement = mongoose.model<IAnnouncement>("Announcement", announcementSchema);
 
 export default Announcement;

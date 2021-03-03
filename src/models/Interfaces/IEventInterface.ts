@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { ClubDocument } from "../Club";
+import { IClub } from "../Club";
 
-export interface EventInterface {
+export interface IEventInterface extends mongoose.Document {
     name: string,
     description: string,
     startTime: Date,
@@ -10,6 +10,6 @@ export interface EventInterface {
     latitude: number,
     shortLocation: string,
     picture: string,
-    club: mongoose.Schema.Types.ObjectId | ClubDocument,
+    club: mongoose.Schema.Types.ObjectId | IClub,
     lastUpdated: Date
 }
