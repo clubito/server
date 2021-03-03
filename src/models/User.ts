@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema<IUser>(
         name: String,
         email: {type: String, required: true, unique: true},
         password: {type: String, required: true},
-        isDisabled: Boolean,
+        isDisabled: {type: Boolean, default: false},
         isConfirmed: {type: Boolean, default: false},
         profilePicture: String,
         clubs: [{
