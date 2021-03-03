@@ -13,7 +13,10 @@ export const clubSchema = new mongoose.Schema<IClub>(
         events: [{type: mongoose.Schema.Types.ObjectId, ref: "Event"}],
         joinRequests: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
         announcements: [{type: mongoose.Schema.Types.ObjectId, ref: "Announcement"}],
-        roles: String,
+        roles: [{
+            user: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
+            customTitle: String
+        }],
         theme: String,
         
     },

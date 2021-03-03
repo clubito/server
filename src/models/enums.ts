@@ -9,6 +9,12 @@ export enum CLUB_ROLE  {
     MEMBER = "MEMBER"
 }
 
+export enum APP_ROLE  {
+    ADMIN = "ADMIN",
+    MOD = "MOD",
+    MEMBER = "MEMBER"
+}
+
 export enum CLUB_TAGS {
     SPORTS = "SPORTS",
     MUSIC = "MUSIC",

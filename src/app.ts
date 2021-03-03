@@ -12,6 +12,7 @@ import User from "@models/User";
 import Club from "@models/Club";
 import Announcement from "@models/Announcement";
 import Event from "@models/Event";
+import { CLUB_ROLE } from "@models/enums";
 // import * as homeController from "./controllers/home";
 // import * as homeController from "./controllers/home";
 
@@ -25,7 +26,6 @@ const mongoUrl = MONGODB_URI;
 
 const eraseDatabaseOnSync = false;
 
-
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true } ).then(async () => {
   if (eraseDatabaseOnSync) {
     await Promise.all([
@@ -34,37 +34,97 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       Announcement.deleteMany({}),
       Event.deleteMany({})
     ]);
+
     const user1 = new User({
+      name: "Aashir Aumir",
       email: "aaumir@purdue.edu",
-      password: "testpass1"
+      password: "testpass1",
+      isConfirmed: true
     });
     const user2 = new User({
+      name: "Sam the Man",
       email: "lin854@purdue.edu",
-      password: "testpass1"
+      password: "testpass1",
+      isConfirmed: true
     });
     const user3 = new User({
+      name: "Amarto Pramanik",
       email: "pramanik@purdue.edu",
-      password: "testpass1"
+      password: "testpass1",
+      isConfirmed: true
     });
     const user4 = new User({
+      name: "Arjun Srinivasan",
       email: "sriniv58@purdue.edu",
-      password: "testpass1"
+      password: "testpass1",
+      isConfirmed: true
     });
+    const user5 = new User({
+      name: "Test User I",
+      email: "test1@purdue.edu",
+      password: "testpass1",
+      isConfirmed: true
+    });
+    const user6 = new User({
+      name: "Daddy Daniels",
+      email: "mitch@purdue.edu",
+      password: "testpass1",
+      isConfirmed: true
+    });
+    
+    const club1 = new Club({
+      name: "Drone Club",
+      description: "A club for all drone enthusiasts at Purdue. Planes and multicopter pilots alike are welcome!",
+      members: [user1._id, user2._id, user5._id]
+    });
+    const club2 = new Club({
+      name: "PUDM",
+      description: "PUDM is the largest student-run philanthropy on campus, raising over $9 million for Riley Hospital for Children to date!",
+      members: [user2._id, user3._id, user4._id, user5._id]
+    });
+    
+    const announcement1 = new Announcement({
+      club: club1._id,
+      message: "Please use an FDA-approved app to request flight clearance before every flight. They sent us a *very* strongly worded letter."
+    });
+
+    const event1 = new Event({
+      name: "Dance Marathon",
+      description: "Dance to raise money for charity!",
+      startTime: Date.now(),
+      endTime: Date.now() + 2*24*60*60*1000, // 2 days from now
+      longitude: 40.454769,
+      latitude: -86.915703,
+      shortLocation: "Somewhere in West Lafayette, IN",
+      club: club2._id
+    });
+
+    user1.clubs.push({club: club1._id, role: CLUB_ROLE.OWNER});
+    user2.clubs.push({club: club1._id, role: CLUB_ROLE.OFFICER});
+    user2.clubs.push({club: club2._id, role: CLUB_ROLE.OWNER});
+    user3.clubs.push({club: club2._id, role: CLUB_ROLE.MEMBER});
+    user4.clubs.push({club: club2._id, role: CLUB_ROLE.MEMBER});
+    user5.clubs.push({club: club1._id, role: CLUB_ROLE.MEMBER});
+    user6.clubs.push({club: club2._id, role: CLUB_ROLE.OFFICER});
+
+
+    club1.announcements.push(announcement1._id);
+
+    club2.events.push(event1._id);
+
     await user1.save();
     await user2.save();
     await user3.save();
     await user4.save();
-
-    const club1 = new Club({
-      name: "Drone Club",
-      description: "A club for all drone enthusiasts at Purdue. Planes and multicopter pilots alike are welcome!",
-    });
-    const club2 = new Club({
-      name: "PUDM",
-      description: "PUDM is the largest student-run philanthropy on campus, raising over $9 million for Riley Hospital for Children to date!"
-    });
+    await user5.save();
+    await user6.save();
+    
     await club1.save();
     await club2.save();
+    
+    await announcement1.save();
+
+    await event1.save();
     
   }
 },

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { IUserInterface } from "./Interfaces/IUserInterface";
-import { CLUB_ROLE, JOIN_REQUEST_STATUS } from "./enums";
+import { CLUB_ROLE, JOIN_REQUEST_STATUS, APP_ROLE } from "./enums";
 import { SALT_ROUNDS } from "@secrets"; 
 import bcrypt from "bcrypt";
 
@@ -19,15 +19,14 @@ const userSchema = new mongoose.Schema<IUser>(
         isConfirmed: {type: Boolean, default: false},
         profilePicture: String,
         clubs: [{
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Club",
-                role: {type: String, enum: CLUB_ROLE}
+                club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
+                role: { type: String, enum: CLUB_ROLE }
         }],
         joinRequests: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Event",
-            status: {type: String, enum: JOIN_REQUEST_STATUS}
-        }]
+            club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
+            status: { type: String, enum: JOIN_REQUEST_STATUS }
+        }],
+        appRole: { type: String, enum: APP_ROLE }
     },
     { timestamps: true },
 );

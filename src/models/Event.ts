@@ -14,7 +14,7 @@ const eventSchema = new mongoose.Schema<IEvent>(
         shortLocation: String,
         picture: String,
         club: {type: mongoose.Schema.Types.ObjectId, ref: "Club"},
-        lastUpdated: Date
+        lastUpdated: {type: Date, default: Date.now}
     },
     { timestamps: true },
 );
