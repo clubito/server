@@ -1,3 +1,3 @@
-import {postLogin, postRegister} from "./auth";
+import {postLogin, postRegister, postForgot, postReset, postTokenVerify} from "./auth";
 
-export {postLogin, postRegister};
+export {postLogin, postRegister, postForgot, postReset, postTokenVerify};
