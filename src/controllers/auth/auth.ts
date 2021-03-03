@@ -129,7 +129,7 @@ export const postTokenVerify = (req: Request, res: Response) : void => {
         User.findById(decoded.user_id).then(user => {
             if (user?.isDisabled) {
                 // User has deleted their account
-                res.status(500).json({message: "Invalid token"});
+                res.status(400).json({message: "Invalid token"});
                 return;
             }
         });
@@ -137,7 +137,7 @@ export const postTokenVerify = (req: Request, res: Response) : void => {
         res.status(200).json({message: "Valid token"});
         return;
     } catch (e) {
-        res.status(500).json({message: "Invalid token"});
+        res.status(400).json({message: "Invalid token"});
         return;
     }
 };
