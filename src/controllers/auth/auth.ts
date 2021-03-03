@@ -4,7 +4,6 @@ import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
 import jwt from "jsonwebtoken";
-import { IJWTInterface } from "@models/Interfaces/IJWTInterface";
 
 const registerSchema = joi.object().keys({
     email: joi.string().email().regex(/@purdue.edu$/i).required(),
@@ -16,9 +15,7 @@ const loginSchema = joi.object().keys({
     password: joi.string().required()
 });
 
-const verifyTokenSchema = joi.object().keys({
-    token: joi.string().required()
-});
+
 
 
 export const postLogin = (req: Request, res: Response) : void => {
@@ -112,32 +109,3 @@ export const postForgot = (_req: Request, res: Response) : void => {
     return;
 };
 
-
-export const postTokenVerify = (req: Request, res: Response) : void => {
-    const {error} = verifyTokenSchema.validate(req.body);
-
-    if (error) {
-        res.status(400).json({"error": error.message});
-        return;
-    }
-
-    const {token} = req.body;
-
-    try {
-        const decoded = jwt.verify(token, JWT_SECRET) as IJWTInterface;
-
-        User.findById(decoded.user_id).then(user => {
-            if (user?.isDisabled) {
-                // User has deleted their account
-                res.status(400).json({message: "Invalid token"});
-                return;
-            }
-        });
-
-        res.status(200).json({message: "Valid token"});
-        return;
-    } catch (e) {
-        res.status(400).json({message: "Invalid token"});
-        return;
-    }
-};
