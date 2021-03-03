@@ -2,7 +2,7 @@ import "module-alias/register";
 import bodyParser from "body-parser";
 import express from "express";
 import mongoose from "mongoose";
-import logger from "./util/logger";
+import logger, { expressLogger } from "./util/logger";
 import { MONGODB_URI } from "@secrets";
 
 // Controllers (route handlers)
@@ -17,9 +17,10 @@ import { CLUB_ROLE } from "@models/enums";
 // import * as homeController from "./controllers/home";
 
 
-
 // Create Express server
 const app = express();
+
+app.use(expressLogger);
 
 // // Connect to MongoDB
 const mongoUrl = MONGODB_URI;
@@ -61,7 +62,7 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     });
     const user5 = new User({
       name: "Test User I",
-      email: "test1@purdue.edu",
+      email: "test@purdue.edu",
       password: "testpass1",
       isConfirmed: true
     });
@@ -151,11 +152,10 @@ app.use((_req, res, next) => {
 
 // Enable for production
 // app.use(compression()); 
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-// app.use(lusca.xframe("SAMEORIGIN"));
-// app.use(lusca.xssProtection(true));
 
 
 /**
@@ -166,7 +166,40 @@ app.get("/", homeController.index);
 // User authentication routes
 app.post("/login", authController.postLogin);
 app.post("/register", authController.postRegister);
+app.post("/reset", authController.postReset);
+app.post("/forgot", authController.postForgot);
+app.post("/token/verify", authController.postTokenVerify);
 
+
+
+
+// // Normal User routes
+// app.get("/user/profile", userController.getUserProfile);
+// app.put("/user/profile", userController.postUserProfile);
+
+// app.get("/clubs/search", clubController.getClubSearch);
+
+/*
+register:
+after clicking on confirmation link, send back to app - app POSTS to confirmation link - set isconfirmed to true and return JWT
+
+
+user:
+GET profile (everything all populated)
+post profile update (name, profile picture, bio) XXX: Add the bio
+post reset password/forget
+post club request
+
+each club:
+get club, return everything
+
+club search:
+given query (name/tags/asc,desc(based on name/member count)), return name,active member count, logo, description, tags
+GET all tags
+
+
+
+*/
 
 
 export default app;
