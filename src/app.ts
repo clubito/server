@@ -27,7 +27,7 @@ const mongoUrl = MONGODB_URI;
 
 const eraseDatabaseOnSync = false;
 
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true } ).then(async () => {
+mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(async () => {
   if (eraseDatabaseOnSync) {
     await Promise.all([
       User.deleteMany({}),
@@ -72,7 +72,7 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       password: "testpass1",
       isConfirmed: true
     });
-    
+
     const club1 = new Club({
       name: "Drone Club",
       description: "A club for all drone enthusiasts at Purdue. Planes and multicopter pilots alike are welcome!",
@@ -83,7 +83,7 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       description: "PUDM is the largest student-run philanthropy on campus, raising over $9 million for Riley Hospital for Children to date!",
       members: [user2._id, user3._id, user4._id, user5._id]
     });
-    
+
     const announcement1 = new Announcement({
       club: club1._id,
       message: "Please use an FDA-approved app to request flight clearance before every flight. They sent us a *very* strongly worded letter."
@@ -93,20 +93,20 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       name: "Dance Marathon",
       description: "Dance to raise money for charity!",
       startTime: Date.now(),
-      endTime: Date.now() + 2*24*60*60*1000, // 2 days from now
+      endTime: Date.now() + 2 * 24 * 60 * 60 * 1000, // 2 days from now
       longitude: 40.454769,
       latitude: -86.915703,
       shortLocation: "Somewhere in West Lafayette, IN",
       club: club2._id
     });
 
-    user1.clubs.push({club: club1._id, role: CLUB_ROLE.OWNER});
-    user2.clubs.push({club: club1._id, role: CLUB_ROLE.OFFICER});
-    user2.clubs.push({club: club2._id, role: CLUB_ROLE.OWNER});
-    user3.clubs.push({club: club2._id, role: CLUB_ROLE.MEMBER});
-    user4.clubs.push({club: club2._id, role: CLUB_ROLE.MEMBER});
-    user5.clubs.push({club: club1._id, role: CLUB_ROLE.MEMBER});
-    user6.clubs.push({club: club2._id, role: CLUB_ROLE.OFFICER});
+    user1.clubs.push({ club: club1._id, role: CLUB_ROLE.OWNER });
+    user2.clubs.push({ club: club1._id, role: CLUB_ROLE.OFFICER });
+    user2.clubs.push({ club: club2._id, role: CLUB_ROLE.OWNER });
+    user3.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER });
+    user4.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER });
+    user5.clubs.push({ club: club1._id, role: CLUB_ROLE.MEMBER });
+    user6.clubs.push({ club: club2._id, role: CLUB_ROLE.OFFICER });
 
 
     club1.announcements.push(announcement1._id);
@@ -119,25 +119,25 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     await user4.save();
     await user5.save();
     await user6.save();
-    
+
     await club1.save();
     await club2.save();
-    
+
     await announcement1.save();
 
     await event1.save();
-    
+
   }
 },
 )
-.then(() => {
-  /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
-  logger.debug("MongoDB successfully connected!");
-})
-.catch(err => {
-  logger.error(`MongoDB connection error. Please make sure MongoDB is running. ${err}`);
-  process.exit();
-});
+  .then(() => {
+    /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
+    logger.debug("MongoDB successfully connected!");
+  })
+  .catch(err => {
+    logger.error(`MongoDB connection error. Please make sure MongoDB is running. ${err}`);
+    process.exit();
+  });
 
 // Express configuration
 app.set("port", process.env.PORT || 3000);
@@ -154,7 +154,7 @@ app.use((_req, res, next) => {
 // app.use(compression()); 
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
@@ -169,6 +169,7 @@ app.post("/register", authController.postRegister);
 app.post("/reset", authController.postReset);
 app.post("/forgot", authController.postForgot);
 app.post("/token/verify", authController.postTokenVerify);
+app.get("/verify/:secret", authController.getVerify)
 
 
 
