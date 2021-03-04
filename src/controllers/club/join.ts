@@ -49,6 +49,7 @@ export const postClubJoin = (req: Request, res: Response): void => {
                 .then(user => {
                     if (user) {
                         // the as any[] is a workaround for a TS bug. probably will get fixed soon
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         const isMember = (user.clubs as any[]).find(userClub => {
                             return userClub.club.equals(club._id);
                         });
@@ -58,6 +59,7 @@ export const postClubJoin = (req: Request, res: Response): void => {
                             return;
                         }
 
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         const hasRequested: boolean = (user.joinRequests as any[]).find(joinRequest => {
                             return joinRequest.club.equals(club._id) && joinRequest.status === JOIN_REQUEST_STATUS.PENDING;
                         });
