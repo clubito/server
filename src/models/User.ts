@@ -25,7 +25,8 @@ const userSchema = new mongoose.Schema<IUser>(
         }],
         joinRequests: [{
             club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
-            status: { type: String, enum: JOIN_REQUEST_STATUS }
+            status: { type: String, enum: JOIN_REQUEST_STATUS },
+            requestedAt: { type: Date, default: Date.now }
         }],
         appRole: { type: String, enum: APP_ROLE },
         secret: { type: String, default: "" },

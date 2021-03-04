@@ -9,7 +9,15 @@ export interface IUserInterface extends mongoose.Document {
     isConfirmed: boolean;
     profilePicture: string;
     clubs: { club: mongoose.Schema.Types.ObjectId, role: string }[] | { club: IClub, role: string }[],
-    joinRequests: { club: mongoose.Schema.Types.ObjectId, status: string }[] | { club: IClub, status: string }[],
+    joinRequests: {
+        club: mongoose.Schema.Types.ObjectId,
+        status: string,
+        requestedAt: Date
+    }[] | {
+        club: IClub,
+        status: string,
+        requestedAt: Date
+    }[],
     appRole: string,
     secret: string,
     clubTags: string[]

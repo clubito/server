@@ -187,6 +187,7 @@ app.put("/user/profile", authenticateJWT, userController.putUserProfile);
 // Club routes 
 app.get("/clubs/tags", authenticateJWT, clubController.getAllTags);
 app.get("/clubs/profile", authenticateJWT, clubController.getClubProfile);
+app.post("/clubs/join", authenticateJWT, clubController.postClubJoin);
 
 // app.get("/clubs/search", clubController.getClubSearch);
 

@@ -53,52 +53,6 @@ export const getClubProfile = (req: Request, res: Response): void => {
             res.status(500).json({ error: err });
             return;
         });
-
-    // User.findOne({ _id: userId })
-    //     .populate({
-    //         path: "clubs",
-    //         populate: { path: "club" }
-    //     })
-    //     .populate({
-    //         path: "joinRequests",
-    //         populate: { path: "club" }
-    //     })
-    //     .then(user => {
-    //         if (!user) {
-    //             res.status(400).json({ error: "User not found" });
-    //             return;
-    //         }
-    //         const ret: IReturnedUserProfile = {
-    //             name: user.name,
-    //             email: user.email,
-    //             clubs: [],
-    //             joinRequests: [],
-    //             tags: user.clubTags
-    //         };
-    //         user.clubs.forEach(club => {
-    //             ret.clubs.push({
-    //                 name: club.club.name,
-    //                 description: club.club.description,
-    //                 logo: club.club.logo,
-    //                 role: club.role
-    //             });
-    //         });
-    //         user.joinRequests.forEach(joinRequest => {
-    //             ret.joinRequests.push({
-    //                 name: joinRequest.club.name,
-    //                 description: joinRequest.club.description,
-    //                 logo: joinRequest.club.logo,
-    //                 status: joinRequest.status
-    //             });
-    //         });
-    //         res.status(200).json(ret);
-    //         return;
-    //     })
-    //     .catch(err => {
-    //         logger.error(err);
-    //         res.status(500).json({ error: err });
-    //         return;
-    //     });
 };
 
 

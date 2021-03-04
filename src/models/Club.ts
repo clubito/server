@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { CLUB_TAGS } from "./enums";
+import { CLUB_TAGS, JOIN_REQUEST_STATUS } from "./enums";
 import { IClubInterface } from "./Interfaces/IClubInterface";
 
 
@@ -12,7 +12,11 @@ export const clubSchema = new mongoose.Schema<IClub>(
         description: String,
         members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
         events: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
-        joinRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+        joinRequests: [{
+            user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+            status: { type: String, enum: JOIN_REQUEST_STATUS },
+            requestedAt: { type: Date, default: Date.now }
+        }],
         announcements: [{ type: mongoose.Schema.Types.ObjectId, ref: "Announcement" }],
         roles: [{
             user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
