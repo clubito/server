@@ -1,5 +1,6 @@
-const sgMail = require('@sendgrid/mail')
-sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+import { SENDGRID_API_KEY } from "../util/secrets"
+import sgMail from '@sendgrid/mail';
+sgMail.setApiKey(SENDGRID_API_KEY)
 
 export const sendingVerifyEmail = async function (email: string, secret: string) {
     const msg = {
@@ -11,9 +12,9 @@ export const sendingVerifyEmail = async function (email: string, secret: string)
     sgMail
         .send(msg)
         .then(() => {
-            console.log('Email sent')
+            console.log('Email sent');
         })
         .catch((error) => {
-            console.error(error)
+            console.error(error);
         })
 }

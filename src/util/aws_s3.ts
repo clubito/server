@@ -1,12 +1,13 @@
 import AWS from "aws-sdk";
-AWS.config.update({ accessKeyId: process.env.AWS_KEY, secretAccessKey: process.env.AWS_SECRET, region: process.env.BUCKET_REGION });
+import { AWS_KEY, AWS_SECRET, BUCKET_REGION, BUCKET_NAME } from "../util/secrets";
+AWS.config.update({ accessKeyId: AWS_KEY, secretAccessKey: AWS_SECRET, region: BUCKET_REGION });
 const s3 = new AWS.S3();
 
 export const getPresignedUrl = function (filename: string) {
     const signedUrlExpireSeconds = 60; // 1 minute
 
     const url = s3.getSignedUrl("putObject", {
-        Bucket: process.env.BUCKET_NAME,
+        Bucket: BUCKET_NAME,
         Key: filename,
         Expires: signedUrlExpireSeconds,
     });

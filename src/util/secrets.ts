@@ -51,3 +51,9 @@ if (!BUCKET_REGION) {
     logger.error("No bucket region specified. Please set BUCKET_REGION env variable");
     process.exit(1);
 }
+
+export const SENDGRID_API_KEY: string = process.env["SENDGRID_API_KEY"] ?? "";
+if (!SENDGRID_API_KEY) {
+    logger.error("No sendgrid API key specified. Please set SENDGRID_API_KEY env variable");
+    process.exit(1);
+}
