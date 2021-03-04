@@ -7,22 +7,21 @@ export const sendingVerifyEmail = async function (email: String, secret: String)
 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false, // true for 465, false for other ports
+        host: "smtp.zoho.com",
+        port: 465,
+        secure: true, // true for 465, false for other ports
         auth: {
-            user: testAccount.user, // generated ethereal user
-            pass: testAccount.pass, // generated ethereal password
+            user: process.env.ZOHOMAIL, // generated ethereal user
+            pass: process.env.ZOHOPASS, // generated ethereal password
         },
     });
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-        from: '"Fred Foo 👻" <foo@example.com>', // sender address
+        from: '"Clubito" <dvtung98@zohomail.com>', // sender address
         to: email, // list of receivers
-        subject: "Hello ✔", // Subject line
-        text: "Hello world?", // plain text body
-        html: `<b>Hello world?</b>. This is your code ${secret}`, // html body
+        subject: "New account confirmation", // Subject line
+        html: `Hello customer. Please click <a href="http://${process.env.HOSTNAME}/verify/${secret}">HERE</a> to verify your account. Thank you`, // html body
     });
 
     console.log("Message sent: %s", info.messageId);

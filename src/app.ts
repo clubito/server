@@ -9,11 +9,13 @@ import cors from "cors";
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
 import * as authController from "./controllers/auth";
+import * as fileController from "./controllers/file"
 import User from "@models/User";
 import Club from "@models/Club";
 import Announcement from "@models/Announcement";
 import Event from "@models/Event";
 import { CLUB_ROLE } from "@models/enums";
+import { authenticateJWT } from "./util/auth"
 // import * as homeController from "./controllers/home";
 // import * as homeController from "./controllers/home";
 
@@ -172,6 +174,8 @@ app.post("/reset", authController.postReset);
 app.post("/forgot", authController.postForgot);
 app.post("/token/verify", authController.postTokenVerify);
 app.get("/verify/:secret", authController.getVerify);
+
+app.get("/file/:filename", authenticateJWT, fileController.getS3PresignedUrl);
 
 // // Normal User routes
 // app.get("/user/profile", userController.getUserProfile);
