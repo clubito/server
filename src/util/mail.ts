@@ -1,6 +1,9 @@
-import nodemailer from "nodemailer";
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+// import nodemailer from "nodemailer";
 
 export const sendingVerifyEmail = async function (email: String, secret: String) {
+    /** 
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing
     let testAccount = await nodemailer.createTestAccount();
@@ -30,4 +33,24 @@ export const sendingVerifyEmail = async function (email: String, secret: String)
     // Preview only available when sending through an Ethereal account
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    */
+
+    // using Twilio SendGrid's v3 Node.js Library
+    // https://github.com/sendgrid/sendgrid-nodejs
+
+    const msg = {
+        to: email, // Change to your recipient
+        from: 'admin@clubito.me', // Change to your verified sender
+        subject: 'Sending with SendGrid is Fun',
+        html: `Hello customer. Please click <a href="${process.env.HOSTNAME}/verify/${secret}">HERE</a> to verify your account. Thank you`,
+    }
+    sgMail
+        .send(msg)
+        .then(() => {
+            console.log('Email sent')
+        })
+        .catch((error) => {
+            console.error(error)
+        })
+
 }

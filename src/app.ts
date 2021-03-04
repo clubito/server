@@ -28,7 +28,7 @@ app.use(expressLogger);
 // // Connect to MongoDB
 const mongoUrl = MONGODB_URI;
 
-const eraseDatabaseOnSync = false;
+const eraseDatabaseOnSync = true;
 
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(async () => {
   if (eraseDatabaseOnSync) {
