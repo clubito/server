@@ -5,9 +5,10 @@ import { IJWTInterface } from "@models/Interfaces/IJWTInterface";
 import User from "@models/User";
 
 
-const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
+const authenticateJWT = (req: Request, res: Response, next: NextFunction): void => {
     if (!req.headers.authorization) {
-        return res.status(403).json({ error: "No bearer token" });
+        res.status(403).json({ error: "No bearer token" });
+        return;
     }
     const authHeader = req.headers.authorization;
     if (authHeader.startsWith("Bearer ")) {

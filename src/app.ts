@@ -4,6 +4,7 @@ import express from "express";
 import mongoose from "mongoose";
 import logger, { expressLogger } from "./util/logger";
 import { MONGODB_URI } from "@secrets";
+import cors from "cors";
 
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
@@ -143,12 +144,13 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
 app.set("port", process.env.PORT || 3000);
 
 // Fix CORS
-app.use((_req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-  next();
-});
+// app.use((_req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+//   next();
+// });
+app.use(cors());
 
 // Enable for production
 // app.use(compression()); 
