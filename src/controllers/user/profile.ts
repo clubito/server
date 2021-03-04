@@ -12,17 +12,20 @@ const putUserProfileSchema = joi.object().keys({
 interface IReturnedUserProfile {
     name: string,
     email: string,
+    id: string,
     clubs: {
         name: string,
         description: string,
         logo: string,
-        role: string
+        role: string,
+        id: string
     }[],
     joinRequests: {
         name: string,
         description: string,
-        logo: string
-        status: string
+        logo: string,
+        status: string,
+        id: string
     }[],
     tags: string[]
 }
@@ -45,6 +48,7 @@ export const getUserProfile = (req: Request, res: Response): void => {
                 return;
             }
             const ret: IReturnedUserProfile = {
+                id: user._id,
                 name: user.name,
                 email: user.email,
                 clubs: [],
@@ -56,7 +60,8 @@ export const getUserProfile = (req: Request, res: Response): void => {
                     name: club.club.name,
                     description: club.club.description,
                     logo: club.club.logo,
-                    role: club.role
+                    role: club.role,
+                    id: club.club._id
                 });
             });
             user.joinRequests.forEach(joinRequest => {
@@ -64,7 +69,8 @@ export const getUserProfile = (req: Request, res: Response): void => {
                     name: joinRequest.club.name,
                     description: joinRequest.club.description,
                     logo: joinRequest.club.logo,
-                    status: joinRequest.status
+                    status: joinRequest.status,
+                    id: joinRequest.club._id
                 });
             });
             res.status(200).json(ret);
