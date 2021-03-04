@@ -103,9 +103,62 @@ export const postRegister = (req: Request, res: Response): void => {
     });
 };
 
-export const postReset = (_req: Request, res: Response): void => {
-    res.send("Under development");
-    return;
+export const postReset = (req: Request, res: Response): void => {
+    if (!req.userId) {
+        res.status(500).json({
+            message: "UserId not found. Please log in first"
+        })
+        return;
+    }
+    if (!req.body.currentPassword || !req.body.newPassword) {
+        res.status(400).json({
+            message: "Missing current and new password fields"
+        })
+        return;
+    }
+    if (req.body.currentPassword == req.body.newPassword) {
+        res.status(400).json({
+            message: "Please choose a new password different than the current one"
+        })
+        return;
+    }
+
+    const userId: string = req.userId;
+    const currentPassword: string = req.body.currentPassword;
+    const newPassword: string = req.body.newPassword;
+
+    //get user id from request
+    User.findById(userId).then(user => {
+        logger.debug(`User: ${user}`);
+        logger.debug(`CurrentPass: ${currentPassword}`);
+        logger.debug(`NewPass: ${newPassword}`);
+        //check if old password the same as the one already stored in db
+        user?.validatePassword(currentPassword).then(result => {
+            if (!result) {
+                res.status(400).json({ "error": "Current password field is wrong" });
+                logger.debug("currentPassword field is not the same as current password");
+                return;
+            }
+
+            //change current password to new and save it back to db
+            user.password = newPassword;
+            user.save();
+            res.status(200).json({
+                message: "Change password successfully"
+            })
+            return;
+        }).catch(err => {
+            res.status(500).json({
+                err: "Error happened at validate password"
+            })
+            return;
+        })
+    }).catch(err => {
+        res.status(500).json({
+            err
+        })
+        return;
+    })
 };
 
 export const postForgot = (_req: Request, res: Response): void => {

@@ -19,7 +19,6 @@ import Announcement from "@models/Announcement";
 import Event from "@models/Event";
 import { CLUB_ROLE } from "@models/enums";
 import { authenticateJWT } from "./util/auth";
-import { ENVIRONMENT } from "./util/secrets";
 // import * as homeController from "./controllers/home";
 // import * as homeController from "./controllers/home";
 
@@ -32,7 +31,7 @@ app.use(expressLogger);
 // // Connect to MongoDB
 const mongoUrl = MONGODB_URI;
 
-const eraseDatabaseOnSync = ENVIRONMENT == "production" ? false : false;
+const eraseDatabaseOnSync = false;
 
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(async () => {
   if (eraseDatabaseOnSync) {
@@ -174,7 +173,7 @@ app.get("/", homeController.index);
 // User authentication routes
 app.post("/login", authController.postLogin);
 app.post("/register", authController.postRegister);
-app.post("/reset", authController.postReset);
+app.post("/reset", authenticateJWT, authController.postReset);
 app.post("/forgot", authController.postForgot);
 app.post("/token/verify", authController.postTokenVerify);
 app.get("/verify/:secret", authController.getVerify);
