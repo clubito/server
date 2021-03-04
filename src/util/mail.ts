@@ -1,12 +1,12 @@
 import nodemailer from "nodemailer";
 
-export const sendingVerifyEmail = async function (email: String, secret: String) {
+export const sendingVerifyEmail = async function (email: string, secret: string) {
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing
-    let testAccount = await nodemailer.createTestAccount();
+    const testAccount = await nodemailer.createTestAccount();
 
     // create reusable transporter object using the default SMTP transport
-    let transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
         host: "smtp.zoho.com",
         port: 465,
         secure: true, // true for 465, false for other ports
@@ -17,8 +17,8 @@ export const sendingVerifyEmail = async function (email: String, secret: String)
     });
 
     // send mail with defined transport object
-    let info = await transporter.sendMail({
-        from: '"Clubito" <dvtung98@zohomail.com>', // sender address
+    const info = await transporter.sendMail({
+        from: "\"Clubito\" <dvtung98@zohomail.com>", // sender address
         to: email, // list of receivers
         subject: "New account confirmation", // Subject line
         html: `Hello customer. Please click <a href="http://${process.env.HOSTNAME}/verify/${secret}">HERE</a> to verify your account. Thank you`, // html body
@@ -30,4 +30,4 @@ export const sendingVerifyEmail = async function (email: String, secret: String)
     // Preview only available when sending through an Ethereal account
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-}
+};

@@ -1,15 +1,16 @@
 export enum JOIN_REQUEST_STATUS {
     ACCEPTED = "ACCEPTED",
-    USER = "USER"
+    PENDING = "PENDING",
+    DENIED = "DENIED"
 }
 
-export enum CLUB_ROLE  {
+export enum CLUB_ROLE {
     OWNER = "OWNER",
     OFFICER = "OFFICER",
     MEMBER = "MEMBER"
 }
 
-export enum APP_ROLE  {
+export enum APP_ROLE {
     ADMIN = "ADMIN",
     MOD = "MOD",
     MEMBER = "MEMBER"

@@ -109,30 +109,34 @@ export const postForgot = (_req: Request, res: Response): void => {
 
 export const getVerify = (req: Request, res: Response): void => {
     const newUserSecret = req.params.secret;
-    const email = newUserSecret.split(" ")[0];
-    logger.debug(`Secret: ${newUserSecret}`);
-    User.findOne({ "email": email }).exec((err, user) => {
-        if (err) {
-            logger.debug(err);
-            res.status(500).json({ "error": "Error verifying user: " + err });
-            return;
-        } else if (!user) {
-            res.status(400).json({ "error": "Invalid username/password" });
-            return;
-        }
+    if (newUserSecret) {
+        const email = newUserSecret.split(" ")[0];
+        logger.debug(`Secret: ${newUserSecret}`);
+        User.findOne({ "email": email }).exec((err, user) => {
+            if (err) {
+                logger.debug(err);
+                res.status(500).json({ "error": "Error verifying user: " + err });
+                return;
+            } else if (!user) {
+                res.status(400).json({ "error": "Invalid username/password" });
+                return;
+            }
 
-        //check secret if match
-        if (user.secret == newUserSecret) {
-            user.isConfirmed = true;
-            res.status(201).json({
-                message: "Verify account successful"
-            });
-            return;
-        } else {
-            res.status(400).json({
-                error: "Token secret does not mach"
-            });
-            return;
-        }
-    });
+            //check secret if match
+            if (user.secret == newUserSecret) {
+                user.isConfirmed = true;
+                res.status(201).json({
+                    message: "Verify account successful"
+                });
+                return;
+            } else {
+                res.status(400).json({
+                    error: "Token secret does not mach"
+                });
+                return;
+            }
+        });
+    } else {
+        res.status(400).json({ error: "Secret not defined" });
+    }
 };
