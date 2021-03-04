@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build-ts": "tsc",
-    "build": "npm run build-ts && npm run lint",
+    "build": "npm run build-ts",
     "debug": "npm run build && npm run watch-debug",
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
     "serve-debug": "nodemon --inspect dist/server.js | pino-pretty",
@@ -29,6 +29,7 @@
   "homepage": "https://github.com/clubito/server#readme",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.7.0",
+    "@sendgrid/mail": "^7.4.2",
     "@types/errorhandler": "^1.5.0",
     "@types/mongodb": "^3.6.8",
     "aws-sdk": "^2.856.0",

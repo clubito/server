@@ -109,9 +109,8 @@ export const postForgot = (_req: Request, res: Response): void => {
 
 export const getVerify = (req: Request, res: Response): void => {
     const newUserSecret = req.params.secret;
-    const email = newUserSecret.split(" ")[0];
     logger.debug(`Secret: ${newUserSecret}`);
-    User.findOne({ "email": email }).exec((err, user) => {
+    User.findOne({ "secret": newUserSecret }).exec((err, user) => {
         if (err) {
             logger.debug(err);
             res.status(500).json({ "error": "Error verifying user: " + err });
@@ -124,6 +123,7 @@ export const getVerify = (req: Request, res: Response): void => {
         //check secret if match
         if (user.secret == newUserSecret) {
             user.isConfirmed = true;
+            user.save();
             res.status(201).json({
                 message: "Verify account successful"
             });
