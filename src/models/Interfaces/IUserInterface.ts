@@ -11,5 +11,6 @@ export interface IUserInterface extends mongoose.Document {
     clubs: { club: mongoose.Schema.Types.ObjectId, role: string }[] | { club: IClub, role: string }[],
     joinRequests: { club: mongoose.Schema.Types.ObjectId, status: string }[] | { club: IClub, status: string }[],
     appRole: string,
-    secret: string
+    secret: string,
+    clubTags: string[]
 }

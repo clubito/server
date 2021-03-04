@@ -23,7 +23,8 @@ interface IReturnedUserProfile {
         description: string,
         logo: string
         status: string
-    }[]
+    }[],
+    tags: string[]
 }
 
 export const getUserProfile = (req: Request, res: Response): void => {
@@ -47,7 +48,8 @@ export const getUserProfile = (req: Request, res: Response): void => {
                 name: user.name,
                 email: user.email,
                 clubs: [],
-                joinRequests: []
+                joinRequests: [],
+                tags: user.clubTags
             };
             user.clubs.forEach(club => {
                 ret.clubs.push({
