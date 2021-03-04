@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema<IUser>(
         password: { type: String, required: true },
         isDisabled: { type: Boolean, default: false },
         isConfirmed: { type: Boolean, default: false },
-        profilePicture: String,
+        profilePicture: { type: String, default: "https://picsum.photos/200" },
         clubs: [{
             club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
             role: { type: String, enum: CLUB_ROLE }

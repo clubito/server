@@ -7,20 +7,20 @@ export type IClub = IClubInterface;
 
 export const clubSchema = new mongoose.Schema<IClub>(
     {
-        name: {type: String, required: true},
-        logo: String,
+        name: { type: String, required: true },
+        logo: { type: String, default: "https://picsum.photos/200" },
         description: String,
-        members: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
-        events: [{type: mongoose.Schema.Types.ObjectId, ref: "Event"}],
-        joinRequests: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
-        announcements: [{type: mongoose.Schema.Types.ObjectId, ref: "Announcement"}],
+        members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+        events: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
+        joinRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+        announcements: [{ type: mongoose.Schema.Types.ObjectId, ref: "Announcement" }],
         roles: [{
-            user: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
+            user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
             customTitle: String
         }],
         theme: String,
-        tags: [{type: String, enum: CLUB_TAGS}]
-        
+        tags: [{ type: String, enum: CLUB_TAGS }]
+
     },
     { timestamps: true },
 );
