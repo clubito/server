@@ -6,11 +6,11 @@ COPY package*.json ./
 
 RUN npm install
 
-ADD . /usr/src/app
+COPY . .
 
 RUN npm run build
 
-ENV NODE_ENV production
+# ENV NODE_ENV production
 
 ENV PORT 80
 
