@@ -29,3 +29,25 @@ if (!JWT_SECRET) {
 }
 
 export const BUCKET_NAME: string = process.env["BUCKET_NAME"] ?? "";
+if (!BUCKET_NAME) {
+    logger.error("No bucket name specified. Please set BUCKET_NAME env variable");
+    process.exit(1);
+}
+
+export const AWS_KEY: string = process.env["AWS_KEY"] ?? "";
+if (!AWS_KEY) {
+    logger.error("No aws key specified. Please set AWS_KEY env variable");
+    process.exit(1);
+}
+
+export const AWS_SECRET: string = process.env["AWS_SECRET"] ?? "";
+if (!AWS_SECRET) {
+    logger.error("No aws secret specified. Please set AWS_SECRET env variable");
+    process.exit(1);
+}
+
+export const BUCKET_REGION: string = process.env["BUCKET_REGION"] ?? "";
+if (!BUCKET_REGION) {
+    logger.error("No bucket region specified. Please set BUCKET_REGION env variable");
+    process.exit(1);
+}

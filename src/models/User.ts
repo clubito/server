@@ -43,8 +43,8 @@ userSchema.pre("save", async function save(next) {
         const salt = await bcrypt.genSalt(saltRounds);
         this.password = await bcrypt.hash(this.password, salt);
         // generate a magic link with the user's unique email 
-        const uidToken = uid();
-        this.secret = this.email + " " + uidToken;
+        const uidToken = uid(16);
+        this.secret = uidToken;
         return next();
     } catch (err) {
         return next(err);

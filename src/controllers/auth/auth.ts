@@ -110,9 +110,8 @@ export const postForgot = (_req: Request, res: Response): void => {
 export const getVerify = (req: Request, res: Response): void => {
     const newUserSecret = req.params.secret;
     if (newUserSecret) {
-        const email = newUserSecret.split(" ")[0];
         logger.debug(`Secret: ${newUserSecret}`);
-        User.findOne({ "email": email }).exec((err, user) => {
+        User.findOne({ "secret": newUserSecret }).exec((err, user) => {
             if (err) {
                 logger.debug(err);
                 res.status(500).json({ "error": "Error verifying user: " + err });

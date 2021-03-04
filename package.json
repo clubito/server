@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/clubito/server#readme",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.7.0",
+    "@sendgrid/mail": "^7.4.2",
     "@types/errorhandler": "^1.5.0",
     "@types/mongodb": "^3.6.8",
     "aws-sdk": "^2.856.0",
@@ -46,7 +46,6 @@
     "lodash": "^4.17.20",
     "module-alias": "^2.2.2",
     "mongoose": "^5.11.17",
-    "nodemailer": "^6.5.0",
     "pino": "^6.11.1",
     "uid": "^2.0.0"
   },
