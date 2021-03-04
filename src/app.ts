@@ -19,7 +19,6 @@ import Announcement from "@models/Announcement";
 import Event from "@models/Event";
 import { CLUB_ROLE } from "@models/enums";
 import { authenticateJWT } from "./util/auth";
-import { ENVIRONMENT } from "./util/secrets";
 // import * as homeController from "./controllers/home";
 // import * as homeController from "./controllers/home";
 

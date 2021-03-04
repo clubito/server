@@ -2,11 +2,13 @@ import { Request, Response } from "express";
 import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
+import { CLUB_TAGS } from "@models/enums";
 
 const putUserProfileSchema = joi.object().keys({
     email: joi.string().email().regex(/@purdue.edu$/i),
     name: joi.string(),
-    profilePicture: joi.string().uri()
+    profilePicture: joi.string().uri(),
+    tags: joi.array().items(joi.string())
 });
 
 interface IReturnedUserProfile {
@@ -109,7 +111,7 @@ export const putUserProfile = (req: Request, res: Response): void => {
                 return;
             }
 
-            const { email, name, profilePicture } = req.body;
+            const { email, name, profilePicture, tags } = req.body;
 
             if (email) {
                 user.email = email;
@@ -120,9 +122,30 @@ export const putUserProfile = (req: Request, res: Response): void => {
             if (profilePicture) {
                 user.profilePicture = profilePicture;
             }
+            if (tags) {
+                user.clubTags = tags;
+            }
+
+            const wrongTags: string[] = [];
+            const correctTags: string[] = [];
+            tags.forEach((tag) => {
+                if (Object.values(CLUB_TAGS).includes(tag.toUpperCase())) {
+                    correctTags.push(tag.toUpperCase());
+                } else {
+                    wrongTags.push(tag);
+                }
+            });
+            if (wrongTags.length > 0) {
+                res.status(400).json({ error: "The following tags do not exist", tags: wrongTags });
+                return;
+            }
+
+            user.clubTags = correctTags;
+
             user.save()
                 .then(() => {
                     res.status(200).json({ "message": "Successfully updated user profile" });
+                    return;
                 });
         })
         .catch(err => {
