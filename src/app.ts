@@ -180,11 +180,13 @@ app.get("/verify/:secret", authController.getVerify);
 
 app.get("/file/:filename", authenticateJWT, fileController.getS3PresignedUrl);
 
-// // Normal User routes
+// Normal User routes
 app.get("/user/profile", authenticateJWT, userController.getUserProfile);
 app.put("/user/profile", authenticateJWT, userController.putUserProfile);
 
+// Club routes 
 app.get("/clubs/tags", authenticateJWT, clubController.getAllTags);
+app.get("/clubs/profile", authenticateJWT, clubController.getClubProfile);
 
 // app.get("/clubs/search", clubController.getClubSearch);
 

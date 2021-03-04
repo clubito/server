@@ -1,3 +1,4 @@
 import { getAllTags } from "./tags";
+import { getClubProfile } from "./profile";
 
-export { getAllTags };
+export { getAllTags, getClubProfile };
