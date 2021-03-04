@@ -9,13 +9,15 @@ import cors from "cors";
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
 import * as authController from "./controllers/auth";
-import * as fileController from "./controllers/file"
+import * as fileController from "./controllers/file";
+import * as userController from "./controllers/user";
+
 import User from "@models/User";
 import Club from "@models/Club";
 import Announcement from "@models/Announcement";
 import Event from "@models/Event";
 import { CLUB_ROLE } from "@models/enums";
-import { authenticateJWT } from "./util/auth"
+import { authenticateJWT } from "./util/auth";
 // import * as homeController from "./controllers/home";
 // import * as homeController from "./controllers/home";
 
@@ -178,8 +180,8 @@ app.get("/verify/:secret", authController.getVerify);
 app.get("/file/:filename", authenticateJWT, fileController.getS3PresignedUrl);
 
 // // Normal User routes
-// app.get("/user/profile", userController.getUserProfile);
-// app.put("/user/profile", userController.postUserProfile);
+app.get("/user/profile", authenticateJWT, userController.getUserProfile);
+app.put("/user/profile", authenticateJWT, userController.putUserProfile);
 
 // app.get("/clubs/search", clubController.getClubSearch);
 
