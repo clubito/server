@@ -126,13 +126,13 @@ export const getVerify = (req: Request, res: Response): void => {
             user.isConfirmed = true;
             res.status(201).json({
                 message: "Verify account successful"
-            })
+            });
             return;
         } else {
             res.status(400).json({
                 error: "Token secret does not mach"
-            })
+            });
             return;
         }
-    })
-}
+    });
+};
