@@ -169,10 +169,7 @@ app.post("/register", authController.postRegister);
 app.post("/reset", authController.postReset);
 app.post("/forgot", authController.postForgot);
 app.post("/token/verify", authController.postTokenVerify);
-app.get("/verify/:secret", authController.getVerify)
-
-
-
+app.get("/verify/:secret", authController.getVerify);
 
 // // Normal User routes
 // app.get("/user/profile", userController.getUserProfile);
