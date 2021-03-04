@@ -56,7 +56,8 @@ export const postLogin = (req: Request, res: Response): void => {
 
             res.status(200).json({
                 "message": "Successfully authenticated",
-                token
+                token,
+                "isProfileSetup": user.name.length > 0,
             });
             logger.debug("Successfully authenticated", token);
             return;
