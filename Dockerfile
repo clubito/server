@@ -2,15 +2,15 @@ FROM node:14.15.5
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package.json ./
 
 RUN npm install
 
-COPY . .
+ADD . /usr/src/app
 
 RUN npm run build
 
-# ENV NODE_ENV production
+ENV NODE_ENV production
 
 ENV PORT 80
 
