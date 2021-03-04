@@ -36,6 +36,11 @@ export const postLogin = (req: Request, res: Response): void => {
             return;
         }
 
+        if (!user.isConfirmed) {
+            res.status(400).json({ "error": "Please confirm your account before trying to log in" });
+            return;
+        }
+
         user.validatePassword(password).then(result => {
             if (!result) {
                 res.status(400).json({ "error": "Invalid username/password" });
