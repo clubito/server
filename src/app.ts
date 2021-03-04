@@ -11,6 +11,7 @@ import * as homeController from "./controllers/home";
 import * as authController from "./controllers/auth";
 import * as fileController from "./controllers/file";
 import * as userController from "./controllers/user";
+import * as clubController from "./controllers/club";
 
 import User from "@models/User";
 import Club from "@models/Club";
@@ -182,6 +183,8 @@ app.get("/file/:filename", authenticateJWT, fileController.getS3PresignedUrl);
 // // Normal User routes
 app.get("/user/profile", authenticateJWT, userController.getUserProfile);
 app.put("/user/profile", authenticateJWT, userController.putUserProfile);
+
+app.get("/clubs/tags", authenticateJWT, clubController.getAllTags);
 
 // app.get("/clubs/search", clubController.getClubSearch);
 
