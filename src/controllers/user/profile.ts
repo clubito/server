@@ -134,19 +134,20 @@ export const putUserProfile = (req: Request, res: Response): void => {
             if (profilePicture) {
                 user.profilePicture = profilePicture;
             }
-            if (tags) {
-                user.clubTags = tags;
-            }
 
             const wrongTags: string[] = [];
             const correctTags: string[] = [];
-            tags.forEach((tag) => {
-                if (Object.values(CLUB_TAGS).includes(tag.toUpperCase())) {
-                    correctTags.push(tag.toUpperCase());
-                } else {
-                    wrongTags.push(tag);
-                }
-            });
+
+            if (tags) {
+                tags.forEach((tag) => {
+                    if (Object.values(CLUB_TAGS).includes(tag.toUpperCase())) {
+                        correctTags.push(tag.toUpperCase());
+                    } else {
+                        wrongTags.push(tag);
+                    }
+                });
+            }
+
             if (wrongTags.length > 0) {
                 res.status(400).json({ error: "The following tags do not exist", tags: wrongTags });
                 return;
