@@ -1,29 +1,43 @@
 import { Request, Response } from "express";
 import Club from "@models/Club";
+import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
+import { CLUB_ROLE } from "@models/enums";
 
 const getClubProfileSchema = joi.object().keys({
     id: joi.required()
 });
 
-// interface IReturnedUserProfile {
-//     name: string,
-//     email: string,
-//     clubs: {
-//         name: string,
-//         description: string,
-//         logo: string,
-//         role: string
-//     }[],
-//     joinRequests: {
-//         name: string,
-//         description: string,
-//         logo: string
-//         status: string
-//     }[],
-//     tags: string[]
-// }
+interface IReturnedClubProfile {
+    name: string,
+    logo: string,
+    description: string,
+    id: string,
+    members: {
+        id: string,
+        name: string,
+        role: string,
+        profilePicture: string
+    }[],
+    tags: string[],
+    announcements: {
+        message: string,
+        timestamp: Date
+    }[],
+    events: {
+        name: string,
+        description: string,
+        startTime: Date,
+        endTime: Date,
+        longitude: number,
+        latitude: number,
+        shortLocation: string,
+        picture: string,
+        lastUpdated: Date
+    }[],
+    role: string
+}
 
 export const getClubProfile = (req: Request, res: Response): void => {
     const { error } = getClubProfileSchema.validate(req.body);
@@ -35,18 +49,81 @@ export const getClubProfile = (req: Request, res: Response): void => {
 
     const { id } = req.body;
 
+    const userId = req.userId;
+
     Club.findOne({ _id: id })
-        .populate("members")
+        .populate("members.member")
         .populate("events")
-        .populate("joinRequests")
         .populate("announcements")
         .then(club => {
             if (!club) {
                 res.status(400).json({ error: "Club not found" });
                 return;
             }
-            res.status(200).json({ club });
-            return;
+
+            User.findOne({ _id: userId })
+                .then(user => {
+                    if (!user) {
+                        res.status(400).json({ error: "User not found" });
+                        return;
+                    }
+
+                    let userClubRole = CLUB_ROLE.NONMEMBER;
+
+                    user.clubs.forEach(userClub => {
+                        if (userClub.club._id.equals(club._id)) {
+                            userClubRole = userClub.role;
+                        }
+                    });
+
+                    const returnedProfile: IReturnedClubProfile = {
+                        name: club.name,
+                        logo: club.logo,
+                        description: club.description,
+                        id: club.id,
+                        members: [],
+                        announcements: [],
+                        events: [],
+                        role: userClubRole,
+                        tags: club.tags
+                    };
+
+                    club.members.forEach(member => {
+                        console.log(member);
+                        returnedProfile.members.push({
+                            id: member.member._id,
+                            name: member.member.name,
+                            profilePicture: member.member.profilePicture,
+                            role: member.role
+                        });
+                    });
+
+                    club.announcements.forEach(announcement => {
+                        returnedProfile.announcements.push({
+                            message: announcement.message,
+                            timestamp: announcement.timestamp
+                        });
+                    });
+
+                    club.events.forEach(event => {
+                        const currEvent = {
+                            name: event.name,
+                            description: event.description,
+                            startTime: event.startTime,
+                            endTime: event.endTime,
+                            longitude: event.longitude,
+                            latitude: event.latitude,
+                            shortLocation: event.shortLocation,
+                            picture: event.picture,
+                            lastUpdated: event.lastUpdated
+                        };
+                        returnedProfile.events.push(currEvent);
+                    });
+
+                    res.status(200).json({ returnedProfile });
+                    return;
+                });
+
         })
         .catch(err => {
             logger.error(err);

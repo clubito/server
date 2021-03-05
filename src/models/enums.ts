@@ -7,7 +7,8 @@ export enum JOIN_REQUEST_STATUS {
 export enum CLUB_ROLE {
     OWNER = "OWNER",
     OFFICER = "OFFICER",
-    MEMBER = "MEMBER"
+    MEMBER = "MEMBER",
+    NONMEMBER = "NONMEMBER"
 }
 
 export enum APP_ROLE {
