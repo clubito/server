@@ -8,8 +8,7 @@ import { sendingEmail } from "../../util/mail";
 import { uid } from "uid";
 
 const registerSchema = joi.object().keys({
-    // email: joi.string().email().regex(/@purdue.edu$/i).required(),
-    email: joi.string().email().required(),
+    email: joi.string().email().regex(/@purdue.edu$/i).required(),
     password: joi.string().min(6).regex(/\d/).required()
 });
 
