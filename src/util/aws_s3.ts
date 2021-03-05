@@ -9,7 +9,7 @@ export const getPresignedUrl = function () {
 
     const url = s3.getSignedUrl("putObject", {
         Bucket: BUCKET_NAME,
-        Key: uid(16),
+        Key: uid(16) + ".png",
         Expires: signedUrlExpireSeconds,
     });
 
