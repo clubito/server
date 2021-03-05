@@ -111,7 +111,7 @@ export const postRegister = (req: Request, res: Response): void => {
 };
 
 export const postReset = (req: Request, res: Response): void => {
-    const { error } = loginSchema.validate(req.body);
+    const { error } = forgotSchema.validate(req.body);
     if (error) {
         res.status(400).json({ "error": error.message });
         logger.debug(error);
