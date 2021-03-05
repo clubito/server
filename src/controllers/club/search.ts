@@ -42,14 +42,15 @@ export const searchClubByName = (req: Request, res: Response): void => {
     if (req.query.filter) {
         let tagsList: string[] = (req.query as any).filter;
         tagsList = tagsList.map(x => x.toUpperCase());  // convert all to uppercase to match enum
-        tagsList.forEach(tag => {
+        // check if the tag exist in the enum or not, if not then return error
+        for (let tag of tagsList) {
             if (!(tag in CLUB_TAGS)) {
                 res.status(500).json({
-                    error: "Filter tag is not correct"
+                    error: `Tag '${tag}' is not available`
                 });
                 return;
             }
-        });
+        }
         filterOptions["tags"] = {
             $in: tagsList   // use $in for "OR", use $all for "AND"
         };
