@@ -18,6 +18,11 @@ const loginSchema = joi.object().keys({
     password: joi.string().required()
 });
 
+const forgotSchema = joi.object().keys({
+    currentPassword: joi.string().required(),
+    newPassword: joi.string().required()
+});
+
 export const postLogin = (req: Request, res: Response): void => {
     const { error } = loginSchema.validate(req.body);
     if (error) {
@@ -106,28 +111,22 @@ export const postRegister = (req: Request, res: Response): void => {
 };
 
 export const postReset = (req: Request, res: Response): void => {
-    if (!req.userId) {
-        res.status(500).json({
-            message: "UserId not found. Please log in first"
-        });
-        return;
-    }
-    if (!req.body.currentPassword || !req.body.newPassword) {
-        res.status(400).json({
-            message: "Missing current and new password fields"
-        });
+    const { error } = loginSchema.validate(req.body);
+    if (error) {
+        res.status(400).json({ "error": error.message });
+        logger.debug(error);
         return;
     }
     if (req.body.currentPassword == req.body.newPassword) {
         res.status(400).json({
-            message: "Please choose a new password different than the current one"
+            error: "Current password and new password are the same"
         });
         return;
     }
 
-    const userId: string = req.userId;
-    const currentPassword: string = req.body.currentPassword;
-    const newPassword: string = req.body.newPassword;
+    const userId = req.userId;
+    const currentPassword = req.body.currentPassword;
+    const newPassword = req.body.newPassword;
 
     //get user id from request
     User.findById(userId).then(user => {
@@ -151,13 +150,13 @@ export const postReset = (req: Request, res: Response): void => {
             return;
         }).catch(err => {
             res.status(500).json({
-                err: "Error happened at validate password"
+                error: err
             });
             return;
         });
     }).catch(err => {
         res.status(500).json({
-            err
+            error: err
         });
         return;
     });
@@ -168,7 +167,7 @@ export const postForgot = (req: Request, res: Response): void => {
     const email: string = req.body.email;
     if (!email) {
         res.status(400).json({
-            message: "Email field missing"
+            error: "Email field missing"
         });
         return;
     }
@@ -242,7 +241,7 @@ export const getForgot = (req: Request, res: Response): void => {
     const token = req.params.token;
     if (!token) {
         res.status(400).json({
-            message: "Missing token"
+            error: "Missing token"
         });
         return;
     }
@@ -277,7 +276,7 @@ export const getForgot = (req: Request, res: Response): void => {
     } catch (err) {
         logger.error(err);
         res.status(500).json({
-            err
+            error: err
         });
         return;
     }
