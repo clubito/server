@@ -1,11 +1,10 @@
 import logger from "@logger";
 import { Request, Response } from "express";
 import Club from "@models/Club";
-import User from "@models/User";
-import { CLUB_ROLE } from "@models/enums";
+import { CLUB_ROLE, CLUB_TAGS } from "@models/enums";
 
 export const searchClubByName = (req: Request, res: Response): void => {
-    if (!req.query || !req.query.name) {
+    if (req.query.name === undefined) {
         res.status(400).json({
             error: "Missing club name field"
         })
@@ -26,11 +25,39 @@ export const searchClubByName = (req: Request, res: Response): void => {
 
     // get user id 
     const userId = req.userId;
+    const returnFields = "_id name logo description members";   // only return these fields when query database
+
+    const filterOptions = {};
+
+    // search by name
     const clubName: string = String(req.query.name);
-    Club.find({ name: { $regex: clubName, $options: "i" } }, "_id name logo description members").populate({
+    if (clubName !== "") {
+        filterOptions["name"] = {
+            $regex: clubName,
+            $options: "i"
+        };
+    }
+
+    // filter by tags
+    if (req.query.filter) {
+        let tagsList: string[] = (req.query as any).filter;
+        tagsList = tagsList.map(x => x.toUpperCase());  // convert all to uppercase to match enum
+        tagsList.forEach(tag => {
+            if (!(tag in CLUB_TAGS)) {
+                res.status(500).json({
+                    error: "Filter tag is not correct"
+                })
+                return;
+            }
+        })
+        filterOptions["tags"] = {
+            $in: tagsList   // use $in for "OR", use $all for "AND"
+        }
+    }
+
+    Club.find(filterOptions, returnFields).populate({
         path: "members",
     }).sort(sortBy).then(clubs => {
-        logger.debug(clubs);
         res.status(200).json({
             message: "Query the clubs successfully",
             result: clubs.map(club => {
@@ -60,9 +87,4 @@ export const searchClubByName = (req: Request, res: Response): void => {
         })
         return;
     })
-
-    if (req.query.filter) {
-        const filterArray: any[] = (req.query as any).filter;
-        logger.debug(filterArray);
-    }
 }
