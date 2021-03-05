@@ -50,13 +50,23 @@ export const getUserProfile = (req: Request, res: Response): void => {
                 res.status(400).json({ error: "User not found" });
                 return;
             }
+
+            const userClubTags = Object.values(user.clubTags);
+
+            const properCaseUserClubTags = userClubTags.map(tag => {
+                return tag.toLowerCase()
+                    .split(" ")
+                    .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+                    .join(" ");
+            });
+
             const ret: IReturnedUserProfile = {
                 id: user._id,
                 name: user.name,
                 email: user.email,
                 clubs: [],
                 joinRequests: [],
-                tags: user.clubTags,
+                tags: properCaseUserClubTags,
                 profilePicture: user.profilePicture
             };
             user.clubs.forEach(club => {
