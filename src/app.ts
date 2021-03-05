@@ -182,7 +182,7 @@ app.get("/forgot/:token", authController.getForgot);
 app.post("/token/verify", authController.postTokenVerify);
 app.get("/verify/:secret", authController.getVerify);
 
-app.get("/file/:filename", authenticateJWT, fileController.getS3PresignedUrl);
+app.get("/file", authenticateJWT, fileController.getS3PresignedUrl);
 
 // Normal User routes
 app.get("/user/profile", authenticateJWT, userController.getUserProfile);
