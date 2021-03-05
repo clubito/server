@@ -184,6 +184,7 @@ export const getVerify = (req: Request, res: Response): void => {
             //check secret if match
             if (user.secret == newUserSecret) {
                 user.isConfirmed = true;
+                user.save();
                 res.status(201).json({
                     message: "Verify account successful"
                 });
@@ -197,5 +198,6 @@ export const getVerify = (req: Request, res: Response): void => {
         });
     } else {
         res.status(400).json({ error: "Secret not defined" });
+        return;
     }
 };
