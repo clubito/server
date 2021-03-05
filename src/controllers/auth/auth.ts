@@ -8,7 +8,8 @@ import { sendingEmail } from "../../util/mail";
 import { uid } from "uid";
 
 const registerSchema = joi.object().keys({
-    email: joi.string().email().regex(/@purdue.edu$/i).required(),
+    // email: joi.string().email().regex(/@purdue.edu$/i).required(),
+    email: joi.string().email().required(),
     password: joi.string().min(6).regex(/\d/).required()
 });
 
@@ -57,7 +58,8 @@ export const postLogin = (req: Request, res: Response): void => {
 
             res.status(200).json({
                 "message": "Successfully authenticated",
-                token
+                token,
+                "isProfileSetup": user.name.length > 0,
             });
             logger.debug("Successfully authenticated", token);
             return;
@@ -107,19 +109,19 @@ export const postReset = (req: Request, res: Response): void => {
     if (!req.userId) {
         res.status(500).json({
             message: "UserId not found. Please log in first"
-        })
+        });
         return;
     }
     if (!req.body.currentPassword || !req.body.newPassword) {
         res.status(400).json({
             message: "Missing current and new password fields"
-        })
+        });
         return;
     }
     if (req.body.currentPassword == req.body.newPassword) {
         res.status(400).json({
             message: "Please choose a new password different than the current one"
-        })
+        });
         return;
     }
 
@@ -145,20 +147,20 @@ export const postReset = (req: Request, res: Response): void => {
             user.save();
             res.status(200).json({
                 message: "Change password successfully"
-            })
+            });
             return;
         }).catch(err => {
             res.status(500).json({
                 err: "Error happened at validate password"
-            })
+            });
             return;
-        })
+        });
     }).catch(err => {
         res.status(500).json({
             err
-        })
+        });
         return;
-    })
+    });
 };
 
 export const postForgot = (req: Request, res: Response): void => {
@@ -218,6 +220,7 @@ export const getVerify = (req: Request, res: Response): void => {
             //check secret if match
             if (user.secret == newUserSecret) {
                 user.isConfirmed = true;
+                user.save();
                 res.status(200).json({
                     message: "Verify account successful"
                 });
@@ -231,6 +234,7 @@ export const getVerify = (req: Request, res: Response): void => {
         });
     } else {
         res.status(400).json({ error: "Secret not defined" });
+        return;
     }
 };
 

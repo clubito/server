@@ -13,7 +13,7 @@ export interface IUser extends IUserInterface {
 
 const userSchema = new mongoose.Schema<IUser>(
     {
-        name: String,
+        name: { type: String, default: "" },
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
         isDisabled: { type: Boolean, default: false },
