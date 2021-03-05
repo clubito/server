@@ -123,7 +123,7 @@ export const getClubProfile = (req: Request, res: Response): void => {
                         returnedProfile.events.push(currEvent);
                     });
 
-                    res.status(200).json({ returnedProfile });
+                    res.status(200).json(returnedProfile);
                     return;
                 });
 
