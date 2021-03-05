@@ -7,7 +7,8 @@ import jwt from "jsonwebtoken";
 import { sendingVerifyEmail } from "../../util/mail";
 
 const registerSchema = joi.object().keys({
-    email: joi.string().email().regex(/@purdue.edu$/i).required(),
+    // email: joi.string().email().regex(/@purdue.edu$/i).required(),
+    email: joi.string().email().required(),
     password: joi.string().min(6).regex(/\d/).required()
 });
 
