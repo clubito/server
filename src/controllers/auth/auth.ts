@@ -20,7 +20,7 @@ const loginSchema = joi.object().keys({
 
 const forgotSchema = joi.object().keys({
     currentPassword: joi.string().required(),
-    newPassword: joi.string().required()
+    newPassword: joi.string().min(6).regex(/\d/).required()
 });
 
 export const postLogin = (req: Request, res: Response): void => {
