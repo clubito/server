@@ -40,14 +40,14 @@ interface IReturnedClubProfile {
 }
 
 export const getClubProfile = (req: Request, res: Response): void => {
-    const { error } = getClubProfileSchema.validate(req.body);
+    const { error } = getClubProfileSchema.validate(req.query);
     if (error) {
         res.status(400).json({ "error": error.message });
         logger.debug(error);
         return;
     }
 
-    const { id } = req.body;
+    const { id } = req.query;
 
     const userId = req.userId;
 
