@@ -107,19 +107,19 @@ export const postReset = (req: Request, res: Response): void => {
     if (!req.userId) {
         res.status(500).json({
             message: "UserId not found. Please log in first"
-        })
+        });
         return;
     }
     if (!req.body.currentPassword || !req.body.newPassword) {
         res.status(400).json({
             message: "Missing current and new password fields"
-        })
+        });
         return;
     }
     if (req.body.currentPassword == req.body.newPassword) {
         res.status(400).json({
             message: "Please choose a new password different than the current one"
-        })
+        });
         return;
     }
 
@@ -145,20 +145,20 @@ export const postReset = (req: Request, res: Response): void => {
             user.save();
             res.status(200).json({
                 message: "Change password successfully"
-            })
+            });
             return;
         }).catch(err => {
             res.status(500).json({
                 err: "Error happened at validate password"
-            })
+            });
             return;
-        })
+        });
     }).catch(err => {
         res.status(500).json({
             err
-        })
+        });
         return;
-    })
+    });
 };
 
 export const postForgot = (_req: Request, res: Response): void => {
