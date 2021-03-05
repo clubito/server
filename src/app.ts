@@ -17,7 +17,7 @@ import User from "@models/User";
 import Club from "@models/Club";
 import Announcement from "@models/Announcement";
 import Event from "@models/Event";
-import { CLUB_ROLE } from "@models/enums";
+import { CLUB_ROLE, CLUB_TAGS } from "@models/enums";
 import { authenticateJWT } from "./util/auth";
 // import * as homeController from "./controllers/home";
 // import * as homeController from "./controllers/home";
@@ -49,8 +49,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       isConfirmed: true
     });
     const user2 = new User({
-      name: "Sam the Man",
-      email: "lin854@purdue.edu",
+      name: "Fake User",
+      email: "example1@purdue.edu",
       password: "testpass1",
       isConfirmed: true
     });
@@ -82,7 +82,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     const club1 = new Club({
       name: "Drone Club",
       description: "A club for all drone enthusiasts at Purdue. Planes and multicopter pilots alike are welcome!",
-      members: [{ member: user1._id, role: CLUB_ROLE.OWNER }, { member: user2._id, role: CLUB_ROLE.OFFICER }, { member: user5._id, role: CLUB_ROLE.MEMBER }]
+      members: [{ member: user1._id, role: CLUB_ROLE.OWNER }, { member: user2._id, role: CLUB_ROLE.OFFICER }, { member: user5._id, role: CLUB_ROLE.MEMBER }],
+      tags: [CLUB_TAGS.TECHNOLOGY, CLUB_TAGS.SPORTS]
     });
     const club2 = new Club({
       name: "PUDM",
@@ -90,7 +91,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       members: [{ member: user2._id, role: CLUB_ROLE.OWNER },
       { member: user3._id, role: CLUB_ROLE.MEMBER },
       { member: user4._id, role: CLUB_ROLE.MEMBER },
-      { member: user6._id, role: CLUB_ROLE.OFFICER }]
+      { member: user6._id, role: CLUB_ROLE.OFFICER }],
+      tags: [CLUB_TAGS.MUSIC, CLUB_TAGS.SPORTS, CLUB_TAGS.VOLUNTEERING]
     });
 
     const announcement1 = new Announcement({
