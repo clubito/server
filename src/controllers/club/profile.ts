@@ -52,7 +52,10 @@ export const getClubProfile = (req: Request, res: Response): void => {
     const userId = req.userId;
 
     Club.findOne({ _id: id })
-        .populate("members.member")
+        .populate({
+            path: "members",
+            populate: { path: "member" }
+        })
         .populate("events")
         .populate("announcements")
         .then(club => {
