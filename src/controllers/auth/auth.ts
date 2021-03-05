@@ -220,7 +220,7 @@ export const getVerify = (req: Request, res: Response): void => {
             if (user.isConfirmed == true) {
                 res.status(400).json({
                     error: "Account has already been verified"
-                })
+                });
                 return;
             }
 

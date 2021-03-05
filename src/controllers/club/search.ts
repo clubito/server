@@ -43,7 +43,7 @@ export const searchClubByName = (req: Request, res: Response): void => {
         let tagsList: string[] = (req.query as any).filter;
         tagsList = tagsList.map(x => x.toUpperCase());  // convert all to uppercase to match enum
         // check if the tag exist in the enum or not, if not then return error
-        for (let tag of tagsList) {
+        for (const tag of tagsList) {
             if (!(tag in CLUB_TAGS)) {
                 res.status(500).json({
                     error: `Tag '${tag}' is not available`
