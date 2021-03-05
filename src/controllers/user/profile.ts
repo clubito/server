@@ -15,6 +15,7 @@ interface IReturnedUserProfile {
     name: string,
     email: string,
     id: string,
+    profilePicture: string,
     clubs: {
         name: string,
         description: string,
@@ -55,7 +56,8 @@ export const getUserProfile = (req: Request, res: Response): void => {
                 email: user.email,
                 clubs: [],
                 joinRequests: [],
-                tags: user.clubTags
+                tags: user.clubTags,
+                profilePicture: user.profilePicture
             };
             user.clubs.forEach(club => {
                 ret.clubs.push({
