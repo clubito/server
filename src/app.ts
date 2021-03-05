@@ -187,6 +187,7 @@ app.get("/file", authenticateJWT, fileController.getS3PresignedUrl);
 // Normal User routes
 app.get("/user/profile", authenticateJWT, userController.getUserProfile);
 app.put("/user/profile", authenticateJWT, userController.putUserProfile);
+app.delete("/user/profile", authenticateJWT, userController.deleteUserProfile);
 
 // Club routes 
 app.get("/clubs/tags", authenticateJWT, clubController.getAllTags);

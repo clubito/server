@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import User from "@models/User";
+import Club, { IClub } from "@models/Club";
 import logger from "@logger";
 import joi from "joi";
 import { CLUB_TAGS } from "@models/enums";
+import { IClubInterface } from "@models/Interfaces/IClubInterface";
 
 const putUserProfileSchema = joi.object().keys({
     email: joi.string().email().regex(/@purdue.edu$/i),
@@ -160,6 +162,41 @@ export const putUserProfile = (req: Request, res: Response): void => {
                     res.status(200).json({ "message": "Successfully updated user profile" });
                     return;
                 });
+        })
+        .catch(err => {
+            logger.error(err);
+            res.status(500).json({ error: err });
+            return;
+        });
+};
+
+export const deleteUserProfile = (req: Request, res: Response): void => {
+    const userId = req.userId;
+
+    User.findOne({ _id: userId })
+        .populate({
+            path: "clubs",
+            populate: { path: "club" }
+        })
+        .populate({
+            path: "joinRequests",
+            populate: { path: "club" }
+        })
+        .then(user => {
+            if (!user) {
+                res.status(400).json({ error: "User not found" });
+                return;
+            }
+            user.clubs.forEach(userClub => {
+                Club.findOne({ _id: userClub.club._id })
+                    .then((club: any) => {
+                        club.members = (club?.members as any[]).filter(item => { return !item.member.equals(user._id); });
+                        club.joinRequests = (club?.joinRequests as any[]).filter(item => { return !item.user.equals(user._id); });
+                        club?.save();
+                    });
+            });
+            user.delete();
+            res.status(200).json({ message: "Successfully deleted user" });
         })
         .catch(err => {
             logger.error(err);
