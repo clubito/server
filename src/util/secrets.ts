@@ -57,3 +57,9 @@ if (!SENDGRID_API_KEY) {
     logger.error("No sendgrid API key specified. Please set SENDGRID_API_KEY env variable");
     process.exit(1);
 }
+
+export const HOSTNAME: string = process.env["HOSTNAME"] ?? "";
+if (!HOSTNAME) {
+    logger.error("No hostname defined to use for email. Please set HOSTNAME env variable");
+    process.exit(1);
+}

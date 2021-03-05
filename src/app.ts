@@ -175,6 +175,7 @@ app.post("/login", authController.postLogin);
 app.post("/register", authController.postRegister);
 app.post("/reset", authenticateJWT, authController.postReset);
 app.post("/forgot", authController.postForgot);
+app.get("/forgot/:token", authController.getForgot);
 app.post("/token/verify", authController.postTokenVerify);
 app.get("/verify/:secret", authController.getVerify);
 

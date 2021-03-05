@@ -4,7 +4,8 @@ import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
 import jwt from "jsonwebtoken";
-import { sendingVerifyEmail } from "../../util/mail";
+import { sendingEmail } from "../../util/mail";
+import { uid } from "uid";
 
 const registerSchema = joi.object().keys({
     email: joi.string().email().regex(/@purdue.edu$/i).required(),
@@ -97,7 +98,7 @@ export const postRegister = (req: Request, res: Response): void => {
             "user_id": user["_id"]
         });
 
-        sendingVerifyEmail(user.email, user.secret);
+        sendingEmail(user.email, user.secret, "verify");
         return;
     });
 };
@@ -160,9 +161,44 @@ export const postReset = (req: Request, res: Response): void => {
     })
 };
 
-export const postForgot = (_req: Request, res: Response): void => {
-    res.send("Under development");
-    return;
+export const postForgot = (req: Request, res: Response): void => {
+    // get user's email
+    const email: string = req.body.email;
+    if (!email) {
+        res.status(400).json({
+            message: "Email field missing"
+        })
+        return;
+    }
+
+    // check if there is any available account in the db that has this email
+    User.findOne({ "email": email }).exec((err, user) => {
+        if (err) {
+            res.status(500).json({
+                error: `Error finding the user based on given email: ${err}`
+            })
+            return;
+        } else if (!user) {
+            res.status(400).json({
+                error: "There is no account exist with this email"
+            })
+            return;
+        }
+
+        //send an email to the user with token
+        const token = jwt.sign({
+            email: email,
+            date: new Date().toString(),
+        }, JWT_SECRET, {
+            expiresIn: "1D"    // the token link will only be available for 1 day. after that, that user need to request again
+        })
+
+        res.status(200).json({
+            message: "Sending email successfully"
+        })
+        sendingEmail(email, token, "forgot");
+        return;
+    })
 };
 
 export const getVerify = (req: Request, res: Response): void => {
@@ -182,7 +218,7 @@ export const getVerify = (req: Request, res: Response): void => {
             //check secret if match
             if (user.secret == newUserSecret) {
                 user.isConfirmed = true;
-                res.status(201).json({
+                res.status(200).json({
                     message: "Verify account successful"
                 });
                 return;
@@ -197,3 +233,48 @@ export const getVerify = (req: Request, res: Response): void => {
         res.status(400).json({ error: "Secret not defined" });
     }
 };
+
+export const getForgot = (req: Request, res: Response): void => {
+    const token = req.params.token;
+    if (!token) {
+        res.status(400).json({
+            message: "Missing token"
+        })
+        return;
+    }
+    // extract email from the token
+    try {
+        const decodedJWT = jwt.verify(token, JWT_SECRET);
+        const email = decodedJWT["email"];
+        logger.debug(`Email: ${email}`)
+
+        User.findOne({ "email": email }).exec((err, user) => {
+            if (err) {
+                res.status(500).json({
+                    error: "Error finding the user with email"
+                })
+                return;
+            } else if (!user) {
+                res.status(500).json({
+                    error: "There is not account with this email"
+                })
+                return;
+            }
+            // send a new email including new temporary password for the user
+            const tempPass = uid(16);
+            user.password = tempPass;
+            user.save();
+            sendingEmail(email, tempPass, "newpass");
+            res.status(200).json({
+                message: "Successfully generate new password sent via email"
+            })
+        })
+
+    } catch (err) {
+        logger.error(err);
+        res.status(500).json({
+            err
+        })
+        return;
+    }
+}
