@@ -7,14 +7,14 @@ export const searchClubByName = (req: Request, res: Response): void => {
     if (req.query.name === undefined) {
         res.status(400).json({
             error: "Missing club name field"
-        })
+        });
         return;
     }
 
     if (!req.userId) {
         res.status(500).json({
             error: "Missing user id. Need to log in first"
-        })
+        });
         return;
     }
     // if sortBy query is empty or ="Default" then sort by default
@@ -30,7 +30,7 @@ export const searchClubByName = (req: Request, res: Response): void => {
     const filterOptions = {};
 
     // search by name
-    const clubName: string = String(req.query.name);
+    const clubName = String(req.query.name);
     if (clubName !== "") {
         filterOptions["name"] = {
             $regex: clubName,
@@ -46,45 +46,44 @@ export const searchClubByName = (req: Request, res: Response): void => {
             if (!(tag in CLUB_TAGS)) {
                 res.status(500).json({
                     error: "Filter tag is not correct"
-                })
+                });
                 return;
             }
-        })
+        });
         filterOptions["tags"] = {
             $in: tagsList   // use $in for "OR", use $all for "AND"
-        }
+        };
     }
 
     Club.find(filterOptions, returnFields).populate({
         path: "members",
     }).sort(sortBy).then(clubs => {
         res.status(200).json({
-            message: "Query the clubs successfully",
             result: clubs.map(club => {
                 // check if the current userId is currently in the club members or not
                 // if not, then return role NONMEMBER
                 let userClubRole: string = CLUB_ROLE.NONMEMBER;
-                for (let member of club.members) {
+                for (const member of club.members) {
                     if (String(member.member) === userId) {
                         userClubRole = member.role;
                         break;
                     }
                 }
                 return {
-                    "_id": club._id,
+                    "id": club._id,
                     "name": club.name,
                     "logo": club.logo,
                     "description": club.description,
                     "role": userClubRole
-                }
+                };
             })
-        })
+        });
         return;
     }).catch(err => {
         logger.error(err);
         res.status(500).json({
-            err
-        })
+            error: err
+        });
         return;
-    })
-}
+    });
+};
