@@ -13,12 +13,12 @@ export const sendingEmail = async function (email: string, secret: string, optio
 
     let subject;
     let html;
+    const url = `${HOSTNAME}/${option}/${secret}`;
     if (option == "verify") {
         subject = "Account verification from Clubito";
-        html = `Hello customer. Please click <a href="${HOSTNAME}/${option}/${secret}">HERE</a> to verify your account. Thank you`;
+        html = `Hello customer. Please click <a href="${url}">HERE</a> to verify your account. Thank you`;
     } else if (option == "forgot") {
         subject = "Forgot your password?";
-        const url = `${HOSTNAME}/${option}/${secret}`;
         html = `Click this link to verify that you forgot your password.</br><a href="${url}">${url}</a>`;
     } else if (option == "newpass") {
         subject = "Your new password information";
@@ -35,9 +35,9 @@ export const sendingEmail = async function (email: string, secret: string, optio
     sgMail
         .send(msg)
         .then(() => {
-            console.log("Email sent");
+            logger.debug("Email sent");
         })
         .catch((error) => {
-            console.error(error);
+            logger.error(error);
         });
 };

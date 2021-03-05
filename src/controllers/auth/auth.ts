@@ -216,6 +216,14 @@ export const getVerify = (req: Request, res: Response): void => {
                 return;
             }
 
+            // check if account is already confirmed or not
+            if (user.isConfirmed == true) {
+                res.status(400).json({
+                    error: "Account has already been verified"
+                })
+                return;
+            }
+
             //check secret if match
             if (user.secret == newUserSecret) {
                 user.isConfirmed = true;
