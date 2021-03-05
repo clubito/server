@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { CLUB_TAGS, JOIN_REQUEST_STATUS } from "./enums";
+import { CLUB_ROLE, CLUB_TAGS, JOIN_REQUEST_STATUS } from "./enums";
 import { IClubInterface } from "./Interfaces/IClubInterface";
 
 
@@ -10,7 +10,10 @@ export const clubSchema = new mongoose.Schema<IClub>(
         name: { type: String, required: true },
         logo: { type: String, default: "https://picsum.photos/200" },
         description: String,
-        members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+        members: [{
+            member: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+            role: { type: String, enum: CLUB_ROLE }
+        }],
         events: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
         joinRequests: [{
             user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

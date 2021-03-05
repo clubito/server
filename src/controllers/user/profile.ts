@@ -15,6 +15,7 @@ interface IReturnedUserProfile {
     name: string,
     email: string,
     id: string,
+    profilePicture: string,
     clubs: {
         name: string,
         description: string,
@@ -49,13 +50,24 @@ export const getUserProfile = (req: Request, res: Response): void => {
                 res.status(400).json({ error: "User not found" });
                 return;
             }
+
+            const userClubTags = Object.values(user.clubTags);
+
+            const properCaseUserClubTags = userClubTags.map(tag => {
+                return tag.toLowerCase()
+                    .split(" ")
+                    .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+                    .join(" ");
+            });
+
             const ret: IReturnedUserProfile = {
                 id: user._id,
                 name: user.name,
                 email: user.email,
                 clubs: [],
                 joinRequests: [],
-                tags: user.clubTags
+                tags: properCaseUserClubTags,
+                profilePicture: user.profilePicture
             };
             user.clubs.forEach(club => {
                 ret.clubs.push({
@@ -122,19 +134,20 @@ export const putUserProfile = (req: Request, res: Response): void => {
             if (profilePicture) {
                 user.profilePicture = profilePicture;
             }
-            if (tags) {
-                user.clubTags = tags;
-            }
 
             const wrongTags: string[] = [];
             const correctTags: string[] = [];
-            tags.forEach((tag) => {
-                if (Object.values(CLUB_TAGS).includes(tag.toUpperCase())) {
-                    correctTags.push(tag.toUpperCase());
-                } else {
-                    wrongTags.push(tag);
-                }
-            });
+
+            if (tags) {
+                tags.forEach((tag) => {
+                    if (Object.values(CLUB_TAGS).includes(tag.toUpperCase())) {
+                        correctTags.push(tag.toUpperCase());
+                    } else {
+                        wrongTags.push(tag);
+                    }
+                });
+            }
+
             if (wrongTags.length > 0) {
                 res.status(400).json({ error: "The following tags do not exist", tags: wrongTags });
                 return;

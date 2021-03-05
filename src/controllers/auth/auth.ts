@@ -169,7 +169,7 @@ export const postForgot = (req: Request, res: Response): void => {
     if (!email) {
         res.status(400).json({
             message: "Email field missing"
-        })
+        });
         return;
     }
 
@@ -178,12 +178,12 @@ export const postForgot = (req: Request, res: Response): void => {
         if (err) {
             res.status(500).json({
                 error: `Error finding the user based on given email: ${err}`
-            })
+            });
             return;
         } else if (!user) {
             res.status(400).json({
                 error: "There is no account exist with this email"
-            })
+            });
             return;
         }
 
@@ -193,14 +193,14 @@ export const postForgot = (req: Request, res: Response): void => {
             date: new Date().toString(),
         }, JWT_SECRET, {
             expiresIn: "1D"    // the token link will only be available for 1 day. after that, that user need to request again
-        })
+        });
 
         res.status(200).json({
             message: "Sending email successfully"
-        })
+        });
         sendingEmail(email, token, "forgot");
         return;
-    })
+    });
 };
 
 export const getVerify = (req: Request, res: Response): void => {
@@ -243,25 +243,25 @@ export const getForgot = (req: Request, res: Response): void => {
     if (!token) {
         res.status(400).json({
             message: "Missing token"
-        })
+        });
         return;
     }
     // extract email from the token
     try {
         const decodedJWT = jwt.verify(token, JWT_SECRET);
         const email = decodedJWT["email"];
-        logger.debug(`Email: ${email}`)
+        logger.debug(`Email: ${email}`);
 
         User.findOne({ "email": email }).exec((err, user) => {
             if (err) {
                 res.status(500).json({
                     error: "Error finding the user with email"
-                })
+                });
                 return;
             } else if (!user) {
                 res.status(500).json({
                     error: "There is not account with this email"
-                })
+                });
                 return;
             }
             // send a new email including new temporary password for the user
@@ -271,14 +271,14 @@ export const getForgot = (req: Request, res: Response): void => {
             sendingEmail(email, tempPass, "newpass");
             res.status(200).json({
                 message: "Successfully generate new password sent via email"
-            })
-        })
+            });
+        });
 
     } catch (err) {
         logger.error(err);
         res.status(500).json({
             err
-        })
+        });
         return;
     }
-}
+};
