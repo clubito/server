@@ -1,3 +1,3 @@
-import { getAllClubRequests } from "./club";
+import { getAllClubRequests, postApproveClubRequest } from "./club";
 
-export { getAllClubRequests };
+export { getAllClubRequests, postApproveClubRequest };

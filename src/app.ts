@@ -215,6 +215,7 @@ app.post("/clubs/request", authenticateJWT, clubController.postRequestClub);
 
 // Admin routes
 app.get("/clubs/requests", authenticateJWT, adminController.getAllClubRequests);
+app.post("/clubs/approve", authenticateJWT, adminController.postApproveClubRequest);
 // app.get("/clubs/search", clubController.getClubSearch);
 
 /*
