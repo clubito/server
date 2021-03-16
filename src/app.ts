@@ -82,8 +82,11 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     const club1 = new Club({
       name: "Drone Club",
       description: "A club for all drone enthusiasts at Purdue. Planes and multicopter pilots alike are welcome!",
-      members: [{ member: user1._id, role: CLUB_ROLE.OWNER }, { member: user2._id, role: CLUB_ROLE.OFFICER }, { member: user5._id, role: CLUB_ROLE.MEMBER }],
-      tags: [CLUB_TAGS.TECHNOLOGY, CLUB_TAGS.SPORTS]
+      members: [{ member: user1._id, role: CLUB_ROLE.OWNER },
+      { member: user2._id, role: CLUB_ROLE.OFFICER },
+      { member: user5._id, role: CLUB_ROLE.MEMBER }],
+      tags: [CLUB_TAGS.TECHNOLOGY, CLUB_TAGS.SPORTS],
+      isEnabled: true
     });
     const club2 = new Club({
       name: "PUDM",
@@ -92,7 +95,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       { member: user3._id, role: CLUB_ROLE.MEMBER },
       { member: user4._id, role: CLUB_ROLE.MEMBER },
       { member: user6._id, role: CLUB_ROLE.OFFICER }],
-      tags: [CLUB_TAGS.MUSIC, CLUB_TAGS.SPORTS, CLUB_TAGS.VOLUNTEERING]
+      tags: [CLUB_TAGS.MUSIC, CLUB_TAGS.SPORTS, CLUB_TAGS.VOLUNTEERING],
+      isEnabled: true
     });
 
     const announcement1 = new Announcement({
@@ -196,6 +200,9 @@ app.get("/clubs/tags", authenticateJWT, clubController.getAllTags);
 app.get("/clubs/profile", authenticateJWT, clubController.getClubProfile);
 app.post("/clubs/join", authenticateJWT, clubController.postClubJoin);
 app.get("/clubs/search", authenticateJWT, clubController.searchClubByName);
+app.post("/clubs/request", authenticateJWT, clubController.postRequestClub);
+
+// Admin routes
 
 // app.get("/clubs/search", clubController.getClubSearch);
 

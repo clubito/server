@@ -27,5 +27,6 @@ export interface IClubInterface extends mongoose.Document {
     announcements: mongoose.Schema.Types.ObjectId[] | IAnnouncement[],
     roles: { user: mongoose.Schema.Types.ObjectId, customTitle: string },
     theme: string,
-    tags: string[]
+    tags: string[],
+    isEnabled: boolean
 }

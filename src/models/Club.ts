@@ -26,7 +26,8 @@ export const clubSchema = new mongoose.Schema<IClub>(
             customTitle: String
         }],
         theme: String,
-        tags: [{ type: String, enum: CLUB_TAGS }]
+        tags: [{ type: String, enum: CLUB_TAGS }],
+        isEnabled: { type: Boolean, default: false }
 
     },
     { timestamps: true },

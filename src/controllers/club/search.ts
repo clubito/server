@@ -40,6 +40,7 @@ export const searchClubByName = (req: Request, res: Response): void => {
 
     // filter by tags
     if (req.query.filter) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let tagsList: string[] = (req.query as any).filter;
         tagsList = tagsList.map(x => x.toUpperCase());  // convert all to uppercase to match enum
         // check if the tag exist in the enum or not, if not then return error
