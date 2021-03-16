@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema<IUser>(
             status: { type: String, enum: JOIN_REQUEST_STATUS },
             requestedAt: { type: Date, default: Date.now }
         }],
-        appRole: { type: String, enum: APP_ROLE },
+        appRole: { type: String, enum: APP_ROLE, default: APP_ROLE.MEMBER },
         secret: { type: String, default: "" },
         clubTags: [{ type: String, enum: CLUB_TAGS }]
     },

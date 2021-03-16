@@ -12,12 +12,13 @@ import * as authController from "./controllers/auth";
 import * as fileController from "./controllers/file";
 import * as userController from "./controllers/user";
 import * as clubController from "./controllers/club";
+import * as adminController from "./controllers/admin";
 
 import User from "@models/User";
 import Club from "@models/Club";
 import Announcement from "@models/Announcement";
 import Event from "@models/Event";
-import { CLUB_ROLE, CLUB_TAGS } from "@models/enums";
+import { CLUB_ROLE, CLUB_TAGS, APP_ROLE } from "@models/enums";
 import { authenticateJWT } from "./util/auth";
 // import * as homeController from "./controllers/home";
 // import * as homeController from "./controllers/home";
@@ -35,6 +36,7 @@ const eraseDatabaseOnSync = false;
 
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(async () => {
   if (eraseDatabaseOnSync) {
+    logger.info("Starting to populate DB with seed data");
     await Promise.all([
       User.deleteMany({}),
       Club.deleteMany({}),
@@ -77,6 +79,13 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       email: "mitch@purdue.edu",
       password: "testpass1",
       isConfirmed: true
+    });
+    const user7 = new User({
+      name: "Harambe",
+      email: "harambe@purdue.edu",
+      password: "testpass1",
+      isConfirmed: true,
+      appRole: APP_ROLE.ADMIN
     });
 
     const club1 = new Club({
@@ -134,6 +143,7 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     await user4.save();
     await user5.save();
     await user6.save();
+    await user7.save();
 
     await club1.save();
     await club2.save();
@@ -142,6 +152,7 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
 
     await event1.save();
 
+    logger.info("Finished populating DB with seed data");
   }
 },
 )
@@ -203,7 +214,7 @@ app.get("/clubs/search", authenticateJWT, clubController.searchClubByName);
 app.post("/clubs/request", authenticateJWT, clubController.postRequestClub);
 
 // Admin routes
-
+app.get("/clubs/requests", authenticateJWT, adminController.getAllClubRequests);
 // app.get("/clubs/search", clubController.getClubSearch);
 
 /*
