@@ -189,14 +189,17 @@ export const deleteUserProfile = (req: Request, res: Response): void => {
             }
             user.clubs.forEach(userClub => {
                 Club.findOne({ _id: userClub.club._id })
-                    .then((club: any) => {
-                        club.members = (club?.members as any[]).filter(item => { return !item.member.equals(user._id); });
-                        club.joinRequests = (club?.joinRequests as any[]).filter(item => { return !item.user.equals(user._id); });
-                        club?.save();
+                    .then(club => {
+                        if (club) {
+                            club.members = (club?.members as any[]).filter(item => { return !item.member.equals(user._id); });
+                            club.joinRequests = (club?.joinRequests as any[]).filter(item => { return !item.user.equals(user._id); });
+                            club.save();
+                        }
                     });
             });
-            user.delete();
+            user.delete().exec();
             res.status(200).json({ message: "Successfully deleted user" });
+            return;
         })
         .catch(err => {
             logger.error(err);
