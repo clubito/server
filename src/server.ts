@@ -1,23 +1,20 @@
-import app from "./app";
+import httpServer from "./app";
 import logger from "./util/logger";
-import errorHandler from "errorhandler";
+import {ENVIRONMENT} from "./util/secrets";
 
-/**
- * Error Handler. Provides full stack
- */
-if (process.env.NODE_ENV === "development") {
-  app.use(errorHandler());
-}
 
+// Express configuration
+const port = process.env.PORT || 3000;
+const env = ENVIRONMENT == "" ? "development" : ENVIRONMENT;
 
 /**
  * Start Express server.
  */
-const server = app.listen(app.get("port"), () => {
+const server = httpServer.listen(port, () => {
   logger.info(
       "  App is running at http://localhost:%d in %s mode",
-      app.get("port"),
-      app.get("env"),
+      port,
+      env,
   );
   logger.info("  Press CTRL-C to stop\n");
 });

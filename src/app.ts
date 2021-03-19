@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import logger, { expressLogger } from "./util/logger";
 import { MONGODB_URI } from "@secrets";
 import cors from "cors";
+import {ENVIRONMENT} from "./util/secrets";
 
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
@@ -13,6 +14,7 @@ import * as fileController from "./controllers/file";
 import * as userController from "./controllers/user";
 import * as clubController from "./controllers/club";
 import * as adminController from "./controllers/admin";
+import * as chatController from "./controllers/chat";
 
 import User from "@models/User";
 import Club from "@models/Club";
@@ -22,6 +24,10 @@ import { CLUB_ROLE, CLUB_TAGS, APP_ROLE } from "@models/enums";
 import { authenticateJWT } from "./util/auth";
 // import * as homeController from "./controllers/home";
 // import * as homeController from "./controllers/home";
+import errorHandler from "errorhandler";
+
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 
 // Create Express server
@@ -165,9 +171,6 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     process.exit();
   });
 
-// Express configuration
-app.set("port", process.env.PORT || 3000);
-
 // Fix CORS
 // app.use((_req, res, next) => {
 //   res.header("Access-Control-Allow-Origin", "*");
@@ -240,5 +243,18 @@ GET all tags
 
 */
 
+/**
+ * Error Handler. Provides full stack
+ */
+ if (ENVIRONMENT === "development") {
+  app.use(errorHandler());
+}
 
-export default app;
+// CHAT APPLICATION
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {}
+});
+io.on("connection", chatController.chatServer);
+
+export default httpServer;
