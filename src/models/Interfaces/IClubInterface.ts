@@ -28,5 +28,9 @@ export interface IClubInterface extends mongoose.Document {
     roles: { user: mongoose.Schema.Types.ObjectId, customTitle: string },
     theme: string,
     tags: string[],
-    isEnabled: boolean
+    isEnabled: boolean,
+    deleted: {
+        isDeleted: boolean,
+        deletedAt: Date
+    }
 }

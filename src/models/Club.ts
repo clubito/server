@@ -1,3 +1,4 @@
+import { boolean } from "joi";
 import mongoose from "mongoose";
 import { CLUB_ROLE, CLUB_TAGS, JOIN_REQUEST_STATUS } from "./enums";
 import { IClubInterface } from "./Interfaces/IClubInterface";
@@ -27,7 +28,11 @@ export const clubSchema = new mongoose.Schema<IClub>(
         }],
         theme: String,
         tags: [{ type: String, enum: CLUB_TAGS }],
-        isEnabled: { type: Boolean, default: false }
+        isEnabled: { type: Boolean, default: false },
+        deleted: {
+            isDeleted: Boolean,
+            deletedAt: Date
+        }
 
     },
     { timestamps: true },
