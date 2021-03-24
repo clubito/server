@@ -31,6 +31,6 @@ export interface IClubInterface extends mongoose.Document {
     isEnabled: boolean,
     deleted: {
         isDeleted: boolean,
-        deletedAt: Date
+        deletedAt: Date | null
     }
 }

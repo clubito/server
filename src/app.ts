@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import logger, { expressLogger } from "./util/logger";
 import { MONGODB_URI } from "@secrets";
 import cors from "cors";
-import {ENVIRONMENT} from "./util/secrets";
+import { ENVIRONMENT } from "./util/secrets";
 
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
@@ -219,6 +219,9 @@ app.post("/clubs/request", authenticateJWT, clubController.postRequestClub);
 // Admin routes
 app.get("/clubs/requests", authenticateJWT, adminController.getAllClubRequests);
 app.post("/clubs/approve", authenticateJWT, adminController.postApproveClubRequest);
+app.post("/clubs/delete", authenticateJWT, adminController.deleteClub);
+app.post("/clubs/undelete", authenticateJWT, adminController.undeleteClub);
+app.get("/clubs", authenticateJWT, adminController.getAllClubs);
 // app.get("/clubs/search", clubController.getClubSearch);
 
 /*
@@ -246,7 +249,7 @@ GET all tags
 /**
  * Error Handler. Provides full stack
  */
- if (ENVIRONMENT === "development") {
+if (ENVIRONMENT === "development") {
   app.use(errorHandler());
 }
 
