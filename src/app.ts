@@ -218,7 +218,8 @@ app.post("/clubs/request", authenticateJWT, clubController.postRequestClub);
 
 // Admin routes
 app.get("/clubs/requests", authenticateJWT, adminController.getAllClubRequests);
-app.post("/clubs/approve", authenticateJWT, adminController.postApproveClubRequest);
+app.post("/clubs/requests/approve", authenticateJWT, adminController.postApproveClubRequest);
+app.post("/clubs/requests/deny", authenticateJWT, adminController.postDenyClubRequest);
 app.post("/clubs/delete", authenticateJWT, adminController.deleteClub);
 app.post("/clubs/undelete", authenticateJWT, adminController.undeleteClub);
 app.get("/clubs", authenticateJWT, adminController.getAllClubs);

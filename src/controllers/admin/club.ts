@@ -115,6 +115,48 @@ export const postApproveClubRequest = async (req: Request, res: Response): Promi
     }
 };
 
+export const postDenyClubRequest = async (req: Request, res: Response): Promise<void> => {
+    const { error } = postApproveClubRequestSchema.validate(req.body); // same schema so reusing here
+
+    if (error) {
+        res.status(400).json({ "error": error.message });
+        logger.debug(error);
+        return;
+    }
+
+    const clubId = req.body.id;
+    const userId = req.userId;
+
+    try {
+        const currUser = await User.findById(userId).exec();
+        if (currUser?.appRole != APP_ROLE.ADMIN) {
+            // the current user is not an admin
+            res.status(403).json({ error: "Please use an admin account" });
+            return;
+        }
+
+        const club = await Club.findById(clubId).exec();
+
+        if (!club) {
+            res.status(400).json({ error: "Club not found" });
+            return;
+        }
+
+        if (club.isEnabled) {
+            res.status(400).json({ error: "Club is already approved, please delete using POST /clubs/delete instead" });
+            return;
+        }
+
+        await club.delete();
+        res.status(200).json({ message: "Successfully denied club request 😎" });
+        return;
+    } catch (err) {
+        logger.error(err);
+        res.status(500).json({ error: err });
+        return;
+    }
+};
+
 export const deleteClub = async (req: Request, res: Response): Promise<void> => {
     const { error } = deleteClubSchema.validate(req.body); // same schema so reusing here, dont @ me
 
