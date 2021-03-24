@@ -12,7 +12,6 @@ import joi from "joi";
 import logger from "@logger";
 import { APP_ROLE, CLUB_ROLE } from "@models/enums";
 import { ObjectId } from "bson";
-import { isNull } from "node:util";
 
 
 const postApproveClubRequestSchema = joi.object().keys({
