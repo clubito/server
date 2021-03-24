@@ -39,7 +39,7 @@ export const postClubJoin = (req: Request, res: Response): void => {
     const { id } = req.body;
     const userId = req.userId;
 
-    Club.findOne({ _id: id })
+    Club.findOne({ _id: id, "deleted.isDeleted": false })
         .then(club => {
             if (!club) {
                 res.status(400).json({ error: "Club not found" });

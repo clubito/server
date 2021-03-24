@@ -57,6 +57,10 @@ export const searchClubByName = (req: Request, res: Response): void => {
         };
     }
 
+    filterOptions["deleted.isDeleted"] = {
+        $in: false
+    };
+
     Club.find(filterOptions, returnFields).populate({
         path: "members",
     }).sort(sortBy).then(clubs => {

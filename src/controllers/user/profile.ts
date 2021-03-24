@@ -72,22 +72,26 @@ export const getUserProfile = (req: Request, res: Response): void => {
                 profilePicture: user.profilePicture
             };
             user.clubs.forEach(club => {
-                ret.clubs.push({
-                    name: club.club.name,
-                    description: club.club.description,
-                    logo: club.club.logo,
-                    role: club.role,
-                    id: club.club._id
-                });
+                if (!club.club.deleted.isDeleted) {
+                    ret.clubs.push({
+                        name: club.club.name,
+                        description: club.club.description,
+                        logo: club.club.logo,
+                        role: club.role,
+                        id: club.club._id
+                    });
+                }
             });
             user.joinRequests.forEach(joinRequest => {
-                ret.joinRequests.push({
-                    name: joinRequest.club.name,
-                    description: joinRequest.club.description,
-                    logo: joinRequest.club.logo,
-                    status: joinRequest.status,
-                    id: joinRequest.club._id
-                });
+                if (!joinRequest.club.deleted.isDeleted) {
+                    ret.joinRequests.push({
+                        name: joinRequest.club.name,
+                        description: joinRequest.club.description,
+                        logo: joinRequest.club.logo,
+                        status: joinRequest.status,
+                        id: joinRequest.club._id
+                    });
+                }
             });
             res.status(200).json(ret);
             return;
@@ -188,14 +192,16 @@ export const deleteUserProfile = (req: Request, res: Response): void => {
                 return;
             }
             user.clubs.forEach(userClub => {
-                Club.findOne({ _id: userClub.club._id })
-                    .then(club => {
-                        if (club) {
-                            club.members = (club?.members as any[]).filter(item => { return !item.member.equals(user._id); });
-                            club.joinRequests = (club?.joinRequests as any[]).filter(item => { return !item.user.equals(user._id); });
-                            club.save();
-                        }
-                    });
+                if (!userClub.club.deleted.isDeleted) {
+                    Club.findOne({ _id: userClub.club._id })
+                        .then(club => {
+                            if (club) {
+                                club.members = (club?.members as any[]).filter(item => { return !item.member.equals(user._id); });
+                                club.joinRequests = (club?.joinRequests as any[]).filter(item => { return !item.user.equals(user._id); });
+                                club.save();
+                            }
+                        });
+                }
             });
             user.delete().exec();
             res.status(200).json({ message: "Successfully deleted user" });

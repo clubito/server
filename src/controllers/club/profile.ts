@@ -51,7 +51,7 @@ export const getClubProfile = (req: Request, res: Response): void => {
 
     const userId = req.userId;
 
-    Club.findOne({ _id: id })
+    Club.findOne({ _id: id, "deleted.isDeleted": false })
         .populate({
             path: "members",
             populate: { path: "member" }

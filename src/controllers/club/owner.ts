@@ -33,7 +33,7 @@ export const postRequestClub = (req: Request, res: Response): void => {
                 return;
             }
 
-            Club.findOne({ name }).then(club => {
+            Club.findOne({ name, "deleted.isDeleted": false }).then(club => {
                 if (club) {
                     res.status(400).json({ error: "Club with that name already exists" });
                     return;
