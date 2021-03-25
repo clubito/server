@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import Club from "@models/Club";
 import User from "@models/User";
 import joi from "joi";
 import logger from "@logger";
-import { APP_ROLE, CLUB_ROLE } from "@models/enums";
+import { APP_ROLE } from "@models/enums";
 import { ObjectId } from "bson";
 
 
@@ -85,7 +84,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
     }
 };
 
-export const undeleteUser = async (req: Request, res: Response): void => {
+export const undeleteUser = async (req: Request, res: Response): Promise<void> => {
     const { error } = deleteUserSchema.validate(req.body);
 
     if (error) {
