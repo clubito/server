@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import User from "@models/User";
-import Club, { IClub } from "@models/Club";
+import Club from "@models/Club";
 import logger from "@logger";
 import joi from "joi";
 import { CLUB_TAGS } from "@models/enums";
-import { IClubInterface } from "@models/Interfaces/IClubInterface";
 
 const putUserProfileSchema = joi.object().keys({
     email: joi.string().email().regex(/@purdue.edu$/i),
@@ -196,7 +195,9 @@ export const deleteUserProfile = (req: Request, res: Response): void => {
                     Club.findOne({ _id: userClub.club._id })
                         .then(club => {
                             if (club) {
+                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 club.members = (club?.members as any[]).filter(item => { return !item.member.equals(user._id); });
+                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 club.joinRequests = (club?.joinRequests as any[]).filter(item => { return !item.user.equals(user._id); });
                                 club.save();
                             }
