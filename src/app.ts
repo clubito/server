@@ -224,6 +224,9 @@ app.post("/admin/clubs/requests/deny", authenticateJWT, adminController.postDeny
 app.post("/admin/clubs/delete", authenticateJWT, adminController.deleteClub);
 app.post("/admin/clubs/undelete", authenticateJWT, adminController.undeleteClub);
 app.get("/admin/clubs", authenticateJWT, adminController.getAllClubs);
+app.get("/admin/users", authenticateJWT, adminController.getAllUsers);
+app.post("/admin/users/delete", authenticateJWT, adminController.deleteUser);
+app.post("/admin/users/undelete", authenticateJWT, adminController.undeleteUser);
 // TODO: delete/undelete users, ban/unban users
 
 
