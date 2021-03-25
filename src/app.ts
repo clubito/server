@@ -215,15 +215,17 @@ app.get("/clubs/profile", authenticateJWT, clubController.getClubProfile);
 app.post("/clubs/join", authenticateJWT, clubController.postClubJoin);
 app.get("/clubs/search", authenticateJWT, clubController.searchClubByName);
 app.post("/clubs/request", authenticateJWT, clubController.postRequestClub);
+// TODO: create/edit/delete club events, approve/reject member registration, remove user from club, get (maybe add filter/search) all club events, get 1 event
 
 // Admin routes
-app.get("/clubs/requests", authenticateJWT, adminController.getAllClubRequests);
-app.post("/clubs/requests/approve", authenticateJWT, adminController.postApproveClubRequest);
-app.post("/clubs/requests/deny", authenticateJWT, adminController.postDenyClubRequest);
-app.post("/clubs/delete", authenticateJWT, adminController.deleteClub);
-app.post("/clubs/undelete", authenticateJWT, adminController.undeleteClub);
-app.get("/clubs", authenticateJWT, adminController.getAllClubs);
-// app.get("/clubs/search", clubController.getClubSearch);
+app.get("/admin/clubs/requests", authenticateJWT, adminController.getAllClubRequests);
+app.post("/admin/clubs/requests/approve", authenticateJWT, adminController.postApproveClubRequest);
+app.post("/admin/clubs/requests/deny", authenticateJWT, adminController.postDenyClubRequest);
+app.post("/admin/clubs/delete", authenticateJWT, adminController.deleteClub);
+app.post("/admin/clubs/undelete", authenticateJWT, adminController.undeleteClub);
+app.get("/admin/clubs", authenticateJWT, adminController.getAllClubs);
+// TODO: delete/undelete users, ban/unban users
+
 
 /*
 register:
