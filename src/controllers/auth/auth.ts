@@ -6,6 +6,7 @@ import joi from "joi";
 import jwt from "jsonwebtoken";
 import { sendingEmail } from "../../util/mail";
 import { uid } from "uid";
+import { APP_ROLE } from "@models/enums";
 
 const registerSchema = joi.object().keys({
     email: joi.string().email().regex(/@purdue.edu$/i).required(),
@@ -70,6 +71,57 @@ export const postLogin = (req: Request, res: Response): void => {
         });
     });
 };
+
+export const postLoginAdmin = (req: Request, res: Response): void => {
+    const { error } = loginSchema.validate(req.body);
+    if (error) {
+        res.status(400).json({ "error": error.message });
+        logger.debug(error);
+        return;
+    }
+
+    const { email, password } = req.body;
+
+    User.findOne({ "email": email }).exec((err, user) => {
+        if (err) {
+            res.status(500).json({ "error": "Error authenticating user: " + err });
+            logger.debug(err);
+            return;
+        } else if (!user) {
+            res.status(400).json({ "error": "Invalid username/password" });
+            return;
+        }
+
+        // check if this account is admin or not
+        if (user.appRole != APP_ROLE.ADMIN) {
+            res.status(400).json({
+                "error": "Please use admin account"
+            })
+            return;
+        }
+
+        user.validatePassword(password).then(result => {
+            if (!result) {
+                res.status(400).json({ "error": "Invalid username/password" });
+                logger.debug("Attempted login with invalid username/password");
+
+                return;
+            }
+
+            const token = jwt.sign({
+                user_id: user._id,
+                email: user.email
+            }, JWT_SECRET);
+
+            res.status(200).json({
+                "message": "Successfully authenticated",
+                token
+            });
+            logger.debug("Successfully authenticated", token);
+            return;
+        });
+    });
+}
 
 export const postRegister = (req: Request, res: Response): void => {
     const { error } = registerSchema.validate(req.body);
