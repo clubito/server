@@ -46,7 +46,7 @@ export const postClubJoin = (req: Request, res: Response): void => {
                 return;
             }
             User.findOne({ _id: userId })
-                .then(user => {
+                .then(async user => {
                     if (user) {
                         // the as any[] is a workaround for a TS bug. probably will get fixed soon
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,11 +69,11 @@ export const postClubJoin = (req: Request, res: Response): void => {
                             return;
                         }
 
-                        club.joinRequests.push({ user: club._id, status: JOIN_REQUEST_STATUS.PENDING, requestedAt: new Date(Date.now()) });
+                        club.joinRequests.push({ user: user._id, status: JOIN_REQUEST_STATUS.PENDING, requestedAt: new Date(Date.now()) });
                         user.joinRequests.push({ club: club._id, status: JOIN_REQUEST_STATUS.PENDING, requestedAt: new Date(Date.now()) });
 
-                        club.save();
-                        user.save();
+                        await club.save();
+                        await user.save();
 
                         res.status(200).json({ message: "Successfully requested to join club", club: { id: club._id } });
                         return;
