@@ -191,18 +191,16 @@ export const deleteUserProfile = (req: Request, res: Response): void => {
                 return;
             }
             user.clubs.forEach(userClub => {
-                if (!userClub.club.deleted.isDeleted) {
-                    Club.findOne({ _id: userClub.club._id })
-                        .then(club => {
-                            if (club) {
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                club.members = (club?.members as any[]).filter(item => { return !item.member.equals(user._id); });
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                club.joinRequests = (club?.joinRequests as any[]).filter(item => { return !item.user.equals(user._id); });
-                                club.save();
-                            }
-                        });
-                }
+                Club.findOne({ _id: userClub.club._id })
+                    .then(club => {
+                        if (club) {
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            club.members = (club?.members as any[]).filter(item => { return !item.member.equals(user._id); });
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            club.joinRequests = (club?.joinRequests as any[]).filter(item => { return !item.user.equals(user._id); });
+                            club.save();
+                        }
+                    });
             });
             user.delete().exec();
             res.status(200).json({ message: "Successfully deleted user" });

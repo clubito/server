@@ -96,7 +96,7 @@ export const postLoginAdmin = (req: Request, res: Response): void => {
         if (user.appRole != APP_ROLE.ADMIN) {
             res.status(400).json({
                 "error": "Please use admin account"
-            })
+            });
             return;
         }
 
@@ -121,7 +121,7 @@ export const postLoginAdmin = (req: Request, res: Response): void => {
             return;
         });
     });
-}
+};
 
 export const postRegister = (req: Request, res: Response): void => {
     const { error } = registerSchema.validate(req.body);
