@@ -21,8 +21,5 @@ export interface IUserInterface extends mongoose.Document {
     appRole: string,
     secret: string,
     clubTags: string[],
-    deleted: {
-        isDeleted: boolean,
-        deletedAt: Date | null
-    }
+    banned: boolean
 }
