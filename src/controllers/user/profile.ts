@@ -31,7 +31,8 @@ interface IReturnedUserProfile {
         status: string,
         id: string
     }[],
-    tags: string[]
+    tags: string[],
+    joinDate: Date
 }
 
 export const getUserProfile = (req: Request, res: Response): void => {
@@ -68,7 +69,8 @@ export const getUserProfile = (req: Request, res: Response): void => {
                 clubs: [],
                 joinRequests: [],
                 tags: properCaseUserClubTags,
-                profilePicture: user.profilePicture
+                profilePicture: user.profilePicture,
+                joinDate: user._id.getTimestamp()
             };
             user.clubs.forEach(club => {
                 if (!club.club.deleted.isDeleted) {
