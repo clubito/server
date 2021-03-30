@@ -75,6 +75,7 @@
   "_moduleAliases": {
     "@logger": "./dist/util/logger",
     "@models": "./dist/models",
-    "@secrets": "./dist/util/secrets"
+    "@secrets": "./dist/util/secrets",
+    "@notifications": "./dist/util/notifications"
   }
 }

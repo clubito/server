@@ -6,8 +6,8 @@ export const chatServer = (socket: Socket) : void => {
     socket.on("message", msg => {
         logger.debug(`CLIENT MESSAGE: ${msg}`);
         socket.emit("hello", "Hello from server");
-    })
-}
+    });
+};
 
 
 

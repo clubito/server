@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
-import { isValidPushToken } from "@utils/notifications";
+import { isValidPushToken } from "@notifications";
 
 const postRegisterPushTokenSchema = joi.object().keys({
     pushToken: joi.string().required()
