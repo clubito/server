@@ -81,8 +81,8 @@ export const getClubProfile = (req: Request, res: Response): void => {
                     }
 
                     let userClubRole = CLUB_ROLE.NONMEMBER;
-                    let userJoinRequest;
-                    let approvalDate;
+                    let userJoinRequest = "NOT REQUESTED";
+                    let approvalDate = new Date("2001-09-11");
 
                     user.clubs.forEach(userClub => {
                         if (userClub.club._id.equals(club._id)) {
