@@ -23,5 +23,10 @@ export interface IUserInterface extends mongoose.Document {
     clubTags: string[],
     banned: boolean,
     pushToken: string,
-    bio: string
+    bio: string,
+    settings: {
+        notifications: {
+            enabled: boolean
+        }
+    }
 }
