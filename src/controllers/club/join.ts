@@ -101,7 +101,7 @@ export const postClubJoin = (req: Request, res: Response): void => {
         });
 };
 
-export const postClubApprove = async (req: Request, res: Response): Promise<void> => {
+export const postClubApprove = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = postClubApproveSchema.validate(req.body); // make sure cludId and userId are specified
 
     if (error) {
@@ -181,13 +181,11 @@ export const postClubApprove = async (req: Request, res: Response): Promise<void
         res.status(200).json({ message: "Successfully approved join request" });
         return;
     } catch (err) {
-        logger.error(err);
-        res.status(500).json({ error: err });
-        return;
+        return next(err);
     }
 };
 
-export const postClubDeny = async (req: Request, res: Response): Promise<void> => {
+export const postClubDeny = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = postClubApproveSchema.validate(req.body); // same schema as postclubapprove
 
     if (error) {
@@ -251,9 +249,7 @@ export const postClubDeny = async (req: Request, res: Response): Promise<void> =
         res.status(200).json({ message: "Successfully denied join request" });
         return;
     } catch (err) {
-        logger.error(err);
-        res.status(500).json({ error: err });
-        return;
+        return next(err);
     }
 };
 

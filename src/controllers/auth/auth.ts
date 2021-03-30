@@ -1,5 +1,5 @@
 import { JWT_SECRET } from "@secrets";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
@@ -296,7 +296,7 @@ export const getVerify = (req: Request, res: Response): void => {
     }
 };
 
-export const getForgot = (req: Request, res: Response): void => {
+export const getForgot = (req: Request, res: Response, next: NextFunction): void => {
     const token = req.params.token;
     if (!token) {
         res.status(400).json({
@@ -333,10 +333,6 @@ export const getForgot = (req: Request, res: Response): void => {
         });
 
     } catch (err) {
-        logger.error(err);
-        res.status(500).json({
-            error: err
-        });
-        return;
+        return next(err);
     }
 };
