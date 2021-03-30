@@ -1,6 +1,7 @@
 import User from "@models/User";
 import Expo, { ExpoPushMessage } from "expo-server-sdk";
 import { INotificationInterface } from "@models/Interfaces/INotificationInterface";
+import logger from "@logger";
 
 const expo = new Expo();
 
@@ -10,6 +11,7 @@ export const isValidPushToken = (pushToken: string): boolean => {
 
 export const sendNotification = async (userId: string, notification: INotificationInterface): Promise<boolean> => {
     try {
+        logger.info("Sending notification", userId, notification);
         const user = await User.findById(userId).exec();
 
         if (!user) {
@@ -39,6 +41,7 @@ export const sendNotification = async (userId: string, notification: INotificati
 
         const receiptIds: any[] = [];
         for (const ticket of tickets) {
+            logger.debug(ticket);
             if (ticket.id) {
                 receiptIds.push(ticket.id);
             }
@@ -47,6 +50,7 @@ export const sendNotification = async (userId: string, notification: INotificati
         for (const receiptId in receipts) {
             const status = receipts[receiptId]?.status;
             const details = receipts[receiptId]?.details;
+            logger.debug(status as string);
             if (status === "ok") {
                 return Promise.resolve(true);
             } else {
@@ -56,7 +60,7 @@ export const sendNotification = async (userId: string, notification: INotificati
     } catch (err) {
         throw err;
     }
-    return Promise.resolve(true);
+    return Promise.resolve(false);
 };
 
 // Add a send push notification given the user id/message/data
