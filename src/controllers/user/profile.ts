@@ -13,6 +13,10 @@ const putUserProfileSchema = joi.object().keys({
     bio: joi.string()
 });
 
+const getAnotherUserProfileSchema = joi.object().keys({
+    id: joi.string().required()
+});
+
 interface IReturnedUserProfile {
     name: string,
     email: string,
@@ -219,4 +223,35 @@ export const deleteUserProfile = (req: Request, res: Response): void => {
             res.status(500).json({ error: err });
             return;
         });
+};
+
+export const getAnotherUserProfile = (req: Request, res: Response): void => {
+    const { error } = getAnotherUserProfileSchema.validate(req.query);
+    if (error) {
+        res.status(400).json({ "error": error.message });
+        logger.debug(error);
+        return;
+    }
+
+    const otherUserId = req.query.id;
+
+    User.findOne({ _id: otherUserId })
+        .populate({
+            path: "clubs",
+            populate: { path: "club" }
+        })
+        .then(user => {
+            if (!user) {
+                res.status(400).json({ error: "User not found" });
+                return;
+            }
+
+            res.status(200).send(user);
+            return;
+        }).catch(err => {
+            logger.error(err);
+            res.status(500).json({ error: err });
+            return;
+        });
+
 };
