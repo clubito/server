@@ -257,8 +257,15 @@ export const getAllClubs = async (req: Request, res: Response): Promise<void> =>
             res.status(403).json({ error: "Please use an admin account" });
             return;
         }
+        
+        const memberReturnFields: string = "name isConfirmed profilePicture banned email";
+        const announcementReturnFields: string = "message createdAt";
+        const eventReturnFields: string = "name description startTime endTime shortLocation";
+        const allClubs = await Club.find({})
+        .populate({path: 'members.member', select: memberReturnFields})
+        .populate({path: "announcements", select: announcementReturnFields, options: {sort: {'createdAt': -1}}, perDocumentLimit: 1})
+        .populate({path: "events", select: eventReturnFields,  options: {sort: {'startTime': -1}}, perDocumentLimit: 1});
 
-        const allClubs = await Club.find({});
         res.send(allClubs);
         return;
     } catch (err) {
