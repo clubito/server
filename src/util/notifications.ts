@@ -1,7 +1,6 @@
 import User from "@models/User";
 import Expo, { ExpoPushMessage } from "expo-server-sdk";
 import { INotificationInterface } from "@models/Interfaces/INotificationInterface";
-import logger from "@logger";
 
 const expo = new Expo();
 

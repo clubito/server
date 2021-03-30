@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
 import { sendNotification } from "@notifications";
