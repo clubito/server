@@ -9,7 +9,8 @@ const putUserProfileSchema = joi.object().keys({
     email: joi.string().email().regex(/@purdue.edu$/i),
     name: joi.string(),
     profilePicture: joi.string().uri(),
-    tags: joi.array().items(joi.string())
+    tags: joi.array().items(joi.string()),
+    bio: joi.string()
 });
 
 interface IReturnedUserProfile {
@@ -32,7 +33,8 @@ interface IReturnedUserProfile {
         id: string
     }[],
     tags: string[],
-    joinDate: Date
+    joinDate: Date,
+    bio: string
 }
 
 export const getUserProfile = (req: Request, res: Response): void => {
@@ -70,7 +72,8 @@ export const getUserProfile = (req: Request, res: Response): void => {
                 joinRequests: [],
                 tags: properCaseUserClubTags,
                 profilePicture: user.profilePicture,
-                joinDate: user._id.getTimestamp()
+                joinDate: user._id.getTimestamp(),
+                bio: user.bio
             };
             user.clubs.forEach(club => {
                 if (!club.club.deleted.isDeleted) {
@@ -130,7 +133,7 @@ export const putUserProfile = (req: Request, res: Response): void => {
                 return;
             }
 
-            const { email, name, profilePicture, tags } = req.body;
+            const { email, name, profilePicture, tags, bio } = req.body;
 
             if (email) {
                 user.email = email;
@@ -140,6 +143,9 @@ export const putUserProfile = (req: Request, res: Response): void => {
             }
             if (profilePicture) {
                 user.profilePicture = profilePicture;
+            }
+            if (bio) {
+                user.bio = bio;
             }
 
             const wrongTags: string[] = [];
