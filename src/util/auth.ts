@@ -43,7 +43,8 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction): void 
             return;
         }
     } else {
-        return next(err);
+        res.status(400).json({ message: "No bearer token" });
+        return;
     }
 };
 

@@ -35,6 +35,6 @@ export const postTokenVerify = (req: Request, res: Response, next: NextFunction)
         res.status(200).json({ message: "Valid token" });
         return;
     } catch (e) {
-        return next(err);
+        return next(e);
     }
 };
