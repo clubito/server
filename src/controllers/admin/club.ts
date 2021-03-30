@@ -102,7 +102,7 @@ export const postApproveClubRequest = async (req: Request, res: Response): Promi
             return;
         }
 
-        ownerUser.clubs.push({ club: club._id, role: CLUB_ROLE.OWNER });
+        ownerUser.clubs.push({ club: club._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()) });
         await ownerUser.save();
         await club.save();
         res.status(200).json({ message: "Successfully approved club request 😎" });

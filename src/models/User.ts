@@ -21,7 +21,8 @@ const userSchema = new mongoose.Schema<IUser>(
         profilePicture: { type: String, default: "https://picsum.photos/200" },
         clubs: [{
             club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
-            role: { type: String, enum: CLUB_ROLE }
+            role: { type: String, enum: CLUB_ROLE },
+            approvalDate: { type: Date, default: Date.now }
         }],
         joinRequests: [{
             club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
@@ -31,7 +32,9 @@ const userSchema = new mongoose.Schema<IUser>(
         appRole: { type: String, enum: APP_ROLE, default: APP_ROLE.MEMBER },
         secret: { type: String, default: "" },
         clubTags: [{ type: String, enum: CLUB_TAGS }],
-        banned: { type: Boolean, default: false }
+        banned: { type: Boolean, default: false },
+        pushToken: { type: String, default: "" },
+        bio: { type: String, default: "" }
     },
     { timestamps: true },
 );

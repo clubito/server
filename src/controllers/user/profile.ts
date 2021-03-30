@@ -9,7 +9,12 @@ const putUserProfileSchema = joi.object().keys({
     email: joi.string().email().regex(/@purdue.edu$/i),
     name: joi.string(),
     profilePicture: joi.string().uri(),
-    tags: joi.array().items(joi.string())
+    tags: joi.array().items(joi.string()),
+    bio: joi.string()
+});
+
+const getAnotherUserProfileSchema = joi.object().keys({
+    id: joi.string().required()
 });
 
 interface IReturnedUserProfile {
@@ -31,7 +36,9 @@ interface IReturnedUserProfile {
         status: string,
         id: string
     }[],
-    tags: string[]
+    tags: string[],
+    joinDate: Date,
+    bio: string
 }
 
 export const getUserProfile = (req: Request, res: Response): void => {
@@ -68,7 +75,9 @@ export const getUserProfile = (req: Request, res: Response): void => {
                 clubs: [],
                 joinRequests: [],
                 tags: properCaseUserClubTags,
-                profilePicture: user.profilePicture
+                profilePicture: user.profilePicture,
+                joinDate: user._id.getTimestamp(),
+                bio: user.bio
             };
             user.clubs.forEach(club => {
                 if (!club.club.deleted.isDeleted) {
@@ -128,7 +137,7 @@ export const putUserProfile = (req: Request, res: Response): void => {
                 return;
             }
 
-            const { email, name, profilePicture, tags } = req.body;
+            const { email, name, profilePicture, tags, bio } = req.body;
 
             if (email) {
                 user.email = email;
@@ -138,6 +147,9 @@ export const putUserProfile = (req: Request, res: Response): void => {
             }
             if (profilePicture) {
                 user.profilePicture = profilePicture;
+            }
+            if (bio) {
+                user.bio = bio;
             }
 
             const wrongTags: string[] = [];
@@ -211,4 +223,35 @@ export const deleteUserProfile = (req: Request, res: Response): void => {
             res.status(500).json({ error: err });
             return;
         });
+};
+
+export const getAnotherUserProfile = (req: Request, res: Response): void => {
+    const { error } = getAnotherUserProfileSchema.validate(req.query);
+    if (error) {
+        res.status(400).json({ "error": error.message });
+        logger.debug(error);
+        return;
+    }
+
+    const otherUserId = req.query.id;
+
+    User.findOne({ _id: otherUserId })
+        .populate({
+            path: "clubs",
+            populate: { path: "club" }
+        })
+        .then(user => {
+            if (!user) {
+                res.status(400).json({ error: "User not found" });
+                return;
+            }
+
+            res.status(200).send(user);
+            return;
+        }).catch(err => {
+            logger.error(err);
+            res.status(500).json({ error: err });
+            return;
+        });
+
 };

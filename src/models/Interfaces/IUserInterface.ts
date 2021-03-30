@@ -8,7 +8,7 @@ export interface IUserInterface extends mongoose.Document {
     isDisabled: boolean;
     isConfirmed: boolean;
     profilePicture: string;
-    clubs: { club: mongoose.Schema.Types.ObjectId, role: string }[] | { club: IClub, role: string }[],
+    clubs: { club: mongoose.Schema.Types.ObjectId, role: string, approvalDate: Date }[] | { club: IClub, role: string, approvalDate: Date }[],
     joinRequests: {
         club: mongoose.Schema.Types.ObjectId,
         status: string,
@@ -21,5 +21,7 @@ export interface IUserInterface extends mongoose.Document {
     appRole: string,
     secret: string,
     clubTags: string[],
-    banned: boolean
+    banned: boolean,
+    pushToken: string,
+    bio: string
 }

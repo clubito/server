@@ -38,6 +38,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "errorhandler": "^1.5.1",
+    "expo-server-sdk": "^3.6.0",
     "express": "^4.17.1",
     "express-pino-logger": "^6.0.0",
     "helmet": "^4.4.1",
@@ -74,6 +75,7 @@
   "_moduleAliases": {
     "@logger": "./dist/util/logger",
     "@models": "./dist/models",
-    "@secrets": "./dist/util/secrets"
+    "@secrets": "./dist/util/secrets",
+    "@notifications": "./dist/util/notifications"
   }
 }

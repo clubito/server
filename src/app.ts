@@ -15,6 +15,7 @@ import * as userController from "./controllers/user";
 import * as clubController from "./controllers/club";
 import * as adminController from "./controllers/admin";
 import * as chatController from "./controllers/chat";
+import * as notificationController from "./controllers/notifications";
 
 import User from "@models/User";
 import Club from "@models/Club";
@@ -130,13 +131,13 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       club: club2._id
     });
 
-    user1.clubs.push({ club: club1._id, role: CLUB_ROLE.OWNER });
-    user2.clubs.push({ club: club1._id, role: CLUB_ROLE.OFFICER });
-    user2.clubs.push({ club: club2._id, role: CLUB_ROLE.OWNER });
-    user3.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER });
-    user4.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER });
-    user5.clubs.push({ club: club1._id, role: CLUB_ROLE.MEMBER });
-    user6.clubs.push({ club: club2._id, role: CLUB_ROLE.OFFICER });
+    user1.clubs.push({ club: club1._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()) });
+    user2.clubs.push({ club: club1._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()) });
+    user2.clubs.push({ club: club2._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()) });
+    user3.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()) });
+    user4.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()) });
+    user5.clubs.push({ club: club1._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()) });
+    user6.clubs.push({ club: club2._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()) });
 
 
     club1.announcements.push(announcement1._id);
@@ -208,6 +209,7 @@ app.get("/file", authenticateJWT, fileController.getS3PresignedUrl);
 app.get("/user/profile", authenticateJWT, userController.getUserProfile);
 app.put("/user/profile", authenticateJWT, userController.putUserProfile);
 app.delete("/user/profile", authenticateJWT, userController.deleteUserProfile);
+app.get("/user/other/profile", authenticateJWT, userController.getAnotherUserProfile);
 
 // Club routes 
 app.get("/clubs/tags", authenticateJWT, clubController.getAllTags);
@@ -215,6 +217,9 @@ app.get("/clubs/profile", authenticateJWT, clubController.getClubProfile);
 app.post("/clubs/join", authenticateJWT, clubController.postClubJoin);
 app.get("/clubs/search", authenticateJWT, clubController.searchClubByName);
 app.post("/clubs/request", authenticateJWT, clubController.postRequestClub);
+app.get("/clubs/requests", authenticateJWT, clubController.getAllJoinRequests);
+app.post("/clubs/request/approve", authenticateJWT, clubController.postClubApprove);
+app.post("/clubs/request/deny", authenticateJWT, clubController.postClubDeny);
 // TODO: create/edit/delete club events, approve/reject member registration, remove user from club, get (maybe add filter/search) all club events, get 1 event
 
 // Admin routes
@@ -231,6 +236,10 @@ app.post("/admin/users/ban", authenticateJWT, adminController.banUser);
 app.post("/admin/users/unban", authenticateJWT, adminController.unbanUser);
 // TODO: delete/undelete users, ban/unban users
 
+
+// notifcation routes
+app.post("/user/notifications/register", authenticateJWT, notificationController.postRegisterPushToken);
+// app.put("/user/notifications/settings", authenticateJWT, notificationController.postRegisterPushToken);
 
 /*
 register:

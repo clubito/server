@@ -3,7 +3,7 @@ import Club from "@models/Club";
 import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
-import { CLUB_ROLE } from "@models/enums";
+import { CLUB_ROLE, JOIN_REQUEST_STATUS } from "@models/enums";
 
 const getClubProfileSchema = joi.object().keys({
     id: joi.required()
@@ -36,7 +36,16 @@ interface IReturnedClubProfile {
         picture: string,
         lastUpdated: Date
     }[],
-    role: string
+    role: string,
+    joinRequests?: {
+        id: string,
+        name: string,
+        profilePicture: string
+    }[],
+    joinRequestStatus: {
+        status: string,
+        approvalDate: Date
+    }
 }
 
 export const getClubProfile = (req: Request, res: Response): void => {
@@ -72,10 +81,20 @@ export const getClubProfile = (req: Request, res: Response): void => {
                     }
 
                     let userClubRole = CLUB_ROLE.NONMEMBER;
+                    let userJoinRequest = "NOT REQUESTED";
+                    let approvalDate = new Date("2001-09-11");
 
                     user.clubs.forEach(userClub => {
                         if (userClub.club._id.equals(club._id)) {
                             userClubRole = userClub.role;
+                            userJoinRequest = JOIN_REQUEST_STATUS.ACCEPTED; // user is already in the club
+                            approvalDate = userClub.approvalDate;
+                        }
+                    });
+
+                    user.joinRequests.forEach(joinRequest => {
+                        if (joinRequest.club.equals(club._id)) {
+                            userJoinRequest = joinRequest.status;
                         }
                     });
 
@@ -88,7 +107,11 @@ export const getClubProfile = (req: Request, res: Response): void => {
                         announcements: [],
                         events: [],
                         role: userClubRole,
-                        tags: club.tags
+                        tags: club.tags,
+                        joinRequestStatus: {
+                            status: userJoinRequest,
+                            approvalDate: approvalDate
+                        }
                     };
 
                     club.members.forEach(member => {
