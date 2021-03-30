@@ -131,13 +131,13 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       club: club2._id
     });
 
-    user1.clubs.push({ club: club1._id, role: CLUB_ROLE.OWNER });
-    user2.clubs.push({ club: club1._id, role: CLUB_ROLE.OFFICER });
-    user2.clubs.push({ club: club2._id, role: CLUB_ROLE.OWNER });
-    user3.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER });
-    user4.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER });
-    user5.clubs.push({ club: club1._id, role: CLUB_ROLE.MEMBER });
-    user6.clubs.push({ club: club2._id, role: CLUB_ROLE.OFFICER });
+    user1.clubs.push({ club: club1._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()) });
+    user2.clubs.push({ club: club1._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()) });
+    user2.clubs.push({ club: club2._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()) });
+    user3.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()) });
+    user4.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()) });
+    user5.clubs.push({ club: club1._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()) });
+    user6.clubs.push({ club: club2._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()) });
 
 
     club1.announcements.push(announcement1._id);
@@ -216,6 +216,8 @@ app.get("/clubs/profile", authenticateJWT, clubController.getClubProfile);
 app.post("/clubs/join", authenticateJWT, clubController.postClubJoin);
 app.get("/clubs/search", authenticateJWT, clubController.searchClubByName);
 app.post("/clubs/request", authenticateJWT, clubController.postRequestClub);
+app.get("/clubs/requests", authenticateJWT, clubController.getAllJoinRequests);
+app.post("/clubs/request/approve", authenticateJWT, clubController.postClubApprove);
 // TODO: create/edit/delete club events, approve/reject member registration, remove user from club, get (maybe add filter/search) all club events, get 1 event
 
 // Admin routes
@@ -235,6 +237,7 @@ app.post("/admin/users/unban", authenticateJWT, adminController.unbanUser);
 
 // notifcation routes
 app.post("/user/notifications/register", authenticateJWT, notificationController.postRegisterPushToken);
+// app.put("/user/notifications/settings", authenticateJWT, notificationController.postRegisterPushToken);
 
 /*
 register:

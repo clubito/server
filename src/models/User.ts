@@ -21,7 +21,8 @@ const userSchema = new mongoose.Schema<IUser>(
         profilePicture: { type: String, default: "https://picsum.photos/200" },
         clubs: [{
             club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
-            role: { type: String, enum: CLUB_ROLE }
+            role: { type: String, enum: CLUB_ROLE },
+            approvalDate: { type: Date, default: Date.now }
         }],
         joinRequests: [{
             club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
