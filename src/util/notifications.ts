@@ -56,7 +56,7 @@ export const sendNotification = async (userId: string, notification: INotificati
     } catch (err) {
         throw err;
     }
-    throw new Error("Error sending notification");
+    return Promise.resolve(true);
 };
 
 // Add a send push notification given the user id/message/data
