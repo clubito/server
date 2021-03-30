@@ -17,11 +17,23 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction): void 
             const decoded = jwt.verify(token, JWT_SECRET) as IJWTInterface;
 
             User.findById(decoded.user_id).then(user => {
-                if (user?.isDisabled) {
+                if (!user) {
+                    res.status(400).json({ message: "User does not exist" });
+                    return;
+                }
+
+                if (user.isDisabled) {
                     // User has deleted their account
                     res.status(401).json({ message: "Unauthorized" });
                     return;
                 }
+
+                if (user.banned) {
+                    // user is banned, don't let them proceed
+                    res.status(401).json({ message: "User is banned" });
+                    return;
+                }
+
                 // Token is valid and user exists
                 req.userId = decoded.user_id;
                 next();
