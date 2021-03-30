@@ -187,6 +187,76 @@ export const postClubApprove = async (req: Request, res: Response): Promise<void
     }
 };
 
+export const postClubDeny = async (req: Request, res: Response): Promise<void> => {
+    const { error } = postClubApproveSchema.validate(req.body); // same schema as postclubapprove
+
+    if (error) {
+        res.status(400).json({ "error": error.message });
+        logger.debug(error);
+        return;
+    }
+
+    try {
+        const { clubId, userId } = req.body;
+        const currUserId = req.userId;
+
+        const currUser = await User.findById(currUserId).exec();
+        const currClub = await Club.findById(clubId).exec();
+        const unapprovedUser = await User.findById(userId)
+            .populate({
+                path: "clubs",
+                populate: { path: "club" }
+            })
+            .populate({
+                path: "joinRequests",
+                populate: { path: "club" }
+            }).exec();
+
+        if (!currUser || !unapprovedUser) {
+            res.status(400).json({ error: "User does not exist" });
+            return;
+        }
+        if (!currClub) {
+            res.status(400).json({ error: "Club does not exist" });
+            return;
+        }
+
+        currUser.clubs.forEach(club => {
+            if (club.club.equals(clubId)) {
+                if (club.role != CLUB_ROLE.OFFICER || club.role != CLUB_ROLE.OWNER) {
+                    res.status(400).json({ error: "Current user does not have permission to do that." });
+                    return;
+                }
+            }
+        });
+
+        if (!unapprovedUser.joinRequests.some(joinRequest => joinRequest.club.equals(clubId))) {
+            // User does not have this club in their joinRequests
+            res.status(400).json({ error: "Given user has not requested to join this club" });
+            return;
+        }
+
+        if (unapprovedUser.clubs.some(club => club.club.equals(clubId))) {
+            // User is already a part of this club
+            res.status(400).json({ error: "Given user is already a part of the club" });
+            return;
+        }
+
+        unapprovedUser.joinRequests = (unapprovedUser.joinRequests as any[]).filter(joinRequest => { return !joinRequest.club.equals(clubId); });
+        currClub.joinRequests = (currClub.joinRequests as any[]).filter(user => { return !user.user.equals(unapprovedUser._id); });
+
+        await currClub.save();
+        await unapprovedUser.save();
+
+        res.status(200).json({ message: "Successfully denied join request" });
+        return;
+    } catch (err) {
+        logger.error(err);
+        res.status(500).json({ error: err });
+        return;
+    }
+};
+
 export const getAllJoinRequests = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = getAllJoinRequestsSchema.validate(req.body); // make sure cludId and userId are specified
 
