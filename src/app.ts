@@ -15,6 +15,7 @@ import * as userController from "./controllers/user";
 import * as clubController from "./controllers/club";
 import * as adminController from "./controllers/admin";
 import * as chatController from "./controllers/chat";
+import * as notificationController from "./controllers/notifications";
 
 import User from "@models/User";
 import Club from "@models/Club";
@@ -231,6 +232,9 @@ app.post("/admin/users/ban", authenticateJWT, adminController.banUser);
 app.post("/admin/users/unban", authenticateJWT, adminController.unbanUser);
 // TODO: delete/undelete users, ban/unban users
 
+
+// notifcation routes
+app.post("/user/notifications/register", authenticateJWT, notificationController.postRegisterPushToken);
 
 /*
 register:
