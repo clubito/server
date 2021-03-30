@@ -42,7 +42,10 @@ interface IReturnedClubProfile {
         name: string,
         profilePicture: string
     }[],
-    joinRequestStatus: string
+    joinRequestStatus: {
+        status: string,
+        approvalDate: Date
+    }
 }
 
 export const getClubProfile = (req: Request, res: Response): void => {
@@ -78,12 +81,14 @@ export const getClubProfile = (req: Request, res: Response): void => {
                     }
 
                     let userClubRole = CLUB_ROLE.NONMEMBER;
-                    let userJoinRequest = JOIN_REQUEST_STATUS.PENDING;
+                    let userJoinRequest;
+                    let approvalDate;
 
                     user.clubs.forEach(userClub => {
                         if (userClub.club._id.equals(club._id)) {
                             userClubRole = userClub.role;
                             userJoinRequest = JOIN_REQUEST_STATUS.ACCEPTED; // user is already in the club
+                            approvalDate = userClub.approvalDate;
                         }
                     });
 
@@ -103,7 +108,10 @@ export const getClubProfile = (req: Request, res: Response): void => {
                         events: [],
                         role: userClubRole,
                         tags: club.tags,
-                        joinRequestStatus: userJoinRequest
+                        joinRequestStatus: {
+                            status: userJoinRequest,
+                            approvalDate: approvalDate
+                        }
                     };
 
                     club.members.forEach(member => {
