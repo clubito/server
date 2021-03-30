@@ -21,5 +21,6 @@ export interface IUserInterface extends mongoose.Document {
     appRole: string,
     secret: string,
     clubTags: string[],
-    banned: boolean
+    banned: boolean,
+    pushToken: string
 }

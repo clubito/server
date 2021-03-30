@@ -31,7 +31,8 @@ const userSchema = new mongoose.Schema<IUser>(
         appRole: { type: String, enum: APP_ROLE, default: APP_ROLE.MEMBER },
         secret: { type: String, default: "" },
         clubTags: [{ type: String, enum: CLUB_TAGS }],
-        banned: { type: Boolean, default: false }
+        banned: { type: Boolean, default: false },
+        pushToken: { type: String, default: "" }
     },
     { timestamps: true },
 );
