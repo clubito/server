@@ -39,7 +39,8 @@ const userSchema = new mongoose.Schema<IUser>(
             notifications: {
                 enabled: { type: Boolean, default: true },
             }
-        }
+        },
+        
     },
     { timestamps: true },
 );

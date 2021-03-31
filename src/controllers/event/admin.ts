@@ -11,8 +11,8 @@ import Event from "@models/Event";
 const postCreateEventSchema = joi.object().keys({
     name: joi.string().required(),
     description: joi.string(),
-    startTime: joi.date(),
-    endTime: joi.date(),
+    startTime: joi.date().required(),
+    endTime: joi.date().required(),
     longitude: joi.number(),
     latitude: joi.number(),
     shortLocation: joi.string(),
@@ -102,8 +102,8 @@ export const postCreateEvent = (req: Request, res: Response): void => {
                     const newEvent = new Event({
                         name,
                         description,
-                        startTime,
-                        endTime,
+                        startTime: new Date(startTime),
+                        endTime: new Date(endTime),
                         longitude,
                         latitude,
                         shortLocation,

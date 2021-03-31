@@ -8,7 +8,7 @@
 // import { ObjectId } from "mongodb";
 // import Event from "@models/Event";
 
-// const postAddRsvp = joi.object().keys({
+// const postAddRsvpSchema = joi.object().keys({
 //     eventId: joi.string().custom((value, helper) => {
 //         if (ObjectId.isValid(value)) {
 //             return value;
@@ -18,8 +18,8 @@
 //     }).required()
 // });
 
-// export const postCreateEvent = (req: Request, res: Response): void => {
-//     const { error } = postCreateEventSchema.validate(req.body);
+// export const postAddRsvp = (req: Request, res: Response): void => {
+//     const { error } = postAddRsvpSchema.validate(req.body);
 
 //     if (error) {
 //         res.status(400).json({ "error": error.message });
@@ -27,15 +27,7 @@
 //         return;
 //     }
 
-//     const { name,
-//         description,
-//         startTime,
-//         endTime,
-//         longitude,
-//         latitude,
-//         shortLocation,
-//         picture,
-//         clubId } = req.body;
+//     const { eventId } = req.body;
 //     const userId = req.userId;
 
 //     User.findById(userId)

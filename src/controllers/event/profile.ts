@@ -1,10 +1,7 @@
 // create/edit/delete events
 import { Request, Response } from "express";
-import Club from "@models/Club";
-import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
-import { CLUB_ROLE } from "@models/enums";
 import { ObjectId } from "mongodb";
 import Event from "@models/Event";
 
