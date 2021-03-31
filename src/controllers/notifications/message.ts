@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import logger from "@logger";
 import joi from "joi";
-import { sendNotification } from "@notifications";
+import { sendNotificationToUser } from "@notifications";
 import { INotificationInterface } from "@models/Interfaces/INotificationInterface";
 
 const postSendTestNotificationSchema = joi.object().keys({
@@ -37,7 +37,7 @@ export const postSendTestNotification = async (req: Request, res: Response, next
             }
         };
 
-        const sent = await sendNotification(userId, newNotification);
+        const sent = await sendNotificationToUser(userId, newNotification);
         if (sent) {
             res.status(200).json({ message: "Successfully sent notification" });
         } else {

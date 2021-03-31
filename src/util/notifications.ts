@@ -9,7 +9,7 @@ export const isValidPushToken = (pushToken: string): boolean => {
     return Expo.isExpoPushToken(pushToken);
 };
 
-export const sendNotification = async (userId: string, notification: INotificationInterface): Promise<boolean> => {
+export const sendNotificationToUser = async (userId: string, notification: INotificationInterface): Promise<boolean> => {
     try {
         logger.info("Sending notification", userId, notification);
         const user = await User.findById(userId).exec();
@@ -37,28 +37,23 @@ export const sendNotification = async (userId: string, notification: INotificati
 
         // XXX: For now just send notifcations as we get them, but maybe in sprint 3, we can 
         // improve this and batch notifcations. Maybe queue up notifications, and send every 20 secs
-        const tickets = await expo.sendPushNotificationsAsync(messages) as any;
+        const ticket = await (expo.sendPushNotificationsAsync(messages) as any)[0];
         const receiptIds: any[] = [];
-        for (const ticket of tickets) {
-            if (ticket.id) {
-                receiptIds.push(ticket.id);
-            }
+        if (ticket.id) {
+            receiptIds.push(ticket.id);
         }
-        const receipts = await expo.getPushNotificationReceiptsAsync(receiptIds);
-        for (const receiptId in receipts) {
-            const status = receipts[receiptId]?.status;
-            const details = receipts[receiptId]?.details;
-            if (status === "ok") {
-                return Promise.resolve(true);
-            } else {
-                throw new Error(`There was an error sending a notification: ${details}`);
-            }
+        const receipt = await expo.getPushNotificationReceiptsAsync(receiptIds)[0];
+        const status = receipt?.status;
+        const details = receipt?.details;
+        if (status === "ok") {
+            return Promise.resolve(true);
+        } else {
+            throw new Error(`There was an error sending a notification: ${details}`);
         }
     } catch (err) {
         logger.error(err);
         throw err;
     }
-    return Promise.resolve(true);
 };
 
 // Add a send push notification given the user id/message/data
