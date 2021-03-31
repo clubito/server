@@ -102,7 +102,7 @@ export const getClubProfile = (req: Request, res: Response): void => {
                         name: club.name,
                         logo: club.logo,
                         description: club.description,
-                        id: club.id,
+                        id: club._id,
                         members: [],
                         announcements: [],
                         events: [],
@@ -141,7 +141,8 @@ export const getClubProfile = (req: Request, res: Response): void => {
                             latitude: event.latitude,
                             shortLocation: event.shortLocation,
                             picture: event.picture,
-                            lastUpdated: event.lastUpdated
+                            lastUpdated: event.lastUpdated,
+                            id: event._id
                         };
                         returnedProfile.events.push(currEvent);
                     });
