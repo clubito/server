@@ -25,8 +25,6 @@ import Announcement from "@models/Announcement";
 import Event from "@models/Event";
 import { CLUB_ROLE, CLUB_TAGS, APP_ROLE } from "@models/enums";
 import { authenticateJWT } from "./util/auth";
-// import * as homeController from "./controllers/home";
-// import * as homeController from "./controllers/home";
 import errorHandler from "errorhandler";
 
 import { createServer } from "http";
