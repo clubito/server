@@ -246,7 +246,38 @@ export const getAnotherUserProfile = (req: Request, res: Response): void => {
                 return;
             }
 
-            res.status(200).send(user);
+            const userClubTags = Object.values(user.clubTags);
+
+            const properCaseUserClubTags = userClubTags.map(tag => {
+                return tag.toLowerCase()
+                    .split(" ")
+                    .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+                    .join(" ");
+            });
+
+            const ret: IReturnedUserProfile = {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                clubs: [],
+                joinRequests: [],
+                tags: properCaseUserClubTags,
+                profilePicture: user.profilePicture,
+                joinDate: user._id.getTimestamp(),
+                bio: user.bio
+            };
+            user.clubs.forEach(club => {
+                if (!club.club.deleted.isDeleted) {
+                    ret.clubs.push({
+                        name: club.club.name,
+                        description: club.club.description,
+                        logo: club.club.logo,
+                        role: club.role,
+                        id: club.club._id
+                    });
+                }
+            });
+            res.status(200).json(ret);
             return;
         }).catch(err => {
             logger.error(err);
