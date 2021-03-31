@@ -64,11 +64,15 @@ export const sendNotificationToClub = async (clubId: string, notification: INoti
 
         club.members.forEach(member => {
             if (member?.member?.pushToken) {
-                if (member?.member?.settings?.notification?.enabled) {
+                if (member?.member?.settings?.notifications?.enabled) {
                     sendToArray.push(member.member.pushToken);
                 }
             }
         });
+
+        if (sendToArray.length === 0) {
+            return Promise.resolve(true);
+        }
 
         const messages: ExpoPushMessage[] = [];
         messages.push({
