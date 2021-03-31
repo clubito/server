@@ -1,3 +1,3 @@
-import { postCreateEvent } from "./admin";
+import { postCreateEvent, putEditEvent } from "./admin";
 
-export { postCreateEvent };
+export { postCreateEvent, putEditEvent };

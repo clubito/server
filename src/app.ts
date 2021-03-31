@@ -247,6 +247,7 @@ app.post("/user/notifications/clubmessage", authenticateJWT, notificationControl
 
 // Event routes
 app.post("/clubs/event/create", authenticateJWT, EventController.postCreateEvent);
+app.put("/clubs/event/edit", authenticateJWT, EventController.putEditEvent);
 
 /*
 register:
