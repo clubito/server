@@ -85,7 +85,7 @@ export const postCreateEvent = (req: Request, res: Response): void => {
                             if (member.role == CLUB_ROLE.MEMBER || member.role == CLUB_ROLE.NONMEMBER) {
                                 // If the user is only a normal member or not even a member,
                                 // then don't let them make an event
-                                res.status(400).json({ error: "You are not permitted to perform this action" });
+                                res.status(400).json({ error: "Current user does not have permission to do that." });
                                 return;
                             }
                         }
@@ -170,6 +170,15 @@ export const putEditEvent = (req: Request, res: Response): void => {
                         res.status(400).json({ error: "Event does not exist" });
                         return;
                     }
+
+                    user.clubs.forEach(club => {
+                        if (club.club.equals(event.club)) {
+                            if (club.role != CLUB_ROLE.OFFICER && club.role != CLUB_ROLE.OWNER) {
+                                res.status(400).json({ error: "Current user does not have permission to do that." });
+                                return;
+                            }
+                        }
+                    });
 
                     if (name) {
                         event.name = name;
