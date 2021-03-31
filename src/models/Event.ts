@@ -5,16 +5,16 @@ export type IEvent = IEventInterface;
 
 const eventSchema = new mongoose.Schema<IEvent>(
     {
-        name: {type: String, required: true},
+        name: { type: String, required: true },
         description: String,
         startTime: Date,
         endTime: Date,
         longitude: Number,
         latitude: Number,
         shortLocation: String,
-        picture: String,
-        club: {type: mongoose.Schema.Types.ObjectId, ref: "Club"},
-        lastUpdated: {type: Date, default: Date.now}
+        picture: { type: String, default: "https://picsum.photos/200" },
+        club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
+        lastUpdated: { type: Date, default: Date.now }
     },
     { timestamps: true },
 );
