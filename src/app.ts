@@ -17,6 +17,7 @@ import * as adminController from "./controllers/admin";
 import * as chatController from "./controllers/chat";
 import * as EventController from "./controllers/event";
 import * as notificationController from "./controllers/notifications";
+import * as announcementController from "./controllers/announcement";
 
 import User from "@models/User";
 import Club from "@models/Club";
@@ -40,7 +41,7 @@ app.use(expressLogger);
 // // Connect to MongoDB
 const mongoUrl = MONGODB_URI;
 
-const eraseDatabaseOnSync = false;
+const eraseDatabaseOnSync = true;
 
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(async () => {
   if (eraseDatabaseOnSync) {
@@ -222,6 +223,7 @@ app.get("/clubs/requests", authenticateJWT, clubController.getAllJoinRequests);
 app.post("/clubs/request/approve", authenticateJWT, clubController.postClubApprove);
 app.post("/clubs/request/deny", authenticateJWT, clubController.postClubDeny);
 app.post("/clubs/kick", authenticateJWT, clubController.postClubKick);
+app.post("/clubs/announcement/create", authenticateJWT, announcementController.postSendAnnouncement);
 // TODO: create/edit/delete club events, approve/reject member registration, remove user from club, get (maybe add filter/search) all club events, get 1 event
 
 // Admin routes

@@ -29,6 +29,25 @@ export const sendKickedNotificationToUser = async (userId: string, clubId: strin
     }
 };
 
+export const sendClubAnnouncementNotification = async (clubId: string, clubName: string, userRole: string, message: string): Promise<boolean> => {
+    try {
+        const announcementNotification: INotificationInterface = {
+            body: `${message}`,
+            title: `${clubName}`,
+            data: {
+                type: "club",
+                id: clubId,
+                title: clubName,
+                role: userRole
+            }
+        };
+        return sendNotificationToClub(clubId, announcementNotification);
+    } catch (err) {
+        logger.error(err);
+        throw err;
+    }
+};
+
 export const sendNotificationToUser = async (userId: string, notification: INotificationInterface): Promise<boolean> => {
     try {
         logger.info("Sending notification", userId, notification);
