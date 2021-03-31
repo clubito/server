@@ -101,7 +101,7 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
                 });
         });
 
-        await user.delete().exec();
+        await user.delete();
         res.status(200).json({ message: "Successfully deleted user" });
         return;
     } catch (err) {
