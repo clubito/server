@@ -10,6 +10,25 @@ export const isValidPushToken = (pushToken: string): boolean => {
     return Expo.isExpoPushToken(pushToken);
 };
 
+export const sendKickedNotificationToUser = async (userId: string, clubId: string, clubName: string, userRole: string, reason: string): Promise<boolean> => {
+    try {
+        const kickNotification: INotificationInterface = {
+            body: `Reason: ${reason ?? "N/A"}`,
+            title: `You were kicked from ${clubName}`,
+            data: {
+                type: "club",
+                id: clubId,
+                title: clubName,
+                role: userRole
+            }
+        };
+        return sendNotificationToUser(userId, kickNotification);
+    } catch (err) {
+        logger.error(err);
+        throw err;
+    }
+};
+
 export const sendNotificationToUser = async (userId: string, notification: INotificationInterface): Promise<boolean> => {
     try {
         logger.info("Sending notification", userId, notification);
