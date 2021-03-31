@@ -40,10 +40,11 @@ export const postSendTestNotification = async (req: Request, res: Response, next
         const sent = await sendNotificationToUser(userId, newNotification);
         if (sent) {
             res.status(200).json({ message: "Successfully sent notification" });
+            return;
         } else {
             res.status(400).json({ message: "Error sending notification" });
+            return;
         }
-        return;
     } catch (err) {
         return next(err);
     }

@@ -38,19 +38,8 @@ export const sendNotificationToUser = async (userId: string, notification: INoti
 
         // XXX: For now just send notifcations as we get them, but maybe in sprint 3, we can 
         // improve this and batch notifcations. Maybe queue up notifications, and send every 20 secs
-        const ticket = await (expo.sendPushNotificationsAsync(messages) as any)[0];
-        const receiptIds: any[] = [];
-        if (ticket?.id) {
-            receiptIds.push(ticket.id);
-        }
-        const receipt = await expo.getPushNotificationReceiptsAsync(receiptIds)[0];
-        const status = receipt?.status;
-        const details = receipt?.details;
-        if (status === "ok") {
-            return Promise.resolve(true);
-        } else {
-            throw new Error(`There was an error sending a notification: ${details}`);
-        }
+        await expo.sendPushNotificationsAsync(messages);
+        return Promise.resolve(true);
     } catch (err) {
         logger.error(err);
         throw err;
@@ -88,7 +77,7 @@ export const sendNotificationToUser = async (userId: string, notification: INoti
 //         if (status === "ok") {
 //             return Promise.resolve(true);
 //         } else {
-//             throw new Error(`There was an error sending a notification: ${details}`);
+//             throw new Error(`There was an error sending a notification: ${ details }`);
 //         }
 //     } catch (err) {
 //         logger.error(err);
