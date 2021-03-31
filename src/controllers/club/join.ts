@@ -254,7 +254,7 @@ export const postClubDeny = async (req: Request, res: Response, next: NextFuncti
 };
 
 export const getAllJoinRequests = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { error } = getAllJoinRequestsSchema.validate(req.body); // make sure cludId and userId are specified
+    const { error } = getAllJoinRequestsSchema.validate(req.query); // make sure cludId and userId are specified
 
     if (error) {
         res.status(400).json({ "error": error.message });
@@ -263,7 +263,7 @@ export const getAllJoinRequests = async (req: Request, res: Response, next: Next
     }
 
     try {
-        const clubId = req.body.id;
+        const clubId = req.query.id;
         const currUserId = req.userId;
 
         const currUser = await User.findById(currUserId).exec();
