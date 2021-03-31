@@ -71,6 +71,7 @@ export const sendNotificationToClub = async (clubId: string, notification: INoti
         });
 
         if (sendToArray.length === 0) {
+            // The club has not members with notifications turned on
             return Promise.resolve(true);
         }
 

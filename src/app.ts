@@ -15,6 +15,7 @@ import * as userController from "./controllers/user";
 import * as clubController from "./controllers/club";
 import * as adminController from "./controllers/admin";
 import * as chatController from "./controllers/chat";
+import * as EventController from "./controllers/event";
 import * as notificationController from "./controllers/notifications";
 
 import User from "@models/User";
@@ -242,6 +243,10 @@ app.post("/user/notifications/register", authenticateJWT, notificationController
 app.post("/user/notifications/message", authenticateJWT, notificationController.postSendTestNotification);
 app.post("/user/notifications/clubmessage", authenticateJWT, notificationController.postSendTestClubNotification);
 // app.put("/user/notifications/settings", authenticateJWT, notificationController.postRegisterPushToken);
+
+
+// Event routes
+app.post("/clubs/event/create", authenticateJWT, EventController.postCreateEvent);
 
 /*
 register:
