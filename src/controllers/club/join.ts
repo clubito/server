@@ -147,7 +147,7 @@ export const postClubApprove = async (req: Request, res: Response, next: NextFun
         // Step 1
         currUser.clubs.forEach(club => {
             if (club.club.equals(clubId)) {
-                if (club.role != CLUB_ROLE.OFFICER || club.role != CLUB_ROLE.OWNER) {
+                if (club.role != CLUB_ROLE.OFFICER && club.role != CLUB_ROLE.OWNER) {
                     res.status(400).json({ error: "Current user does not have permission to do that." });
                     return;
                 }
@@ -221,7 +221,7 @@ export const postClubDeny = async (req: Request, res: Response, next: NextFuncti
 
         currUser.clubs.forEach(club => {
             if (club.club.equals(clubId)) {
-                if (club.role != CLUB_ROLE.OFFICER || club.role != CLUB_ROLE.OWNER) {
+                if (club.role != CLUB_ROLE.OFFICER && club.role != CLUB_ROLE.OWNER) {
                     res.status(400).json({ error: "Current user does not have permission to do that." });
                     return;
                 }
