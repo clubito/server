@@ -240,6 +240,7 @@ app.post("/admin/users/unban", authenticateJWT, adminController.unbanUser);
 // notifcation routes
 app.post("/user/notifications/register", authenticateJWT, notificationController.postRegisterPushToken);
 app.post("/user/notifications/message", authenticateJWT, notificationController.postSendTestNotification);
+app.post("/user/notifications/clubmessage", authenticateJWT, notificationController.postSendTestClubNotification);
 // app.put("/user/notifications/settings", authenticateJWT, notificationController.postRegisterPushToken);
 
 /*

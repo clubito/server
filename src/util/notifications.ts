@@ -46,41 +46,42 @@ export const sendNotificationToUser = async (userId: string, notification: INoti
     }
 };
 
-// export const sendNotificationToClub = async (clubId: string, notification: INotificationInterface): Promise<boolean> => {
-//     try {
-//         logger.info("Sending notification to club", clubId, notification);
-//         const club = await Club.find({ _id: clubId, "deleted.isDeleted": false }).exec();
+export const sendNotificationToClub = async (clubId: string, notification: INotificationInterface): Promise<boolean> => {
+    try {
+        logger.info("Sending notification to club", clubId, notification);
+        const club = await Club
+            .findOne({ _id: clubId, "deleted.isDeleted": false })
+            .populate({
+                path: "members",
+                populate: { path: "member" }
+            }).exec();
 
-//         if (!club) {
-//             throw new Error("Club not found");
-//         }
+        if (!club) {
+            throw new Error("Club not found");
+        }
 
-//         const messages: ExpoPushMessage[] = [];
-//         messages.push({
-//             to: user.pushToken,
-//             sound: "default",
-//             body: notification.body ?? "New Clubito notification!",
-//             data: notification.data,
-//             title: notification.title ?? "Clubito"
-//         });
+        const sendToArray: string[] = [];
 
-//         // XXX: For now just send notifcations as we get them, but maybe in sprint 3, we can 
-//         // improve this and batch notifcations. Maybe queue up notifications, and send every 20 secs
-//         const ticket = await (expo.sendPushNotificationsAsync(messages) as any)[0];
-//         const receiptIds: any[] = [];
-//         if (ticket.id) {
-//             receiptIds.push(ticket.id);
-//         }
-//         const receipt = await expo.getPushNotificationReceiptsAsync(receiptIds)[0];
-//         const status = receipt?.status;
-//         const details = receipt?.details;
-//         if (status === "ok") {
-//             return Promise.resolve(true);
-//         } else {
-//             throw new Error(`There was an error sending a notification: ${ details }`);
-//         }
-//     } catch (err) {
-//         logger.error(err);
-//         throw err;
-//     }
-// };
+        club.members.forEach(member => {
+            if (member?.member?.pushToken) {
+                if (member?.member?.settings?.notification?.enabled) {
+                    sendToArray.push(member.member.pushToken);
+                }
+            }
+        });
+
+        const messages: ExpoPushMessage[] = [];
+        messages.push({
+            to: sendToArray,
+            sound: "default",
+            body: notification.body ?? "New Clubito notification!",
+            data: notification.data,
+            title: notification.title ?? "Clubito"
+        });
+        await expo.sendPushNotificationsAsync(messages);
+        return Promise.resolve(true);
+    } catch (err) {
+        logger.error(err);
+        throw err;
+    }
+};
