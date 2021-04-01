@@ -6,6 +6,14 @@ import logger from "@logger";
 import joi from "joi";
 import { ObjectId } from "mongodb";
 import Event from "@models/Event";
+import { CLUB_ROLE } from "@models/enums";
+
+interface IReturnedUserProfile {
+    name: string,
+    id: string,
+    profilePicture: string,
+    bio: string
+}
 
 const postAddRsvpSchema = joi.object().keys({
     eventId: joi.string().custom((value, helper) => {
@@ -105,6 +113,56 @@ export const postDeleteRsvp = async (req: Request, res: Response, next: NextFunc
         await event.save();
         await user.save();
         res.status(200).json({ message: "Successfully cancelled RSVP to event" });
+        return;
+    } catch (err) {
+        return next(err);
+    }
+};
+
+export const getRsvp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { error } = postAddRsvpSchema.validate(req.body); // same schema
+
+    if (error) {
+        res.status(400).json({ "error": error.message });
+        logger.debug(error);
+        return;
+    }
+
+    try {
+        const { eventId } = req.body;
+        const userId = req.userId;
+
+        const user = await User.findById(userId).exec();
+        const event = await Event.findById(eventId).populate("rsvpUsers").exec();
+
+        if (!user) {
+            res.status(400).json({ error: "User not found" });
+            return;
+        }
+
+        if (!event) {
+            res.status(400).json({ error: "Event not found" });
+            return;
+        }
+
+        const currUserRole = (user.clubs as any[]).find(userClub => { return userClub.club.equals(event.club); }).role;
+        if (currUserRole === CLUB_ROLE.MEMBER || currUserRole === CLUB_ROLE.NONMEMBER) {
+            res.status(400).json({ error: "Current user does not have permission to do that." });
+            return;
+        }
+
+        const returnedUsers: IReturnedUserProfile[] = [];
+
+        event.rsvpUsers.forEach(user => {
+            returnedUsers.push({
+                bio: user.bio,
+                id: user._id,
+                name: user.name,
+                profilePicture: user.profilePicture
+            });
+        });
+
+        res.status(200).json({ users: returnedUsers });
         return;
     } catch (err) {
         return next(err);

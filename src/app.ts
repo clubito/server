@@ -252,6 +252,7 @@ app.put("/clubs/event/edit", authenticateJWT, EventController.putEditEvent);
 app.get("/clubs/event", authenticateJWT, EventController.getEvent);
 app.post("/clubs/event/rsvp", authenticateJWT, EventController.postAddRsvp);
 app.delete("/clubs/event/rsvp", authenticateJWT, EventController.postDeleteRsvp);
+app.get("/clubs/event/rsvp", authenticateJWT, EventController.getRsvp);
 
 /*
 register:
