@@ -14,6 +14,12 @@ export const getThreadMessages = async (req: Request, res: Response): Promise<vo
             })
             return;
         }
+        else if (user.clubs == null) {
+            res.status(500).json({
+                error: "Club is null for the user"
+            })
+            return;
+        }
 
         const result: any[] = [];
         user.clubs.forEach(userClub => {
@@ -29,7 +35,6 @@ export const getThreadMessages = async (req: Request, res: Response): Promise<vo
                 })
             }  
             // need to filter and select the latest timestamp message
-
             const answer = {
                 clubId: userClub.club._id,
                 clubName: userClub.club.name,
