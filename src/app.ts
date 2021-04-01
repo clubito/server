@@ -255,6 +255,7 @@ app.put("/user/profile", authenticateJWT, userController.putUserProfile);
 app.delete("/user/profile", authenticateJWT, userController.deleteUserProfile);
 app.get("/user/other/profile", authenticateJWT, userController.getAnotherUserProfile);
 app.get("/user/club/events", authenticateJWT, userController.getUsersEvents);
+app.get("/user/club/rsvp", authenticateJWT, userController.getUsersRsvps);
 
 // Club routes 
 app.get("/clubs/tags", authenticateJWT, clubController.getAllTags);

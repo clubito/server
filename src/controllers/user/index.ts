@@ -1,3 +1,3 @@
-import { getUserProfile, putUserProfile, deleteUserProfile, getAnotherUserProfile, getUsersEvents } from "./profile";
+import { getUserProfile, putUserProfile, deleteUserProfile, getAnotherUserProfile, getUsersEvents, getUsersRsvps } from "./profile";
 
-export { getUserProfile, putUserProfile, deleteUserProfile, getAnotherUserProfile, getUsersEvents };
+export { getUserProfile, putUserProfile, deleteUserProfile, getAnotherUserProfile, getUsersEvents, getUsersRsvps };

@@ -325,3 +325,37 @@ export const getUsersEvents = async (req: Request, res: Response, next: NextFunc
         return next(err);
     }
 };
+
+export const getUsersRsvps = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = req.userId;
+
+    try {
+        const user = await User
+            .findById(userId)
+            .populate("allRSVP")
+            .exec();
+
+        const ret: any[] = [];
+
+        user?.allRSVP.forEach(event => {
+            ret.push({
+                name: event.name,
+                description: event.description,
+                startTime: event.startTime,
+                endTime: event.endTime,
+                longitude: event.longitude,
+                latitude: event.latitude,
+                shortLocation: event.shortLocation,
+                picture: event.picture,
+                club: event.club,
+                lastUpdated: event.lastUpdated,
+                id: event._id
+            });
+        });
+
+        res.status(200).send(ret);
+        return;
+    } catch (err) {
+        return next(err);
+    }
+};
