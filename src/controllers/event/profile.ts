@@ -84,18 +84,6 @@ export const getEvent = async (req: Request, res: Response, next: NextFunction):
     } catch (err) {
         return next(err);
     }
-
-
-    Event.findById(eventId).then(event => {
-
-        const returnedEvent: IReturnedEvent = {
-
-        };
-
-        res.send(event);
-        return;
-    });
-
 };
 
 export const getCurrentEvents = (req: Request, res: Response): void => {
