@@ -4,11 +4,52 @@ import { INotificationInterface } from "@models/Interfaces/INotificationInterfac
 import logger from "@logger";
 import Club from "@models/Club";
 import Event from "@models/Event";
+import { CLUB_ROLE } from "@models/enums";
 
 const expo = new Expo();
 
 export const isValidPushToken = (pushToken: string): boolean => {
     return Expo.isExpoPushToken(pushToken);
+};
+
+export const sendJrApprovedNotificationToUser = async (userId: string, clubId: string, clubName: string): Promise<boolean> => {
+    try {
+        const approvedNotification: INotificationInterface = {
+            body: `You have to been accepted into ${clubName}!`,
+            title: `Accepted into ${clubName}`,
+            data: {
+                type: "club",
+                id: clubId,
+                title: clubName,
+                role: CLUB_ROLE.MEMBER
+            }
+        };
+        await sendNotificationToUser(userId, approvedNotification);
+        return Promise.resolve(true);
+    } catch (err) {
+        logger.error(err);
+        return Promise.resolve(false);
+    }
+};
+
+export const sendJrDeniedNotificationToUser = async (userId: string, clubId: string, clubName: string): Promise<boolean> => {
+    try {
+        const deniedNotification: INotificationInterface = {
+            body: `${clubName} has denied your request to join`,
+            title: `Denied access into ${clubName}`,
+            data: {
+                type: "club",
+                id: clubId,
+                title: clubName,
+                role: CLUB_ROLE.MEMBER
+            }
+        };
+        await sendNotificationToUser(userId, deniedNotification);
+        return Promise.resolve(true);
+    } catch (err) {
+        logger.error(err);
+        return Promise.resolve(false);
+    }
 };
 
 export const sendKickedNotificationToUser = async (userId: string, clubId: string, clubName: string, userRole: string, reason: string): Promise<boolean> => {
@@ -24,6 +65,24 @@ export const sendKickedNotificationToUser = async (userId: string, clubId: strin
             }
         };
         await sendNotificationToUser(userId, kickNotification);
+        return Promise.resolve(true);
+    } catch (err) {
+        logger.error(err);
+        return Promise.resolve(false);
+    }
+};
+
+
+export const sendBannedNotificationToUser = async (userId: string): Promise<boolean> => {
+    try {
+        const bannedNotification: INotificationInterface = {
+            body: "Please contact support for additional information",
+            title: "You were banned from Clubito",
+            data: {
+                type: "ban"
+            }
+        };
+        await sendNotificationToUser(userId, bannedNotification);
         return Promise.resolve(true);
     } catch (err) {
         logger.error(err);
@@ -60,11 +119,31 @@ export const sendEventEditedNotification = async (eventId: string, clubName: str
             data: {
                 type: "event",
                 id: eventId,
-                title: clubName,
+                title: eventName,
                 role: userRole
             }
         };
         await sendNotificationToEventRsvp(eventId, eventEditedNotification);
+        return Promise.resolve(true);
+    } catch (err) {
+        logger.error(err);
+        return Promise.resolve(false);
+    }
+};
+
+export const sendEventCreatedNotification = async (eventId: string, clubId: string, clubName: string, userRole: string, eventName: string): Promise<boolean> => {
+    try {
+        const eventCreatedNotification: INotificationInterface = {
+            body: `${eventName} by ${clubName} has just been created`,
+            title: `${eventName}`,
+            data: {
+                type: "event",
+                id: eventId,
+                title: eventName,
+                role: userRole
+            }
+        };
+        await sendNotificationToClub(clubId, eventCreatedNotification);
         return Promise.resolve(true);
     } catch (err) {
         logger.error(err);

@@ -5,7 +5,7 @@ import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
 import { CLUB_ROLE, JOIN_REQUEST_STATUS } from "@models/enums";
-import { sendKickedNotificationToUser } from "@notifications";
+import { sendJrApprovedNotificationToUser, sendKickedNotificationToUser, sendJrDeniedNotificationToUser } from "@notifications";
 
 const postClubJoinSchema = joi.object().keys({
     id: joi.required()
@@ -175,6 +175,7 @@ export const postClubApprove = async (req: Request, res: Response, next: NextFun
         await currClub.save();
         await unapprovedUser.save();
 
+        await sendJrApprovedNotificationToUser(unapprovedUser._id, currClub._id, currClub.name);
         res.status(200).json({ message: "Successfully approved join request" });
         return;
     } catch (err) {
@@ -243,6 +244,7 @@ export const postClubDeny = async (req: Request, res: Response, next: NextFuncti
         await currClub.save();
         await unapprovedUser.save();
 
+        await sendJrDeniedNotificationToUser(unapprovedUser._id, currClub._id, currClub.name);
         res.status(200).json({ message: "Successfully denied join request" });
         return;
     } catch (err) {

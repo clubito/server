@@ -8,7 +8,7 @@ import joi from "joi";
 import { CLUB_ROLE } from "@models/enums";
 import { ObjectId } from "mongodb";
 import Event from "@models/Event";
-import { sendEventEditedNotification } from "@notifications";
+import { sendEventCreatedNotification, sendEventEditedNotification } from "@notifications";
 
 const postCreateEventSchema = joi.object().keys({
     name: joi.string().required(),
@@ -84,8 +84,10 @@ export const postCreateEvent = (req: Request, res: Response): void => {
                         return;
                     }
                     // Make sure the user is allowed to make events
+                    let userRole = CLUB_ROLE.NONMEMBER;
                     club.members.forEach(member => {
                         if (member.member.equals(userId)) {
+                            userRole = member.role;
                             if (member.role == CLUB_ROLE.MEMBER || member.role == CLUB_ROLE.NONMEMBER) {
                                 // If the user is only a normal member or not even a member,
                                 // then don't let them make an event
@@ -127,7 +129,8 @@ export const postCreateEvent = (req: Request, res: Response): void => {
 
                         club.events.push(newEvent._id);
 
-                        club.save().then(() => {
+                        club.save().then(async () => {
+                            await sendEventCreatedNotification(newEvent._id, club._id, club.name, userRole, newEvent.name);
                             res.status(200).json({
                                 message: "Successfully created event",
                                 eventId: createdEvent["_id"]
