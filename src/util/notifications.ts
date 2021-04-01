@@ -78,11 +78,31 @@ export const sendEventEditedNotification = async (eventId: string, clubName: str
             data: {
                 type: "event",
                 id: eventId,
-                title: clubName,
+                title: eventName,
                 role: userRole
             }
         };
         await sendNotificationToEventRsvp(eventId, eventEditedNotification);
+        return Promise.resolve(true);
+    } catch (err) {
+        logger.error(err);
+        return Promise.resolve(false);
+    }
+};
+
+export const sendEventCreatedNotification = async (eventId: string, clubId: string, clubName: string, userRole: string, eventName: string): Promise<boolean> => {
+    try {
+        const eventCreatedNotification: INotificationInterface = {
+            body: `${eventName} by ${clubName} has just been created`,
+            title: `${eventName}`,
+            data: {
+                type: "event",
+                id: eventId,
+                title: eventName,
+                role: userRole
+            }
+        };
+        await sendNotificationToClub(clubId, eventCreatedNotification);
         return Promise.resolve(true);
     } catch (err) {
         logger.error(err);

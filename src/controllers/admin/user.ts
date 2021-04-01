@@ -5,7 +5,7 @@ import joi from "joi";
 import logger from "@logger";
 import { APP_ROLE } from "@models/enums";
 import { ObjectId } from "bson";
-import { sendBannedNotificationToUser, sendNotificationToUser } from "@notifications";
+import { sendBannedNotificationToUser } from "@notifications";
 
 
 const deleteUserSchema = joi.object().keys({
