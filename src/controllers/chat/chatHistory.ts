@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import logger from "@logger";
-import Club from "@models/Club";
 import User from "@models/User";
 import { Request, Response } from "express";
 import joi from "joi";
