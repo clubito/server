@@ -75,25 +75,42 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
         return;
     }
 
-    const clubId = req.query.id;
+    const userId  = req.userId;
+    const clubId  = req.query.id;
     try {
-        const club = await Club.findById(clubId)
-        .populate({path: "messages",  options: { sort: {'timestamp': 1}}, populate: {path: "author", select: "profilePicture"}});
-        console.log(club);
-        if (club == null) {
+        const user = await User.findById(userId)
+        .populate({path: "clubs.club", populate: {path: "messages",  options: { sort: {'timestamp': 1}}, populate: {path: "author", select: "profilePicture"}}});
+        // const club = await Club.findById(clubId)
+        // .populate({path: "messages",  options: { sort: {'timestamp': 1}}, populate: {path: "author", select: "profilePicture"}});
+        if (user == null) {
+            res.status(500).json({
+                error: "User not identified"
+            })
+            return;
+        }
+        else if (user.clubs == null) {
+            res.status(500).json({
+                error: "Club is null for the user"
+            })
+            return;
+        }
+
+        const userClub = user.clubs.find(userClub => userClub.club._id == clubId)
+   
+        if (userClub == null) {
             res.status(500).json({
                 error: `No club with the id ${clubId} is found`
             })
             return;
         }
-        else if (club.messages == null) {
+        else if (userClub.club.messages == null) {
             res.status(500).json({
                 error: "Messages is null for the club"
             })
             return;
         }
 
-        const messageArray = club.messages.map(message => {
+        const messageArray = userClub.club.messages.map(message => {
             return {
                 authorId: message.author._id,
                 authorName: message.authorName,
@@ -103,7 +120,14 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
             }
         })
 
-        res.status(200).json(messageArray);
+        res.status(200).json({
+            clubId: clubId,
+            clubName: userClub.club.name,
+            clubLogo: userClub.club.logo,
+            messages: messageArray,
+            role: userClub.role
+        });
+        return;
 
     } catch (err) {
         res.status(500).json({
