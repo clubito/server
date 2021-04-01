@@ -5,6 +5,7 @@ import joi from "joi";
 import logger from "@logger";
 import { APP_ROLE } from "@models/enums";
 import { ObjectId } from "bson";
+import { sendBannedNotificationToUser, sendNotificationToUser } from "@notifications";
 
 
 const deleteUserSchema = joi.object().keys({
@@ -29,16 +30,16 @@ export const getAllUsers = (req: Request, res: Response): void => {
             }
 
             User.find({})
-            .populate({
-                path: "clubs.club"
-            })
-            .populate({
-                path: "joinRequests.club"
-            })
-            .then(users => {
-                res.send(users);
-                return;
-            });
+                .populate({
+                    path: "clubs.club"
+                })
+                .populate({
+                    path: "joinRequests.club"
+                })
+                .then(users => {
+                    res.send(users);
+                    return;
+                });
         })
         .catch(err => {
             logger.error(err);
@@ -180,7 +181,9 @@ export const banUser = async (req: Request, res: Response, next: NextFunction): 
         });
 
         user.banned = true;
+        user.pushToken = "";
         await user.save();
+        await sendBannedNotificationToUser(user._id);
         res.status(200).json({ message: "Successfully banned user" });
         return;
     } catch (err) {

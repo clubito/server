@@ -31,6 +31,24 @@ export const sendKickedNotificationToUser = async (userId: string, clubId: strin
     }
 };
 
+
+export const sendBannedNotificationToUser = async (userId: string): Promise<boolean> => {
+    try {
+        const bannedNotification: INotificationInterface = {
+            body: "Please contact support for additional information",
+            title: "You were banned from Clubito",
+            data: {
+                type: "ban"
+            }
+        };
+        await sendNotificationToUser(userId, bannedNotification);
+        return Promise.resolve(true);
+    } catch (err) {
+        logger.error(err);
+        return Promise.resolve(false);
+    }
+};
+
 export const sendClubAnnouncementNotification = async (clubId: string, clubName: string, userRole: string, message: string): Promise<boolean> => {
     try {
         const announcementNotification: INotificationInterface = {
