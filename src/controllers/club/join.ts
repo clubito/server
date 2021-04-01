@@ -26,24 +26,14 @@ const postClubKickSchema = joi.object().keys({
     reason: joi.string().required()
 });
 
-
-// interface IReturnedUserProfile {
-//     name: string,
-//     email: string,
-//     clubs: {
-//         name: string,
-//         description: string,
-//         logo: string,
-//         role: string
-//     }[],
-//     joinRequests: {
-//         name: string,
-//         description: string,
-//         logo: string
-//         status: string
-//     }[],
-//     tags: string[]
-// }
+interface IReturnedUserProfile {
+    name: string,
+    id: string,
+    profilePicture: string,
+    bio: string,
+    status: string,
+    requestedAt: Date
+}
 
 export const postClubJoin = (req: Request, res: Response): void => {
     const { error } = postClubJoinSchema.validate(req.body); // makes sure id is specified
@@ -296,6 +286,19 @@ export const getAllJoinRequests = async (req: Request, res: Response, next: Next
                     return;
                 }
             }
+        });
+
+        const returnedUsers: IReturnedUserProfile[] = [];
+
+        currClub.joinRequests.forEach(joinRequest => {
+            returnedUsers.push({
+                bio: joinRequest.user.bio,
+                id: joinRequest.user._id,
+                name: joinRequest.user.name,
+                profilePicture: joinRequest.user.profilePicture,
+                status: joinRequest.status,
+                requestedAt: joinRequest.requestedAt
+            });
         });
 
         const allClubs = currClub.joinRequests;
