@@ -150,6 +150,22 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       body: "good bye :D",
       attachment: "this is an attachment url"
     });
+    const message3 = new Message({
+      author: user2._id,
+      authorName: user2.name,
+      club: club1._id,
+      timestamp: Date.parse("2021-03-02T02:04:50.989Z"),
+      body: "test message from user 2",
+      attachment: "this is an attachment url.com"
+    });
+    const message4 = new Message({
+      author: user1._id,
+      authorName: user1.name,
+      club: club1._id,
+      timestamp: Date.parse("2021-04-01T02:05:50.989Z"),
+      body: "stacked message from aashir",
+      attachment: "this is an attachment url.com"
+    });
 
     user1.clubs.push({ club: club1._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()) });
     user2.clubs.push({ club: club1._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()) });
@@ -161,6 +177,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
 
     club1.messages.push(message1._id);
     club1.messages.push(message2._id);
+    club1.messages.push(message3._id);
+    club1.messages.push(message4._id);
     club1.announcements.push(announcement1._id);
 
     club2.events.push(event1._id);
@@ -181,6 +199,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     await event1.save();
     await message1.save();
     await message2.save();
+    await message3.save();
+    await message4.save();
 
     logger.info("Finished populating DB with seed data");
   }

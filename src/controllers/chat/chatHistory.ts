@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
+import logger from "@logger";
 import Club from "@models/Club";
 import User from "@models/User";
 import { Request, Response } from "express";
@@ -7,9 +9,9 @@ import { ObjectId } from "mongodb";
 
 export const getThreadMessages = async (req: Request, res: Response): Promise<void> => {
     const userId = req.userId;
-    try{
+    try {
         const user = await User.findById(userId)
-        .populate({path: "clubs.club", populate: {path: "messages",  options: { sort: {"timestamp": 1}}, populate: {path: "author", select: "profilePicture"}}});
+            .populate({ path: "clubs.club", populate: { path: "messages", options: { sort: { "timestamp": 1 } }, populate: { path: "author", select: "profilePicture" } } });
         if (user == null) {
             res.status(500).json({
                 error: "User not identified"
@@ -23,14 +25,14 @@ export const getThreadMessages = async (req: Request, res: Response): Promise<vo
                 const latestMessage = userClub.club.messages.pop();
                 const latestMessageArray: any[] = [];
                 if (latestMessage) {
-                    latestMessageArray.push({
+                    latestMessageArray.push([{
                         authorId: latestMessage.author._id,
                         authorName: latestMessage.authorName,
                         anotherPicture: latestMessage.author.profilePicture,
                         timestamp: latestMessage.timestamp,
                         body: latestMessage.body
-                    });
-                }  
+                    }]);
+                }
                 // need to filter and select the latest timestamp message
                 const answer = {
                     clubId: userClub.club._id,
@@ -46,7 +48,7 @@ export const getThreadMessages = async (req: Request, res: Response): Promise<vo
         res.status(200).json(result);
         return;
 
-    } catch(err) {
+    } catch (err) {
         res.status(500).json({
             error: err
         });
@@ -75,7 +77,7 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
     const clubId = req.query.id;
     try {
         const user = await User.findById(userId)
-        .populate({path: "clubs.club", populate: {path: "messages",  options: { sort: {"timestamp": 1}}, populate: {path: "author", select: "profilePicture"}}});
+            .populate({ path: "clubs.club", populate: { path: "messages", options: { sort: { "timestamp": 1 } }, populate: { path: "author", select: "profilePicture" } } });
         // const club = await Club.findById(clubId)
         // .populate({path: "messages",  options: { sort: {'timestamp': 1}}, populate: {path: "author", select: "profilePicture"}});
         if (user == null) {
@@ -92,7 +94,7 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
         }
 
         const userClub = (user.clubs as any[]).find(userClub => userClub.club._id == clubId);
-   
+
         if (userClub == null) {
             res.status(500).json({
                 error: `No club with id ${clubId} is found for user ${user.name}`
@@ -101,21 +103,37 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
         } else if (userClub.club == null) {
             res.status(500).json({
                 error: "club field is null for the Club"
-            })
+            });
             return;
         }
 
-        let messageArray = [];
+        let userMessageArray: any[] = [];
+        const messageArray: any[] = [];
+        let currentUser;
         if (userClub.club.messages) {
-            messageArray = userClub.club.messages.map(message => {
-                return {
-                    authorId: message.author._id,
-                    authorName: message.authorName,
-                    authorPicture: message.author.profilePicture,
-                    timestamp: message.timestamp,
-                    body: message.body
-                };
+            userClub.club.messages.forEach(message => {
+                if (currentUser != message.author._id) {
+                    if (userMessageArray.length > 0) messageArray.push(userMessageArray);
+                    userMessageArray = [];
+                    currentUser = message.author._id;
+                    userMessageArray.push({
+                        authorId: message.author._id,
+                        authorName: message.authorName,
+                        authorPicture: message.author.profilePicture,
+                        timestamp: message.timestamp,
+                        body: message.body
+                    });
+                } else {
+                    userMessageArray.push({
+                        authorId: message.author._id,
+                        authorName: message.authorName,
+                        authorPicture: message.author.profilePicture,
+                        timestamp: message.timestamp,
+                        body: message.body
+                    });
+                }
             });
+            messageArray.push(userMessageArray);
         }
 
         res.status(200).json({
