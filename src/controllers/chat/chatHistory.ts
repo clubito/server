@@ -18,23 +18,15 @@ export const getThreadMessages = async (req: Request, res: Response): Promise<vo
         const result: any[] = [];
         user.clubs.forEach(userClub => {
             let latestMessage = userClub.club.messages.pop();
-            // const messageArray = userClub.club.messages.map(message => {
-            //     return {
-            //         authorId: message.author._id,
-            //         authorName: message.authorName,
-            //         authorPicture: message.author.profilePicture,
-            //         timestamp: message.timestamp,
-            //         body: message.body
-            //     }
-            // });
+            const latestMessageArray: any[] = [];
             if (latestMessage) {
-                latestMessage = {
+                latestMessageArray.push({
                     authorId: latestMessage.author._id,
                     authorName: latestMessage.authorName,
                     anotherPicture: latestMessage.author.profilePicture,
                     timestamp: latestMessage.timestamp,
                     body: latestMessage.body
-                }
+                })
             }  
             // need to filter and select the latest timestamp message
 
@@ -42,7 +34,7 @@ export const getThreadMessages = async (req: Request, res: Response): Promise<vo
                 clubId: userClub.club._id,
                 clubName: userClub.club.name,
                 clubLogo: userClub.club.logo,
-                message: latestMessage,
+                messages: latestMessageArray,
                 role: userClub.role
             }
             result.push(answer);
