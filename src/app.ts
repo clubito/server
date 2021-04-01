@@ -250,6 +250,8 @@ app.post("/user/notifications/clubmessage", authenticateJWT, notificationControl
 app.post("/clubs/event/create", authenticateJWT, EventController.postCreateEvent);
 app.put("/clubs/event/edit", authenticateJWT, EventController.putEditEvent);
 app.get("/clubs/event", authenticateJWT, EventController.getEvent);
+app.post("/clubs/event/rsvp", authenticateJWT, EventController.postAddRsvp);
+app.delete("/clubs/event/rsvp", authenticateJWT, EventController.postDeleteRsvp);
 
 /*
 register:
