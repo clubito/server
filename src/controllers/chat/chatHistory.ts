@@ -4,6 +4,7 @@ import User from "@models/User";
 import { Request, Response } from "express";
 import joi from "joi";
 import { ObjectId } from "mongodb";
+import dayjs from "dayjs";
 
 export const getThreadMessages = async (req: Request, res: Response): Promise<void> => {
     const userId = req.userId;
@@ -29,7 +30,8 @@ export const getThreadMessages = async (req: Request, res: Response): Promise<vo
                         anotherPicture: latestMessage.author.profilePicture,
                         timestamp: latestMessage.timestamp,
                         body: latestMessage.body,
-                        isSelf: (latestMessage.author._id.equals(userId) ? true : false)
+                        isSelf: (latestMessage.author._id.equals(userId) ? true : false),
+                        isDate: false
                     }]);
                 }
                 // need to filter and select the latest timestamp message
@@ -109,8 +111,21 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
         let userMessageArray: any[] = [];
         const messageArray: any[] = [];
         let currentUser;
+        let prevDate = dayjs("1970-01-01");
         if (userClub.club.messages) {
             userClub.club.messages.forEach(message => {
+                if (dayjs(message.timestamp).isAfter(dayjs(prevDate, "day"))) {
+                    prevDate = dayjs(message.timestamp);
+                    userMessageArray.push({
+                        authorId: "",
+                        authorName: "",
+                        authorPicture: "",
+                        timestamp: message.timestamp,
+                        body: "",
+                        isSelf: (message.author._id.equals(userId) ? true : false),
+                        isDate: true
+                    });
+                }
                 if (currentUser != message.author._id) {
                     if (userMessageArray.length > 0) messageArray.push(userMessageArray);
                     userMessageArray = [];
@@ -121,7 +136,8 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
                         authorPicture: message.author.profilePicture,
                         timestamp: message.timestamp,
                         body: message.body,
-                        isSelf: (message.author._id.equals(userId) ? true : false)
+                        isSelf: (message.author._id.equals(userId) ? true : false),
+                        isDate: false
                     });
                 } else {
                     userMessageArray.push({
@@ -129,7 +145,9 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
                         authorName: message.authorName,
                         authorPicture: message.author.profilePicture,
                         timestamp: message.timestamp,
-                        body: message.body
+                        body: message.body,
+                        isSelf: (message.author._id.equals(userId) ? true : false),
+                        isDate: false
                     });
                 }
             });
