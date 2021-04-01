@@ -23,6 +23,8 @@ import User from "@models/User";
 import Club from "@models/Club";
 import Announcement from "@models/Announcement";
 import Event from "@models/Event";
+import Message from "@models/Message";
+
 import { CLUB_ROLE, CLUB_TAGS, APP_ROLE } from "@models/enums";
 import { authenticateJWT } from "./util/auth";
 import errorHandler from "errorhandler";
@@ -48,7 +50,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       User.deleteMany({}),
       Club.deleteMany({}),
       Announcement.deleteMany({}),
-      Event.deleteMany({})
+      Event.deleteMany({}),
+      Message.deleteMany({})
     ]);
 
     const user1 = new User({
@@ -131,6 +134,23 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       club: club2._id
     });
 
+    const message1 = new Message({
+      author: user1._id,
+      authorName: user1.name,
+      club: club1._id,
+      timestamp: Date.parse("2021-04-01T02:04:50.989Z"),
+      body: "hello world!",
+      attachment: "this is an attachment url"
+    })
+    const message2 = new Message({
+      author: user1._id,
+      authorName: user1.name,
+      club: club1._id,
+      timestamp: Date.parse("2021-03-01T02:04:50.989Z"),
+      body: "good bye :D",
+      attachment: "this is an attachment url"
+    })
+
     user1.clubs.push({ club: club1._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()) });
     user2.clubs.push({ club: club1._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()) });
     user2.clubs.push({ club: club2._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()) });
@@ -139,7 +159,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     user5.clubs.push({ club: club1._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()) });
     user6.clubs.push({ club: club2._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()) });
 
-
+    club1.messages.push(message1._id);
+    club1.messages.push(message2._id);
     club1.announcements.push(announcement1._id);
 
     club2.events.push(event1._id);
@@ -158,6 +179,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     await announcement1.save();
 
     await event1.save();
+    await message1.save();
+    await message2.save();
 
     logger.info("Finished populating DB with seed data");
   }
@@ -253,6 +276,10 @@ app.get("/clubs/event", authenticateJWT, EventController.getEvent);
 app.post("/clubs/event/rsvp", authenticateJWT, EventController.postAddRsvp);
 app.delete("/clubs/event/rsvp", authenticateJWT, EventController.postDeleteRsvp);
 app.get("/clubs/event/rsvp", authenticateJWT, EventController.getRsvp);
+
+
+// Chat routes
+app.get("/clubs/messages", authenticateJWT, chatController.getThreadMessages);
 
 /*
 register:

@@ -1,2 +1,3 @@
 import { chatServer } from "./chat";
-export { chatServer };
+import { getThreadMessages } from "./chatHistory"
+export { chatServer, getThreadMessages };
