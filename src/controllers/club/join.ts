@@ -301,7 +301,7 @@ export const getAllJoinRequests = async (req: Request, res: Response, next: Next
             });
         });
 
-        res.status(200).json({ joinRequests: returnedUsers });
+        res.status(200).send(returnedUsers);
         return;
     } catch (err) {
         return next(err);

@@ -219,6 +219,7 @@ app.get("/", homeController.index);
 
 // User authentication routes
 app.post("/login", authController.postLogin);
+app.post("/logout", authenticateJWT, authController.postLogout);
 app.post("/register", authController.postRegister);
 app.post("/reset", authenticateJWT, authController.postReset);
 app.post("/forgot", authController.postForgot);
