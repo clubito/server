@@ -22,10 +22,11 @@ export const sendKickedNotificationToUser = async (userId: string, clubId: strin
                 role: userRole
             }
         };
-        return sendNotificationToUser(userId, kickNotification);
+        await sendNotificationToUser(userId, kickNotification);
+        return Promise.resolve(true);
     } catch (err) {
         logger.error(err);
-        throw err;
+        return Promise.resolve(false);
     }
 };
 
@@ -41,10 +42,11 @@ export const sendClubAnnouncementNotification = async (clubId: string, clubName:
                 role: userRole
             }
         };
-        return sendNotificationToClub(clubId, announcementNotification);
+        await sendNotificationToClub(clubId, announcementNotification);
+        return Promise.resolve(true);
     } catch (err) {
         logger.error(err);
-        throw err;
+        return Promise.resolve(false);
     }
 };
 
@@ -55,13 +57,16 @@ export const sendNotificationToUser = async (userId: string, notification: INoti
 
         if (!user) {
             throw new Error("User not found");
+            // return Promise.resolve(false);
         }
 
         if (!user.pushToken) {
+            // return Promise.resolve(false);
             throw new Error("User has not set up push notifications");
         }
 
         if (!user.settings.notifications.enabled) {
+            // return Promise.resolve(false);
             throw new Error("User has disable notifications");
         }
 
