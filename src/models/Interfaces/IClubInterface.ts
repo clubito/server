@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { IUser } from "../User";
 import { IAnnouncement } from "../Announcement";
 import { IEvent } from "../Event";
+import { IMessage } from "@models/Message";
 
 export interface IClubInterface extends mongoose.Document {
     name: string,
@@ -32,5 +33,6 @@ export interface IClubInterface extends mongoose.Document {
     deleted: {
         isDeleted: boolean,
         deletedAt: Date | null
-    }
+    },
+    messages: mongoose.Schema.Types.ObjectId[] | IMessage[]
 }

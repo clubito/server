@@ -26,6 +26,7 @@ const postCreateEventSchema = joi.object().keys({
     }).required()
 });
 
+
 const putEditEventSchema = joi.object().keys({
     name: joi.string(),
     description: joi.string(),
@@ -41,7 +42,8 @@ const putEditEventSchema = joi.object().keys({
         } else {
             return helper.message({ custom: "id is not valid" });
         }
-    }).required()
+    }).required(),
+    notifyUsers: joi.boolean()
 });
 
 export const postCreateEvent = (req: Request, res: Response): void => {
