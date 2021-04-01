@@ -1,12 +1,12 @@
 // create/edit/delete events
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import logger from "@logger";
 import joi from "joi";
 import { ObjectId } from "mongodb";
 import Event from "@models/Event";
 import Club from "@models/Club";
 
-interface IReturnedEvents {
+interface IReturnedEvent {
     name: string,
     description: string,
     startTime: Date,
@@ -40,7 +40,7 @@ const getCurrentEventsSchema = joi.object().keys({
     }).required()
 });
 
-export const getEvent = (req: Request, res: Response): void => {
+export const getEvent = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = getEventSchema.validate(req.query);
 
     if (error) {
@@ -49,18 +49,41 @@ export const getEvent = (req: Request, res: Response): void => {
         return;
     }
 
-    const eventId = req.query.id;
+    try {
+        const eventId = req.query.id;
 
-    Event.findById(eventId).then(event => {
+        const event = await Event.findById(eventId).exec();
+        const club = await Club.findOne({ _id: event?.club, "deleted.isDeleted": false }).exec();
+
         if (!event) {
             res.status(400).json({ error: "Event with the ID not found" });
             return;
         }
 
-        res.send(event);
-        return;
-    });
+        if (!club) {
+            res.status(400).json({ error: "Club for that event does not exist" });
+            return;
+        }
 
+        const returnedEvent: IReturnedEvent = {
+            clubId: club._id,
+            clubName: club.name,
+            description: event.description,
+            endTime: event.endTime,
+            lastUpdated: event.lastUpdated,
+            latitude: event.latitude,
+            longitude: event.longitude,
+            name: event.name,
+            picture: event.picture,
+            shortLocation: event.shortLocation,
+            startTime: event.startTime
+        };
+
+        res.send(returnedEvent);
+        return;
+    } catch (err) {
+        return next(err);
+    }
 };
 
 export const getCurrentEvents = (req: Request, res: Response): void => {
@@ -83,7 +106,7 @@ export const getCurrentEvents = (req: Request, res: Response): void => {
                 return;
             }
 
-            const returnedEvents: IReturnedEvents[] = [];
+            const returnedEvents: IReturnedEvent[] = [];
 
             club.events.forEach(event => {
                 if (new Date(event.endTime) < new Date(Date.now())) {
