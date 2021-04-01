@@ -28,7 +28,14 @@ export const getAllUsers = (req: Request, res: Response): void => {
                 return;
             }
 
-            User.find({}).then(users => {
+            User.find({})
+            .populate({
+                path: "clubs.club"
+            })
+            .populate({
+                path: "joinRequests.club"
+            })
+            .then(users => {
                 res.send(users);
                 return;
             });
