@@ -4,7 +4,6 @@ import User from "@models/User";
 import { Request, Response } from "express";
 import joi from "joi";
 import { ObjectId } from "mongodb";
-import dayjs from "dayjs";
 
 export const getThreadMessages = async (req: Request, res: Response): Promise<void> => {
     const userId = req.userId;
@@ -111,11 +110,11 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
         let userMessageArray: any[] = [];
         const messageArray: any[] = [];
         let currentUser;
-        let prevDate = dayjs("1970-01-01");
+        let prevDate = new Date("1970-01-01");
         if (userClub.club.messages) {
             userClub.club.messages.forEach(message => {
-                if (dayjs(message.timestamp).isAfter(dayjs(prevDate, "day"))) {
-                    prevDate = dayjs(message.timestamp);
+                if (new Date(message.timestamp).getDate() > new Date(prevDate).getDate()) {
+                    prevDate = new Date(message.timestamp);
                     userMessageArray.push({
                         authorId: "",
                         authorName: "",
