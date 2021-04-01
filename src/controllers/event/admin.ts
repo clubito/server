@@ -92,12 +92,10 @@ export const postCreateEvent = (req: Request, res: Response): void => {
                     });
 
                     // Event does not already exist
-                    club.events.forEach(event => {
-                        if (event.name === name) {
-                            res.status(400).json({ error: "An event with that name already exists. Did you mean to edit the event?" });
-                            return;
-                        }
-                    });
+                    if (club.events.some(temp => temp.name === name)) {
+                        res.status(400).json({ error: "An event with that name already exists. Did you mean to edit the event?" });
+                        return;
+                    }
 
                     const newEvent = new Event({
                         name,
@@ -115,18 +113,24 @@ export const postCreateEvent = (req: Request, res: Response): void => {
                     newEvent.save((err: any, createdEvent) => {
                         if (err || !createdEvent) {
                             if (err.code == 11000) {
-                                res.status(400).json({ error: "An event with that name already exists. Did you mean to edit the event?" });
+                                res.status(400).json({ error: "1An event with that name already exists. Did you mean to edit the event?" });
+                                return;
                             } else {
                                 res.status(400).json({ error: "Error creating an event: " + err?.message });
+                                return;
                             }
-                            return;
                         }
 
-                        res.status(200).json({
-                            message: "Successfully created event",
-                            eventId: createdEvent["_id"]
+                        club.events.push(newEvent._id);
+
+                        club.save().then(() => {
+                            res.status(200).json({
+                                message: "Successfully created event",
+                                eventId: createdEvent["_id"]
+                            });
+                            return;
                         });
-                        return;
+
                     });
                 });
         })
