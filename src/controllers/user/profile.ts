@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import User from "@models/User";
 import Club from "@models/Club";
 import logger from "@logger";
 import joi from "joi";
-import { CLUB_TAGS } from "@models/enums";
+import { APP_ROLE, CLUB_TAGS } from "@models/enums";
 
 const putUserProfileSchema = joi.object().keys({
     email: joi.string().email().regex(/@purdue.edu$/i),
@@ -285,4 +285,43 @@ export const getAnotherUserProfile = (req: Request, res: Response): void => {
             return;
         });
 
+};
+
+export const getUsersEvents = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = req.userId;
+
+    try {
+        const user = await User
+            .findById(userId)
+            .populate({
+                path: "clubs",
+                populate: { path: "club", populate: { path: "events" } }
+            })
+            .exec();
+
+        const ret: any[] = [];
+
+        user?.clubs.forEach(club => {
+            club.club.events.forEach(event => {
+                ret.push({
+                    name: event.name,
+                    description: event.description,
+                    startTime: event.startTime,
+                    endTime: event.endTime,
+                    longitude: event.longitude,
+                    latitude: event.latitude,
+                    shortLocation: event.shortLocation,
+                    picture: event.picture,
+                    club: event.club,
+                    lastUpdated: event.lastUpdated,
+                    id: event._id
+                });
+            });
+        });
+
+        res.status(200).send(ret);
+        return;
+    } catch (err) {
+        return next(err);
+    }
 };
