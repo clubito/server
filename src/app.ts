@@ -141,7 +141,7 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       timestamp: Date.parse("2021-04-01T02:04:50.989Z"),
       body: "hello world!",
       attachment: "this is an attachment url"
-    })
+    });
     const message2 = new Message({
       author: user1._id,
       authorName: user1.name,
@@ -149,7 +149,7 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       timestamp: Date.parse("2021-03-01T02:04:50.989Z"),
       body: "good bye :D",
       attachment: "this is an attachment url"
-    })
+    });
 
     user1.clubs.push({ club: club1._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()) });
     user2.clubs.push({ club: club1._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()) });
@@ -277,7 +277,7 @@ app.get("/clubs/event", authenticateJWT, EventController.getEvent);
 app.post("/clubs/event/rsvp", authenticateJWT, EventController.postAddRsvp);
 app.delete("/clubs/event/rsvp", authenticateJWT, EventController.postDeleteRsvp);
 app.get("/clubs/event/rsvp", authenticateJWT, EventController.getRsvp);
-
+app.get("/clubs/events/current", authenticateJWT, EventController.getCurrentEvents);
 
 // Chat routes
 app.get("/clubs/messages", authenticateJWT, chatController.getThreadMessages);
