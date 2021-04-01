@@ -28,7 +28,8 @@ export const getThreadMessages = async (req: Request, res: Response): Promise<vo
                         authorName: latestMessage.authorName,
                         anotherPicture: latestMessage.author.profilePicture,
                         timestamp: latestMessage.timestamp,
-                        body: latestMessage.body
+                        body: latestMessage.body,
+                        isSelf: (latestMessage.author._id.equals(userId) ? true : false)
                     }]);
                 }
                 // need to filter and select the latest timestamp message
@@ -119,7 +120,8 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
                         authorName: message.authorName,
                         authorPicture: message.author.profilePicture,
                         timestamp: message.timestamp,
-                        body: message.body
+                        body: message.body,
+                        isSelf: (message.author._id.equals(userId) ? true : false)
                     });
                 } else {
                     userMessageArray.push({
