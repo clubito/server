@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 import User from "@models/User";
 import Club from "@models/Club";
 import logger from "@logger";
 import joi from "joi";
-import { APP_ROLE, CLUB_TAGS } from "@models/enums";
+import { CLUB_TAGS } from "@models/enums";
 
 const putUserProfileSchema = joi.object().keys({
     email: joi.string().email().regex(/@purdue.edu$/i),
