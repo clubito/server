@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IClub } from "../Club";
+import { IUser } from "@models/User";
 
 export interface IEventInterface extends mongoose.Document {
     name: string,
@@ -11,5 +12,6 @@ export interface IEventInterface extends mongoose.Document {
     shortLocation: string,
     picture: string,
     club: mongoose.Schema.Types.ObjectId | IClub,
-    lastUpdated: Date
+    lastUpdated: Date,
+    rsvpUsers: mongoose.Schema.Types.ObjectId[] | IUser[]
 }
