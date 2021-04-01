@@ -201,7 +201,7 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     });
     const message8 = new Message({
       author: user2._id,
-      authorName: user1.name,
+      authorName: user2.name,
       club: club1._id,
       timestamp: Date.parse("2021-04-03T22:05:50.989Z"),
       body: "stacked message from aashir",
