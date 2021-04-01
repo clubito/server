@@ -28,7 +28,14 @@ export const getAllUsers = (req: Request, res: Response): void => {
                 return;
             }
 
-            User.find({}).then(users => {
+            User.find({})
+            .populate({
+                path: "clubs.club"
+            })
+            .populate({
+                path: "joinRequests.club"
+            })
+            .then(users => {
                 res.send(users);
                 return;
             });
@@ -101,7 +108,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
                 });
         });
 
-        await user.delete().exec();
+        await user.delete();
         res.status(200).json({ message: "Successfully deleted user" });
         return;
     } catch (err) {
