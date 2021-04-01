@@ -58,44 +58,51 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       name: "Aashir Aumir",
       email: "aaumir@purdue.edu",
       password: "testpass1",
-      isConfirmed: true
+      isConfirmed: true,
+      profilePicture: "https://i.pravatar.cc/150?u=aaumir@purdue.edu"
     });
     const user2 = new User({
       name: "Fake User",
       email: "example1@purdue.edu",
       password: "testpass1",
-      isConfirmed: true
+      isConfirmed: true,
+      profilePicture: "https://i.pravatar.cc/150?u=example1@purdue.edu"
     });
     const user3 = new User({
       name: "Amarto Pramanik",
       email: "pramanik@purdue.edu",
       password: "testpass1",
-      isConfirmed: true
+      isConfirmed: true,
+      profilePicture: "https://i.pravatar.cc/150?u=pramanik@purdue.edu"
     });
     const user4 = new User({
       name: "Arjun Srinivasan",
       email: "sriniv58@purdue.edu",
       password: "testpass1",
-      isConfirmed: true
+      isConfirmed: true,
+      profilePicture: "https://i.pravatar.cc/150?u=sriniv58@purdue.edu"
     });
     const user5 = new User({
       name: "Test User I",
       email: "test@purdue.edu",
       password: "testpass1",
-      isConfirmed: true
+      isConfirmed: true,
+      profilePicture: "https://i.pravatar.cc/150?u=test@purdue.edu"
     });
     const user6 = new User({
       name: "Daddy Daniels",
       email: "mitch@purdue.edu",
       password: "testpass1",
-      isConfirmed: true
+      isConfirmed: true,
+      profilePicture: "https://i.pravatar.cc/150?u=mitch@purdue.edu"
     });
     const user7 = new User({
       name: "Harambe",
       email: "harambe@purdue.edu",
       password: "testpass1",
       isConfirmed: true,
-      appRole: APP_ROLE.ADMIN
+      appRole: APP_ROLE.ADMIN,
+      profilePicture: "https://i.pravatar.cc/150?u=harambe@purdue.edu"
     });
 
     const club1 = new Club({
@@ -105,7 +112,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       { member: user2._id, role: CLUB_ROLE.OFFICER },
       { member: user5._id, role: CLUB_ROLE.MEMBER }],
       tags: [CLUB_TAGS.TECHNOLOGY, CLUB_TAGS.SPORTS],
-      isEnabled: true
+      isEnabled: true,
+      logo: "https://i.pravatar.cc/150?u=DroneClub@purdue.edu"
     });
     const club2 = new Club({
       name: "PUDM",
@@ -115,7 +123,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       { member: user4._id, role: CLUB_ROLE.MEMBER },
       { member: user6._id, role: CLUB_ROLE.OFFICER }],
       tags: [CLUB_TAGS.MUSIC, CLUB_TAGS.SPORTS, CLUB_TAGS.VOLUNTEERING],
-      isEnabled: true
+      isEnabled: true,
+      logo: "https://i.pravatar.cc/150?u=PUDM@purdue.edu"
     });
 
     const announcement1 = new Announcement({
@@ -166,6 +175,46 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       body: "stacked message from aashir",
       attachment: "this is an attachment url.com"
     });
+    const message5 = new Message({
+      author: user5._id,
+      authorName: user5.name,
+      club: club1._id,
+      timestamp: Date.parse("2021-04-02T03:05:50.989Z"),
+      body: "stacked message from aashir",
+      attachment: "this is an attachment url.com"
+    });
+    const message6 = new Message({
+      author: user1._id,
+      authorName: user1.name,
+      club: club1._id,
+      timestamp: Date.parse("2021-04-02T06:05:50.989Z"),
+      body: "stacked message from aashir",
+      attachment: "this is an attachment url.com"
+    });
+    const message7 = new Message({
+      author: user5._id,
+      authorName: user5.name,
+      club: club1._id,
+      timestamp: Date.parse("2021-04-02T09:05:50.989Z"),
+      body: "stacked message from aashir",
+      attachment: "this is an attachment url.com"
+    });
+    const message8 = new Message({
+      author: user2._id,
+      authorName: user1.name,
+      club: club1._id,
+      timestamp: Date.parse("2021-04-03T22:05:50.989Z"),
+      body: "stacked message from aashir",
+      attachment: "this is an attachment url.com"
+    });
+    const message9 = new Message({
+      author: user1._id,
+      authorName: user1.name,
+      club: club1._id,
+      timestamp: Date.parse("2021-04-03T23:05:50.989Z"),
+      body: "stacked message from aashir",
+      attachment: "this is an attachment url.com"
+    });
 
     user1.clubs.push({ club: club1._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()) });
     user2.clubs.push({ club: club1._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()) });
@@ -179,6 +228,11 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     club1.messages.push(message2._id);
     club1.messages.push(message3._id);
     club1.messages.push(message4._id);
+    club1.messages.push(message5._id);
+    club1.messages.push(message6._id);
+    club1.messages.push(message7._id);
+    club1.messages.push(message8._id);
+    club1.messages.push(message9._id);
     club1.announcements.push(announcement1._id);
 
     club2.events.push(event1._id);
@@ -201,6 +255,11 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     await message2.save();
     await message3.save();
     await message4.save();
+    await message5.save();
+    await message6.save();
+    await message7.save();
+    await message8.save();
+    await message9.save();
 
     logger.info("Finished populating DB with seed data");
   }
