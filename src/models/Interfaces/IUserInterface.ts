@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IClub } from "../Club";
+import { IEvent } from "@models/Event";
 
 export interface IUserInterface extends mongoose.Document {
     name: string;
@@ -28,5 +29,6 @@ export interface IUserInterface extends mongoose.Document {
         notifications: {
             enabled: boolean
         }
-    }
+    },
+    allRSVP: mongoose.Schema.Types.ObjectId[] | IEvent[]
 }

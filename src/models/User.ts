@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema<IUser>(
                 enabled: { type: Boolean, default: true },
             }
         },
-        
+        allRSVP: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }]
     },
     { timestamps: true },
 );
