@@ -86,20 +86,24 @@ export const getCurrentEvents = (req: Request, res: Response): void => {
             const returnedEvents: IReturnedEvents[] = [];
 
             club.events.forEach(event => {
-                returnedEvents.push({
-                    name: event.name,
-                    description: event.description,
-                    startTime: event.startTime,
-                    endTime: event.endTime,
-                    longitude: event.longitude,
-                    latitude: event.latitude,
-                    shortLocation: event.shortLocation,
-                    picture: event.picture,
-                    clubId: club._id,
-                    clubName: club.name,
-                    lastUpdated: event.lastUpdated
-                });
+                if (new Date(event.endTime) < new Date(Date.now())) {
+                    returnedEvents.push({
+                        name: event.name,
+                        description: event.description,
+                        startTime: event.startTime,
+                        endTime: event.endTime,
+                        longitude: event.longitude,
+                        latitude: event.latitude,
+                        shortLocation: event.shortLocation,
+                        picture: event.picture,
+                        clubId: club._id,
+                        clubName: club.name,
+                        lastUpdated: event.lastUpdated
+                    });
+                }
             });
+
+            returnedEvents.sort((a, b) => (new Date(a.startTime) > new Date(b.startTime) ? 1 : -1));
 
             res.send(returnedEvents);
             return;
