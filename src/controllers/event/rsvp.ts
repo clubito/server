@@ -120,7 +120,7 @@ export const postDeleteRsvp = async (req: Request, res: Response, next: NextFunc
 };
 
 export const getRsvp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { error } = postAddRsvpSchema.validate(req.body); // same schema
+    const { error } = postAddRsvpSchema.validate(req.query); // same schema
 
     if (error) {
         res.status(400).json({ "error": error.message });
@@ -129,7 +129,7 @@ export const getRsvp = async (req: Request, res: Response, next: NextFunction): 
     }
 
     try {
-        const { eventId } = req.body;
+        const { eventId } = req.query;
         const userId = req.userId;
 
         const user = await User.findById(userId).exec();
