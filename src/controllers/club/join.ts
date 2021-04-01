@@ -301,9 +301,7 @@ export const getAllJoinRequests = async (req: Request, res: Response, next: Next
             });
         });
 
-        const allClubs = currClub.joinRequests;
-
-        res.status(200).send(allClubs);
+        res.status(200).json({ joinRequests: returnedUsers });
         return;
     } catch (err) {
         return next(err);
