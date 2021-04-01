@@ -336,3 +336,23 @@ export const getForgot = (req: Request, res: Response, next: NextFunction): void
         return next(err);
     }
 };
+
+export const postLogout = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const userId = req.userId;
+
+        const user = await User.findById(userId).exec();
+
+        if (!user) {
+            res.status(400).json({ error: "User not found" });
+            return;
+        }
+
+        user.pushToken = "";
+        await user.save();
+        res.status(200).json({ message: "Successfully logged out" });
+        return;
+    } catch (err) {
+        return next(err);
+    }
+};
