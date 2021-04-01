@@ -34,7 +34,13 @@ const userSchema = new mongoose.Schema<IUser>(
         clubTags: [{ type: String, enum: CLUB_TAGS }],
         banned: { type: Boolean, default: false },
         pushToken: { type: String, default: "" },
-        bio: { type: String, default: "" }
+        bio: { type: String, default: "" },
+        settings: {
+            notifications: {
+                enabled: { type: Boolean, default: true },
+            }
+        },
+        allRSVP: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }]
     },
     { timestamps: true },
 );

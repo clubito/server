@@ -15,7 +15,9 @@ import * as userController from "./controllers/user";
 import * as clubController from "./controllers/club";
 import * as adminController from "./controllers/admin";
 import * as chatController from "./controllers/chat";
+import * as EventController from "./controllers/event";
 import * as notificationController from "./controllers/notifications";
+import * as announcementController from "./controllers/announcement";
 
 import User from "@models/User";
 import Club from "@models/Club";
@@ -23,8 +25,6 @@ import Announcement from "@models/Announcement";
 import Event from "@models/Event";
 import { CLUB_ROLE, CLUB_TAGS, APP_ROLE } from "@models/enums";
 import { authenticateJWT } from "./util/auth";
-// import * as homeController from "./controllers/home";
-// import * as homeController from "./controllers/home";
 import errorHandler from "errorhandler";
 
 import { createServer } from "http";
@@ -220,6 +220,8 @@ app.post("/clubs/request", authenticateJWT, clubController.postRequestClub);
 app.get("/clubs/requests", authenticateJWT, clubController.getAllJoinRequests);
 app.post("/clubs/request/approve", authenticateJWT, clubController.postClubApprove);
 app.post("/clubs/request/deny", authenticateJWT, clubController.postClubDeny);
+app.post("/clubs/kick", authenticateJWT, clubController.postClubKick);
+app.post("/clubs/announcement/create", authenticateJWT, announcementController.postSendAnnouncement);
 // TODO: create/edit/delete club events, approve/reject member registration, remove user from club, get (maybe add filter/search) all club events, get 1 event
 
 // Admin routes
@@ -239,7 +241,17 @@ app.post("/admin/users/unban", authenticateJWT, adminController.unbanUser);
 
 // notifcation routes
 app.post("/user/notifications/register", authenticateJWT, notificationController.postRegisterPushToken);
+app.post("/user/notifications/message", authenticateJWT, notificationController.postSendTestNotification);
+app.post("/user/notifications/clubmessage", authenticateJWT, notificationController.postSendTestClubNotification);
 // app.put("/user/notifications/settings", authenticateJWT, notificationController.postRegisterPushToken);
+
+
+// Event routes
+app.post("/clubs/event/create", authenticateJWT, EventController.postCreateEvent);
+app.put("/clubs/event/edit", authenticateJWT, EventController.putEditEvent);
+app.get("/clubs/event", authenticateJWT, EventController.getEvent);
+app.post("/clubs/event/rsvp", authenticateJWT, EventController.postAddRsvp);
+app.delete("/clubs/event/rsvp", authenticateJWT, EventController.postDeleteRsvp);
 
 /*
 register:

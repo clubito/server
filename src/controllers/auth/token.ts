@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import joi from "joi";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "@secrets";
@@ -11,15 +11,15 @@ const verifyTokenSchema = joi.object().keys({
     token: joi.string().required()
 });
 
-export const postTokenVerify = (req: Request, res: Response) : void => {
-    const {error} = verifyTokenSchema.validate(req.body);
+export const postTokenVerify = (req: Request, res: Response, next: NextFunction): void => {
+    const { error } = verifyTokenSchema.validate(req.body);
 
     if (error) {
-        res.status(400).json({"error": error.message});
+        res.status(400).json({ "error": error.message });
         return;
     }
 
-    const {token} = req.body;
+    const { token } = req.body;
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET) as IJWTInterface;
@@ -27,15 +27,14 @@ export const postTokenVerify = (req: Request, res: Response) : void => {
         User.findById(decoded.user_id).then(user => {
             if (user?.isDisabled) {
                 // User has deleted their account
-                res.status(400).json({message: "Invalid token"});
+                res.status(400).json({ message: "Invalid token" });
                 return;
             }
         });
 
-        res.status(200).json({message: "Valid token"});
+        res.status(200).json({ message: "Valid token" });
         return;
     } catch (e) {
-        res.status(400).json({message: "Invalid token"});
-        return;
+        return next(e);
     }
 };

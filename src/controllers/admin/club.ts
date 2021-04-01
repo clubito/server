@@ -5,7 +5,7 @@
 // 4) deny requests to join clubs
 // 5) GET all requests
 
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import Club from "@models/Club";
 import User from "@models/User";
 import joi from "joi";
@@ -57,7 +57,7 @@ export const getAllClubRequests = (req: Request, res: Response): void => {
         });
 };
 
-export const postApproveClubRequest = async (req: Request, res: Response): Promise<void> => {
+export const postApproveClubRequest = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = postApproveClubRequestSchema.validate(req.body);
 
     if (error) {
@@ -109,13 +109,11 @@ export const postApproveClubRequest = async (req: Request, res: Response): Promi
         return;
 
     } catch (err) {
-        logger.error(err);
-        res.status(500).json({ error: err });
-        return;
+        return next(err);
     }
 };
 
-export const postDenyClubRequest = async (req: Request, res: Response): Promise<void> => {
+export const postDenyClubRequest = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = postApproveClubRequestSchema.validate(req.body); // same schema so reusing here
 
     if (error) {
@@ -151,13 +149,11 @@ export const postDenyClubRequest = async (req: Request, res: Response): Promise<
         res.status(200).json({ message: "Successfully denied club request 😎" });
         return;
     } catch (err) {
-        logger.error(err);
-        res.status(500).json({ error: err });
-        return;
+        return next(err);
     }
 };
 
-export const deleteClub = async (req: Request, res: Response): Promise<void> => {
+export const deleteClub = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = deleteClubSchema.validate(req.body); // same schema so reusing here, dont @ me
 
     if (error) {
@@ -196,13 +192,11 @@ export const deleteClub = async (req: Request, res: Response): Promise<void> => 
         res.status(200).json({ message: "Successfully deleted club 😎" });
         return;
     } catch (err) {
-        logger.error(err);
-        res.status(500).json({ error: err });
-        return;
+        return next(err);
     }
 };
 
-export const undeleteClub = async (req: Request, res: Response): Promise<void> => {
+export const undeleteClub = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = deleteClubSchema.validate(req.body);
 
     if (error) {
@@ -241,13 +235,11 @@ export const undeleteClub = async (req: Request, res: Response): Promise<void> =
         res.status(200).json({ message: "Successfully undeleted club 😎" });
         return;
     } catch (err) {
-        logger.error(err);
-        res.status(500).json({ error: err });
-        return;
+        return next(err);
     }
 };
 
-export const getAllClubs = async (req: Request, res: Response): Promise<void> => {
+export const getAllClubs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = req.userId;
 
     try {
@@ -257,20 +249,18 @@ export const getAllClubs = async (req: Request, res: Response): Promise<void> =>
             res.status(403).json({ error: "Please use an admin account" });
             return;
         }
-        
-        const memberReturnFields: string = "name isConfirmed profilePicture banned email";
-        const announcementReturnFields: string = "message createdAt";
-        const eventReturnFields: string = "name description startTime endTime shortLocation";
+
+        const memberReturnFields = "name isConfirmed profilePicture banned email";
+        const announcementReturnFields = "message createdAt";
+        const eventReturnFields = "name description startTime endTime shortLocation";
         const allClubs = await Club.find({})
-        .populate({path: 'members.member', select: memberReturnFields})
-        .populate({path: "announcements", select: announcementReturnFields, options: {sort: {'createdAt': -1}}, perDocumentLimit: 1})
-        .populate({path: "events", select: eventReturnFields,  options: {sort: {'startTime': -1}}, perDocumentLimit: 1});
+            .populate({ path: "members.member", select: memberReturnFields })
+            .populate({ path: "announcements", select: announcementReturnFields, options: { sort: { "createdAt": -1 } }, perDocumentLimit: 1 })
+            .populate({ path: "events", select: eventReturnFields, options: { sort: { "startTime": -1 } }, perDocumentLimit: 1 });
 
         res.send(allClubs);
         return;
     } catch (err) {
-        logger.error(err);
-        res.status(500).json({ error: err });
-        return;
+        return next(err);
     }
 };

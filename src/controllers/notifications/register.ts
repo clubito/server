@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
@@ -8,7 +8,7 @@ const postRegisterPushTokenSchema = joi.object().keys({
     pushToken: joi.string().required()
 });
 
-export const postRegisterPushToken = async (req: Request, res: Response): Promise<void> => {
+export const postRegisterPushToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = postRegisterPushTokenSchema.validate(req.body); // makes sure pushtoken is specified
 
     if (error) {
@@ -37,8 +37,6 @@ export const postRegisterPushToken = async (req: Request, res: Response): Promis
         res.status(200).json({ message: "Successfully registered push token for user", userId: user._id });
         return;
     } catch (err) {
-        logger.error(err);
-        res.status(500).json({ error: err });
-        return;
+        return next(err);
     }
 };

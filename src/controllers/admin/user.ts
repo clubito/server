@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import User from "@models/User";
 import Club from "@models/Club";
 import joi from "joi";
@@ -47,7 +47,7 @@ export const getAllUsers = (req: Request, res: Response): void => {
         });
 };
 
-export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+export const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = deleteUserSchema.validate(req.body);
 
     if (error) {
@@ -112,14 +112,12 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
         res.status(200).json({ message: "Successfully deleted user" });
         return;
     } catch (err) {
-        logger.error(err);
-        res.status(500).json({ error: err });
-        return;
+        return next(err);
     }
 };
 
 
-export const banUser = async (req: Request, res: Response): Promise<void> => {
+export const banUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = deleteUserSchema.validate(req.body); // uses the same schema as delete user
 
     if (error) {
@@ -186,13 +184,11 @@ export const banUser = async (req: Request, res: Response): Promise<void> => {
         res.status(200).json({ message: "Successfully banned user" });
         return;
     } catch (err) {
-        logger.error(err);
-        res.status(500).json({ error: err });
-        return;
+        return next(err);
     }
 };
 
-export const unbanUser = async (req: Request, res: Response): Promise<void> => {
+export const unbanUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = deleteUserSchema.validate(req.body); // uses the same schema as delete user
 
     if (error) {
@@ -261,8 +257,6 @@ export const unbanUser = async (req: Request, res: Response): Promise<void> => {
         res.status(200).json({ message: "Successfully unbanned user" });
         return;
     } catch (err) {
-        logger.error(err);
-        res.status(500).json({ error: err });
-        return;
+        return next(err);
     }
 };

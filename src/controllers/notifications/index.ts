@@ -1,3 +1,3 @@
 import { postRegisterPushToken } from "./register";
-
-export { postRegisterPushToken };
+import { postSendTestNotification, postSendTestClubNotification } from "./message";
+export { postRegisterPushToken, postSendTestNotification, postSendTestClubNotification };
