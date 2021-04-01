@@ -280,7 +280,8 @@ app.get("/clubs/event/rsvp", authenticateJWT, EventController.getRsvp);
 app.get("/clubs/events/current", authenticateJWT, EventController.getCurrentEvents);
 
 // Chat routes
-app.get("/clubs/messages", authenticateJWT, chatController.getThreadMessages);
+app.get("/clubs/threads", authenticateJWT, chatController.getThreadMessages);
+app.get("/clubs/messages", authenticateJWT, chatController.getMessagesByClub);
 
 /*
 register:

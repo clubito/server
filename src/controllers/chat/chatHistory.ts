@@ -2,6 +2,8 @@
 import Club from "@models/Club";
 import User from "@models/User";
 import { Request, Response } from "express";
+import joi from "joi";
+import { ObjectId } from "mongodb";
 
 export const getThreadMessages = async (req: Request, res: Response): Promise<void> => {
     const userId = req.userId;
@@ -49,6 +51,61 @@ export const getThreadMessages = async (req: Request, res: Response): Promise<vo
         return;
 
     } catch(err) {
+        res.status(500).json({
+            error: err
+        })
+        return;
+    }
+}
+
+const getMessagesByClubSchema = joi.object().keys({
+    id: joi.string().custom((value, helper) => {
+        if (ObjectId.isValid(value)) {
+            return value;
+        } else {
+            return helper.message({ custom: "id is not valid" });
+        }
+    }).required()
+});
+
+export const getMessagesByClub = async (req: Request, res: Response): Promise<void> => {
+    const { error } = getMessagesByClubSchema.validate(req.query);
+    if (error) {
+        res.status(400).json({ "error": error.message });
+        return;
+    }
+
+    const clubId = req.query.id;
+    try {
+        const club = await Club.findById(clubId)
+        .populate({path: "messages",  options: { sort: {'timestamp': 1}}, populate: {path: "author", select: "profilePicture"}});
+        console.log(club);
+        if (club == null) {
+            res.status(500).json({
+                error: `No club with the id ${clubId} is found`
+            })
+            return;
+        }
+        else if (club.messages == null) {
+            res.status(500).json({
+                error: "Messages is null for the club"
+            })
+            return;
+        }
+
+        const messageArray = club.messages.map(message => {
+            return {
+                authorId: message.author._id,
+                authorName: message.authorName,
+                anotherPicture: message.author.profilePicture,
+                timestamp: message.timestamp,
+                body: message.body
+            }
+        })
+
+        res.status(200).json(messageArray);
+
+    } catch (err) {
         res.status(500).json({
             error: err
         })
