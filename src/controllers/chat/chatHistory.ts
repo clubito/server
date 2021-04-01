@@ -113,7 +113,7 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
         let prevDate = new Date("1970-01-01");
         if (userClub.club.messages) {
             userClub.club.messages.forEach(message => {
-                if (new Date(message.timestamp).getDate() > new Date(prevDate).getDate()) {
+                if (new Date(message.timestamp).setHours(0, 0, 0, 0) > new Date(prevDate).setHours(0, 0, 0, 0)) {
                     prevDate = new Date(message.timestamp);
                     userMessageArray.push({
                         authorId: "",
@@ -126,7 +126,9 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
                     });
                 }
                 if (currentUser != message.author._id) {
-                    if (userMessageArray.length > 0) messageArray.push(userMessageArray);
+                    if (userMessageArray.length > 0) {
+                        messageArray.push(userMessageArray);
+                    }
                     userMessageArray = [];
                     currentUser = message.author._id;
                     userMessageArray.push({
