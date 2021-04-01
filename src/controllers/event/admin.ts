@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // create/edit/delete events
 import { Request, Response } from "express";
 import Club from "@models/Club";
@@ -7,6 +8,7 @@ import joi from "joi";
 import { CLUB_ROLE } from "@models/enums";
 import { ObjectId } from "mongodb";
 import Event from "@models/Event";
+import { sendEventEditedNotification } from "@notifications";
 
 const postCreateEventSchema = joi.object().keys({
     name: joi.string().required(),
@@ -43,7 +45,7 @@ const putEditEventSchema = joi.object().keys({
             return helper.message({ custom: "id is not valid" });
         }
     }).required(),
-    notifyUsers: joi.boolean()
+    notifyUsers: joi.boolean().required()
 });
 
 export const postCreateEvent = (req: Request, res: Response): void => {
@@ -160,7 +162,8 @@ export const putEditEvent = (req: Request, res: Response): void => {
         latitude,
         shortLocation,
         picture,
-        eventId } = req.body;
+        eventId,
+        notifyUsers } = req.body;
     const userId = req.userId;
 
     User.findById(userId)
@@ -171,14 +174,18 @@ export const putEditEvent = (req: Request, res: Response): void => {
             }
 
             Event.findOne({ _id: eventId })
+                .populate("club")
                 .then(event => {
                     if (!event) {
                         res.status(400).json({ error: "Event does not exist" });
                         return;
                     }
 
+                    let userRole = CLUB_ROLE.NONMEMBER;
+
                     user.clubs.forEach(club => {
                         if (club.club.equals(event.club)) {
+                            userRole = club.role;
                             if (club.role != CLUB_ROLE.OFFICER && club.role != CLUB_ROLE.OWNER) {
                                 res.status(400).json({ error: "Current user does not have permission to do that." });
                                 return;
@@ -219,8 +226,17 @@ export const putEditEvent = (req: Request, res: Response): void => {
                     }
 
                     event.save().then(() => {
-                        res.status(200).json({ message: "Successfully updated event" });
-                        return;
+                        if (notifyUsers) {
+                            sendEventEditedNotification(event._id, (event.club as any).name, userRole, event.name).then(() => {
+                                res.status(200).json({ message: "Successfully updated event" });
+                                return;
+                            }).catch(e => {
+                                throw e;
+                            });
+                        } else {
+                            res.status(200).json({ message: "Successfully updated event " });
+                            return;
+                        }
                     }).catch(e => {
                         res.status(500).json({ error: "There was an error updating the event" });
                         logger.error(e);
