@@ -75,8 +75,8 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
         return;
     }
 
-    const userId  = req.userId;
-    const clubId  = req.query.id;
+    const userId = req.userId;
+    const clubId = req.query.id;
     try {
         const user = await User.findById(userId)
         .populate({path: "clubs.club", populate: {path: "messages",  options: { sort: {'timestamp': 1}}, populate: {path: "author", select: "profilePicture"}}});
@@ -95,7 +95,7 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
             return;
         }
 
-        const userClub = user.clubs.find(userClub => userClub.club._id == clubId)
+        const userClub = (user.clubs as any[]).find(userClub => userClub.club._id == clubId)
    
         if (userClub == null) {
             res.status(500).json({
