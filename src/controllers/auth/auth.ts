@@ -33,7 +33,7 @@ export const postLogin = (req: Request, res: Response): void => {
 
     const { email, password } = req.body;
 
-    User.findOne({ "email": email }).exec((err, user) => {
+    User.findOne({ "email": email, "banned": false }).exec((err, user) => {
         if (err) {
             res.status(500).json({ "error": "Error authenticating user: " + err });
             logger.debug(err);

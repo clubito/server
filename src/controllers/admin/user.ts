@@ -180,10 +180,10 @@ export const banUser = async (req: Request, res: Response, next: NextFunction): 
                 });
         });
 
+        await sendBannedNotificationToUser(user._id);
         user.banned = true;
         user.pushToken = "";
         await user.save();
-        await sendBannedNotificationToUser(user._id);
         res.status(200).json({ message: "Successfully banned user" });
         return;
     } catch (err) {
