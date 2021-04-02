@@ -9,7 +9,8 @@ export const getThreadMessages = async (req: Request, res: Response): Promise<vo
     const userId = req.userId;
     try {
         const user = await User.findById(userId)
-            .populate({ path: "clubs.club", populate: { path: "messages", options: { sort: { "timestamp": 1 } }, populate: { path: "author", select: "profilePicture" } } });
+        .populate({ path: "clubs.club", populate: { path: "messages", options: { sort: { "timestamp": 1 } }, populate: { path: "author", select: "profilePicture" } } });
+
         if (user == null) {
             res.status(500).json({
                 error: "User not identified"
@@ -49,9 +50,7 @@ export const getThreadMessages = async (req: Request, res: Response): Promise<vo
         return;
 
     } catch (err) {
-        res.status(500).json({
-            error: err
-        });
+        res.status(200).json([]);
         return;
     }
 };
