@@ -3,6 +3,7 @@ import Message from "@models/Message";
 import Club from "@models/Club";
 
 import { Server, Socket } from "socket.io";
+import {sendChatNotification} from "@notifications";
 
 const table: any = {};
 
@@ -59,9 +60,14 @@ export const chatServer = (io: Server): void => {
             })
             try {
                 const club = await Club.findById(clubId);
+                if (!club) {
+                    return callback(`Club ${clubId} does not exist`) 
+                } 
                 club?.messages.push(message._id);
-                await club?.save();
+                await club.save();
                 await message.save();
+                const currUserRole = (club.members as any[]).find(user => { return user.member.equals(userObj.userId); }).role;
+                await sendChatNotification(userObj.userId, clubId, club.name, currUserRole, body);
             } catch (err) {
                 return callback(err);
             }
