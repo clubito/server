@@ -78,7 +78,8 @@ export const getEvent = async (req: Request, res: Response, next: NextFunction):
             name: event.name,
             picture: event.picture,
             shortLocation: event.shortLocation,
-            startTime: event.startTime
+            startTime: event.startTime,
+            isRsvp: false
         };
 
         if (event.rsvpUsers.some(user => user.equals(userId))) {
@@ -129,7 +130,8 @@ export const getCurrentEvents = (req: Request, res: Response): void => {
                         picture: event.picture,
                         clubId: club._id,
                         clubName: club.name,
-                        lastUpdated: event.lastUpdated
+                        lastUpdated: event.lastUpdated,
+                        isRsvp: false
                     });
                 }
             });
