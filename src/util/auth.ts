@@ -11,40 +11,44 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction): void 
         return;
     }
     const authHeader = req.headers.authorization;
-    if (authHeader.startsWith("Bearer ")) {
-        const token = authHeader.substring(7, authHeader.length);
+    extractUserIdFromToken(authHeader)
+        .then(userId => {
+            req.userId = userId;
+            next();
+        })
+        .catch(err => {
+            res.status(400).json({ message: err });
+            return;
+        });
+};
+
+const extractUserIdFromToken = async (bearerToken: string): Promise<string> => {
+    if (bearerToken.startsWith("Bearer ")) {
+        const token = bearerToken.substring(7, bearerToken.length);
         try {
             const decoded = jwt.verify(token, JWT_SECRET) as IJWTInterface;
+            const user = await User.findById(decoded.user_id).exec();
+            if (!user) {
+                return Promise.reject("User does not exist");
+            }
 
-            User.findById(decoded.user_id).then(user => {
-                if (!user) {
-                    res.status(400).json({ message: "User does not exist" });
-                    return;
-                }
+            if (user.isDisabled) {
+                // User has deleted their account
+                return Promise.reject("Unauthorized");
+            }
 
-                if (user.isDisabled) {
-                    // User has deleted their account
-                    res.status(401).json({ message: "Unauthorized" });
-                    return;
-                }
+            if (user.banned) {
+                // user is banned, don't let them proceed
+                return Promise.reject("User is banned");
+            }
 
-                if (user.banned) {
-                    // user is banned, don't let them proceed
-                    res.status(401).json({ message: "User is banned" });
-                    return;
-                }
-
-                // Token is valid and user exists
-                req.userId = decoded.user_id;
-                next();
-            });
+            // Token is valid and user exists
+            return Promise.resolve(decoded.user_id);
         } catch (e) {
-            res.status(401).json({ message: "Unauthorized" });
-            return;
+            return Promise.reject("Unauthorized");
         }
     } else {
-        res.status(400).json({ message: "No bearer token" });
-        return;
+        return Promise.reject("No bearer token");
     }
 };
 
