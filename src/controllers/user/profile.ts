@@ -47,6 +47,30 @@ interface IReturnedUserProfile {
     }
 }
 
+interface IReturnedAnotherUserProfile {
+    name: string,
+    email: string,
+    id: string,
+    profilePicture: string,
+    clubs: {
+        name: string,
+        description: string,
+        logo: string,
+        role: string,
+        id: string
+    }[],
+    joinRequests: {
+        name: string,
+        description: string,
+        logo: string,
+        status: string,
+        id: string
+    }[],
+    tags: string[],
+    joinDate: Date,
+    bio: string
+}
+
 export const getUserProfile = (req: Request, res: Response): void => {
     const userId = req.userId;
 
@@ -266,7 +290,7 @@ export const getAnotherUserProfile = (req: Request, res: Response): void => {
                     .join(" ");
             });
 
-            const ret: IReturnedUserProfile = {
+            const ret: IReturnedAnotherUserProfile = {
                 id: user._id,
                 name: user.name,
                 email: user.email,
