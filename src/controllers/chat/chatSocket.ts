@@ -5,14 +5,17 @@ import Club from "@models/Club";
 import { Server, Socket } from "socket.io";
 import {sendChatNotification} from "@notifications";
 
+import {extractUserIdFromToken} from "../../util/auth";
+
 const table: any = {};
 
 export const chatServer = (io: Server): void => {
     io.on("connection", (socket: Socket) => {
         console.log("New connection");
-        socket.on("login", async ({userId}, callback) => {
+        socket.on("login", async ({bearerToken}, callback) => {
             const socketId = socket.id;
             try {
+                const userId = await extractUserIdFromToken(bearerToken);
                 const user = await User.findById(userId).populate({path: "clubs.club"});
                 if (user == null) return callback("User is not found");
                 const clubsBelongToUser = user?.clubs.map(userClub => String(userClub.club._id));
@@ -35,7 +38,7 @@ export const chatServer = (io: Server): void => {
             const userObj = table[socket.id];
             if (userObj == null) return callback(`userObj for socket ${socket.id} is not found`);
             // const club = await Club.findById(clubId);
-            const timeNow = Date.now();
+            const timeNow = new Date();
             socket.to(clubId).emit("sendMessage", {
                 clubId: clubId,
                 chatMessage: {

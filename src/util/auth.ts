@@ -52,4 +52,4 @@ const extractUserIdFromToken = async (bearerToken: string): Promise<string> => {
     }
 };
 
-export { authenticateJWT };
+export { authenticateJWT, extractUserIdFromToken };
