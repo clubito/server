@@ -9,7 +9,7 @@ export const getThreadMessages = async (req: Request, res: Response): Promise<vo
     const userId = req.userId;
     try {
         const user = await User.findById(userId)
-        .populate({ path: "clubs.club", populate: { path: "messages", options: { sort: { "timestamp": 1 } }, populate: { path: "author", select: "profilePicture" } } });
+            .populate({ path: "clubs.club", populate: { path: "messages", options: { sort: { "timestamp": 1 } }, populate: { path: "author", select: "profilePicture" } } });
 
         if (user == null) {
             res.status(500).json({
@@ -78,54 +78,55 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
         const user = await User.findById(userId)
             .populate({ path: "clubs.club", populate: { path: "messages", options: { sort: { "timestamp": 1 } }, populate: { path: "author", select: "profilePicture" } } });
 
-            // const club = await Club.findById(clubId)
-            // .populate({path: "messages",  options: { sort: {'timestamp': 1}}, populate: {path: "author", select: "profilePicture"}});
-            if (user == null) {
-                res.status(500).json({
-                    error: "User not identified"
-                });
-                return;
-            }
-            else if (user.clubs == null) {
-                res.status(500).json({
-                    error: "Club is null for the user"
-                });
-                return;
-            }
-            
-            const userClub = (user.clubs as any[]).find(userClub => userClub.club._id == clubId);
-            
-            if (userClub == null) {
-                res.status(500).json({
-                    error: `No club with id ${clubId} is found for user ${user.name}`
-                });
-                return;
-            } else if (userClub.club == null) {
-                res.status(500).json({
-                    error: "club field is null for the Club"
-                });
-                return;
-            }
-            
-            let userMessageArray: any[] = [];
-            const messageArray: any[] = [];
-            
-            if (userClub.club.messages) {
-                let prevDate = new Date("1970-01-01");
-                userClub.club.messages.forEach(message => {
-                    if (new Date(message.timestamp).setHours(0, 0, 0, 0) > new Date(prevDate).setHours(0, 0, 0, 0)) {
-                        prevDate = new Date(message.timestamp);
-                        if (userMessageArray.length > 0) {
-                            messageArray.push(userMessageArray);
-                            userMessageArray = [];
-                        }
-                        messageArray.push([{
-                            timestamp: message.timestamp,
-                            isDate: true
-                        }]);
+        // const club = await Club.findById(clubId)
+        // .populate({path: "messages",  options: { sort: {'timestamp': 1}}, populate: {path: "author", select: "profilePicture"}});
+        if (user == null) {
+            res.status(500).json({
+                error: "User not identified"
+            });
+            return;
+        }
+        else if (user.clubs == null) {
+            res.status(500).json({
+                error: "Club is null for the user"
+            });
+            return;
+        }
+
+        const userClub = (user.clubs as any[]).find(userClub => userClub.club._id == clubId);
+
+        if (userClub == null) {
+            res.status(500).json({
+                error: `No club with id ${clubId} is found for user ${user.name}`
+            });
+            return;
+        } else if (userClub.club == null) {
+            res.status(500).json({
+                error: "club field is null for the Club"
+            });
+            return;
+        }
+
+        let userMessageArray: any[] = [];
+        const messageArray: any[] = [];
+
+
+        if (userClub.club.messages) {
+            let prevDate = new Date("1970-01-01");
+            let currentUser = userClub.club.messages[0].author._id;
+            userClub.club.messages.forEach(message => {
+                if (new Date(message.timestamp).setHours(0, 0, 0, 0) > new Date(prevDate).setHours(0, 0, 0, 0)) {
+                    prevDate = new Date(message.timestamp);
+                    if (userMessageArray.length > 0) {
+                        messageArray.push(userMessageArray);
+                        userMessageArray = [];
                     }
+                    messageArray.push([{
+                        timestamp: message.timestamp,
+                        isDate: true
+                    }]);
+                }
                 if (userClub.club.messages.length > 0) {
-                    let currentUser = userClub.club.messages[0].author._id;
                     if (currentUser != message.author._id) {
                         if (userMessageArray.length > 0) {
                             messageArray.push(userMessageArray);
