@@ -12,12 +12,17 @@ const table: any = {};
 export const chatServer = (io: Server): void => {
     io.on("connection", (socket: Socket) => {
         console.log("New connection");
-        socket.on("login", async ({bearerToken}, callback) => {
+        socket.on("login", async ({bearerToken}) => {
             const socketId = socket.id;
             try {
                 const userId = await extractUserIdFromToken(bearerToken);
+                console.log(`UserId for Socket login is ${userId}`);
                 const user = await User.findById(userId).populate({path: "clubs.club"});
-                if (user == null) return callback("User is not found");
+                if (user == null) {
+                    // return callback("User is not found");
+                    console.log("User is not found");
+                    return;
+                }
                 const clubsBelongToUser = user?.clubs.map(userClub => String(userClub.club._id));
 
                 // make the current user to connect to all his/her clubs group
@@ -29,14 +34,20 @@ export const chatServer = (io: Server): void => {
                 }
                 console.log(table);
             }catch(err){
-                return callback(err)
+                // return callback(err)
+                console.log(err)
+                return;
             }
         })
 
 
-        socket.on("sendMessage", async ({clubId, body}, callback) => {
+        socket.on("sendMessage", async ({clubId, body}) => {
             const userObj = table[socket.id];
-            if (userObj == null) return callback(`userObj for socket ${socket.id} is not found`);
+            if (userObj == null) {
+                // return callback(`userObj for socket ${socket.id} is not found`);
+                console.log(`userObj for socket ${socket.id} is not found`);
+                return;
+            }
             // const club = await Club.findById(clubId);
             const timeNow = new Date();
             socket.to(clubId).emit("sendMessage", {
@@ -64,7 +75,9 @@ export const chatServer = (io: Server): void => {
             try {
                 const club = await Club.findById(clubId);
                 if (!club) {
-                    return callback(`Club ${clubId} does not exist`) 
+                    // return callback(`Club ${clubId} does not exist`) 
+                    console.log(`Club ${clubId} does not exist`) 
+                    return;
                 } 
                 club?.messages.push(message._id);
                 await club.save();
@@ -72,7 +85,9 @@ export const chatServer = (io: Server): void => {
                 const currUserRole = (club.members as any[]).find(user => { return user.member.equals(userObj.userId); }).role;
                 await sendChatNotification(userObj.userId, clubId, club.name, currUserRole, body);
             } catch (err) {
-                return callback(err);
+                // return callback(err);
+                console.log(err)
+                return;
             }
         })
 
