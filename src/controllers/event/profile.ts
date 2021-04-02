@@ -17,7 +17,8 @@ interface IReturnedEvent {
     picture: string,
     clubId: string,
     clubName: string,
-    lastUpdated: Date
+    lastUpdated: Date,
+    isRsvp: boolean
 }
 
 const getEventSchema = joi.object().keys({
@@ -51,6 +52,7 @@ export const getEvent = async (req: Request, res: Response, next: NextFunction):
 
     try {
         const eventId = req.query.id;
+        const userId = req.userId;
 
         const event = await Event.findById(eventId).exec();
         const club = await Club.findOne({ _id: event?.club, "deleted.isDeleted": false }).exec();
@@ -78,6 +80,12 @@ export const getEvent = async (req: Request, res: Response, next: NextFunction):
             shortLocation: event.shortLocation,
             startTime: event.startTime
         };
+
+        if (event.rsvpUsers.some(user => user.equals(userId))) {
+            returnedEvent.isRsvp = true;
+        } else {
+            returnedEvent.isRsvp = false;
+        }
 
         res.send(returnedEvent);
         return;
