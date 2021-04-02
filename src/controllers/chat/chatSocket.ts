@@ -1,5 +1,6 @@
 import User from "@models/User";
 import Message from "@models/Message";
+import Club from "@models/Club";
 
 import { Server, Socket } from "socket.io";
 
@@ -8,14 +9,12 @@ const table: any = {};
 export const chatServer = (io: Server): void => {
     io.on("connection", (socket: Socket) => {
         console.log("New connection");
-        socket.on("login", async (obj, callback) => {
+        socket.on("login", async ({userId}, callback) => {
             const socketId = socket.id;
-            const userId = obj.userId;
             try {
                 const user = await User.findById(userId).populate({path: "clubs.club"});
-                if (user == null) return callback("error");
+                if (user == null) return callback("User is not found");
                 const clubsBelongToUser = user?.clubs.map(userClub => String(userClub.club._id));
-                if(clubsBelongToUser == null) return callback("error");
 
                 // make the current user to connect to all his/her clubs group
                 socket.join(clubsBelongToUser);
@@ -26,15 +25,15 @@ export const chatServer = (io: Server): void => {
                 }
                 console.log(table);
             }catch(err){
-                return callback("bug")
+                return callback(err)
             }
         })
 
 
-        socket.on("sendMessage", async ({clubId, body}) => {
+        socket.on("sendMessage", async ({clubId, body}, callback) => {
             const userObj = table[socket.id];
+            if (userObj == null) return callback(`userObj for socket ${socket.id} is not found`);
             // const club = await Club.findById(clubId);
-            if (userObj == null) return;
             const timeNow = Date.now();
             socket.to(clubId).emit("sendMessage", {
                 clubId: clubId,
@@ -58,7 +57,14 @@ export const chatServer = (io: Server): void => {
                 body: body,
                 attachement: ""
             })
-            await message.save();
+            try {
+                const club = await Club.findById(clubId);
+                club?.messages.push(message._id);
+                await club?.save();
+                await message.save();
+            } catch (err) {
+                return callback(err);
+            }
         })
 
 
@@ -67,8 +73,8 @@ export const chatServer = (io: Server): void => {
         // })
 
         socket.on("disconnect", () => {
-            console.log("Socket is closed");
             delete table[socket.id];
+            console.log(`Socket ${socket.id} closed`);
             console.log(table);
         })
 
