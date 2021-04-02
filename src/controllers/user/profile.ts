@@ -313,7 +313,8 @@ export const getUsersEvents = async (req: Request, res: Response, next: NextFunc
                     latitude: event.latitude,
                     shortLocation: event.shortLocation,
                     picture: event.picture,
-                    club: event.club,
+                    clubId: event.club,
+                    clubName: club.club.name,
                     lastUpdated: event.lastUpdated,
                     id: event._id
                 });
