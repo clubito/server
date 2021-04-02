@@ -39,7 +39,12 @@ interface IReturnedUserProfile {
     }[],
     tags: string[],
     joinDate: Date,
-    bio: string
+    bio: string,
+    settings: {
+        notifications: {
+            enabled: boolean
+        }
+    }
 }
 
 export const getUserProfile = (req: Request, res: Response): void => {
@@ -78,7 +83,12 @@ export const getUserProfile = (req: Request, res: Response): void => {
                 tags: properCaseUserClubTags,
                 profilePicture: user.profilePicture,
                 joinDate: user._id.getTimestamp(),
-                bio: user.bio
+                bio: user.bio,
+                settings: {
+                    notifications: {
+                        enabled: user.settings.notifications.enabled
+                    }
+                }
             };
             user.clubs.forEach(club => {
                 if (!club.club.deleted.isDeleted) {
