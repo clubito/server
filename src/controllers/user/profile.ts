@@ -39,6 +39,35 @@ interface IReturnedUserProfile {
     }[],
     tags: string[],
     joinDate: Date,
+    bio: string,
+    settings: {
+        notifications: {
+            enabled: boolean
+        }
+    }
+}
+
+interface IReturnedAnotherUserProfile {
+    name: string,
+    email: string,
+    id: string,
+    profilePicture: string,
+    clubs: {
+        name: string,
+        description: string,
+        logo: string,
+        role: string,
+        id: string
+    }[],
+    joinRequests: {
+        name: string,
+        description: string,
+        logo: string,
+        status: string,
+        id: string
+    }[],
+    tags: string[],
+    joinDate: Date,
     bio: string
 }
 
@@ -78,7 +107,12 @@ export const getUserProfile = (req: Request, res: Response): void => {
                 tags: properCaseUserClubTags,
                 profilePicture: user.profilePicture,
                 joinDate: user._id.getTimestamp(),
-                bio: user.bio
+                bio: user.bio,
+                settings: {
+                    notifications: {
+                        enabled: user.settings.notifications.enabled
+                    }
+                }
             };
             user.clubs.forEach(club => {
                 if (!club.club.deleted.isDeleted) {
@@ -256,7 +290,7 @@ export const getAnotherUserProfile = (req: Request, res: Response): void => {
                     .join(" ");
             });
 
-            const ret: IReturnedUserProfile = {
+            const ret: IReturnedAnotherUserProfile = {
                 id: user._id,
                 name: user.name,
                 email: user.email,

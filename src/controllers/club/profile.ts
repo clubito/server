@@ -18,7 +18,8 @@ interface IReturnedClubProfile {
         id: string,
         name: string,
         role: string,
-        profilePicture: string
+        profilePicture: string,
+        approvalDate: Date
     }[],
     tags: string[],
     announcements: {
@@ -115,12 +116,14 @@ export const getClubProfile = (req: Request, res: Response): void => {
                     };
 
                     club.members.forEach(member => {
-                        console.log(member);
+                        // logger.fatal();
+                        const approvalDate = member.member.clubs.find(club => club.club.equals(id)).approvalDate;
                         returnedProfile.members.push({
                             id: member.member._id,
                             name: member.member.name,
                             profilePicture: member.member.profilePicture,
-                            role: member.role
+                            role: member.role,
+                            approvalDate
                         });
                     });
 
