@@ -52,6 +52,26 @@ export const sendJrDeniedNotificationToUser = async (userId: string, clubId: str
     }
 };
 
+export const sendChatNotification = async (userId: string, clubId: string, clubName: string, clubRole: string, messageBody: string): Promise<boolean> => {
+    try {
+        const chatNotification: INotificationInterface = {
+            body: `${messageBody}`,
+            title: `${clubName}`,
+            data: {
+                type: "chat",
+                id: clubId,
+                title: clubName,
+                role: clubRole
+            }
+        };
+        await sendNotificationToClubNotSelf(userId, clubId, chatNotification);
+        return Promise.resolve(true);
+    } catch (err) {
+        logger.error(err);
+        return Promise.resolve(false);
+    }
+};
+
 export const sendKickedNotificationToUser = async (userId: string, clubId: string, clubName: string, userRole: string, reason: string): Promise<boolean> => {
     try {
         const kickNotification: INotificationInterface = {
@@ -210,6 +230,53 @@ export const sendNotificationToClub = async (clubId: string, notification: INoti
             if (member?.member?.pushToken) {
                 if (member?.member?.settings?.notifications?.enabled) {
                     sendToArray.push(member.member.pushToken);
+                }
+            }
+        });
+
+        if (sendToArray.length === 0) {
+            // The club has not members with notifications turned on
+            return Promise.resolve(true);
+        }
+
+        const messages: ExpoPushMessage[] = [];
+        messages.push({
+            to: sendToArray,
+            sound: "default",
+            body: notification.body ?? "New Clubito notification!",
+            data: notification.data,
+            title: notification.title ?? "Clubito"
+        });
+        await expo.sendPushNotificationsAsync(messages);
+        return Promise.resolve(true);
+    } catch (err) {
+        logger.error(err);
+        throw err;
+    }
+};
+
+export const sendNotificationToClubNotSelf = async (userId: string, clubId: string, notification: INotificationInterface): Promise<boolean> => {
+    try {
+        logger.info("Sending notification to club not self", clubId, notification);
+        const club = await Club
+            .findOne({ _id: clubId, "deleted.isDeleted": false })
+            .populate({
+                path: "members",
+                populate: { path: "member" }
+            }).exec();
+
+        if (!club) {
+            throw new Error("Club not found");
+        }
+
+        const sendToArray: string[] = [];
+
+        club.members.forEach(member => {
+            if (!member.member.equal(userId)) { // dont send to self
+                if (member?.member?.pushToken) {
+                    if (member?.member?.settings?.notifications?.enabled) {
+                        sendToArray.push(member.member.pushToken);
+                    }
                 }
             }
         });
