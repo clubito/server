@@ -38,15 +38,17 @@ export const chatServer = (io: Server): void => {
             const timeNow = Date.now();
             socket.to(clubId).emit("sendMessage", {
                 clubId: clubId,
-                authorId: userObj.userId,
-                authorName: userObj.userName,
-                authorPicture: userObj.userPicture,
-                body: body,
-                timestamp: timeNow,
-                isSelf: false,
-                isDate: false
+                chatMessage: {
+                    authorId: userObj.userId,
+                    authorName: userObj.userName,
+                    authorPicture: userObj.userPicture,
+                    body: body,
+                    timestamp: timeNow,
+                    isSelf: false,
+                    isDate: false
+                }
             });
-
+        
             // add to database
             const message = new Message({
                 author: userObj.userId,
