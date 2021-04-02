@@ -334,7 +334,10 @@ export const getUsersRsvps = async (req: Request, res: Response, next: NextFunct
     try {
         const user = await User
             .findById(userId)
-            .populate("allRSVP")
+            .populate({
+                path: "allRSVP",
+                populate: { path: "club" }
+            })
             .exec();
 
         const ret: any[] = [];
@@ -349,9 +352,10 @@ export const getUsersRsvps = async (req: Request, res: Response, next: NextFunct
                 latitude: event.latitude,
                 shortLocation: event.shortLocation,
                 picture: event.picture,
-                club: event.club,
                 lastUpdated: event.lastUpdated,
-                id: event._id
+                id: event._id,
+                clubId: event.club._id,
+                clubName: event.club.name,
             });
         });
 
