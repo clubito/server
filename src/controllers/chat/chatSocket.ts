@@ -79,7 +79,7 @@ export const chatServer = (io: Server): void => {
                     console.log(`Club ${clubId} does not exist`) 
                     return;
                 } 
-                club?.messages.push(message._id);
+                club.messages.push(message._id);
                 await club.save();
                 await message.save();
                 const currUserRole = (club.members as any[]).find(user => { return user.member.equals(userObj.userId); }).role;

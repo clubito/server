@@ -272,7 +272,7 @@ export const sendNotificationToClubNotSelf = async (userId: string, clubId: stri
         const sendToArray: string[] = [];
 
         club.members.forEach(member => {
-            if (!member.member.equal(userId)) { // dont send to self
+            if (!member.member.equals(userId)) { // dont send to self
                 if (member?.member?.pushToken) {
                     if (member?.member?.settings?.notifications?.enabled) {
                         sendToArray.push(member.member.pushToken);
