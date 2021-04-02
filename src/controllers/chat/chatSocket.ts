@@ -14,18 +14,17 @@ export const chatServer = (io: Server): void => {
             try {
                 const user = await User.findById(userId).populate({path: "clubs.club"});
                 if (user == null) return callback("error");
-                const clubsBelongToUser = user?.clubs.map(userClub => userClub.club._id);
+                const clubsBelongToUser = user?.clubs.map(userClub => String(userClub.club._id));
                 if(clubsBelongToUser == null) return callback("error");
 
                 // make the current user to connect to all his/her clubs group
-                clubsBelongToUser.forEach(clubId => {
-                    socket.join(clubId);
-                })
+                socket.join(clubsBelongToUser);
                 table[socketId] = {
                     userId,
                     userName: user.name,
                     userPicture: user.profilePicture
                 }
+                console.log(table);
             }catch(err){
                 return callback("bug")
             }
@@ -57,7 +56,6 @@ export const chatServer = (io: Server): void => {
                 body: body,
                 attachement: ""
             })
-            // console.log(message);
             await message.save();
         })
 
@@ -69,6 +67,7 @@ export const chatServer = (io: Server): void => {
         socket.on("disconnect", () => {
             console.log("Socket is closed");
             delete table[socket.id];
+            console.log(table);
         })
 
     });
