@@ -317,6 +317,6 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {}
 });
-io.on("connection", chatController.chatServer);
+chatController.chatServer(io);
 
 export default httpServer;
