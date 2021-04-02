@@ -111,7 +111,7 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
         const messageArray: any[] = [];
 
 
-        if (userClub.club.messages) {
+        if (userClub.club.messages && userClub.club.messages.length > 0) {
             let prevDate = new Date("1970-01-01");
             let currentUser = userClub.club.messages[0].author._id;
             userClub.club.messages.forEach(message => {
