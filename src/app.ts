@@ -126,6 +126,14 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       isEnabled: true,
       logo: "https://i.pravatar.cc/150?u=PUDM@purdue.edu"
     });
+    const club3 = new Club({
+      name: "Fake Club To Be Approved",
+      description: "I love fake clubs!",
+      members: [{ member: user2._id, role: CLUB_ROLE.OWNER }],
+      tags: [CLUB_TAGS.MUSIC, CLUB_TAGS.SPORTS, CLUB_TAGS.VOLUNTEERING],
+      isEnabled: true,
+      logo: "https://i.pravatar.cc/150?u=PUDM@purdue.edu"
+    });
 
     const announcement1 = new Announcement({
       club: club1._id,
