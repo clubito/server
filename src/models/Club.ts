@@ -12,7 +12,8 @@ export const clubSchema = new mongoose.Schema<IClub>(
         description: String,
         members: [{
             member: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-            role: { type: String, enum: CLUB_ROLE }
+            role: { type: String, enum: CLUB_ROLE },
+            role2: { type: mongoose.Schema.Types.ObjectId, ref: "Role" }
         }],
         events: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
         joinRequests: [{
@@ -21,10 +22,7 @@ export const clubSchema = new mongoose.Schema<IClub>(
             requestedAt: { type: Date, default: Date.now }
         }],
         announcements: [{ type: mongoose.Schema.Types.ObjectId, ref: "Announcement" }],
-        roles: [{
-            user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-            customTitle: String
-        }],
+        roles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role" }],
         theme: String,
         tags: [{ type: String, enum: CLUB_TAGS }],
         isEnabled: { type: Boolean, default: false },
@@ -33,7 +31,6 @@ export const clubSchema = new mongoose.Schema<IClub>(
             deletedAt: { type: Date, default: null }
         },
         messages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }]
-
     },
     { timestamps: true },
 );

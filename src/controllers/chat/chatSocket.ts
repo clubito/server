@@ -83,11 +83,11 @@ export const chatServer = (io: Server): void => {
                 await club.save();
                 console.log("save message to club - mongodb");
                 await message.save();
-                console.log("save message object - mongodb")
+                console.log("save message object - mongodb");
                 const currUserRole = (club.members as any[]).find(user => { return user.member.equals(userObj.userId); }).role;
-                console.log(`userId: ${userObj.userId}, clubId: ${clubId}, clubName: ${club.name}, currUserRole: ${currUserRole}, body: ${body}`)
+                console.log(`userId: ${userObj.userId}, clubId: ${clubId}, clubName: ${club.name}, currUserRole: ${currUserRole}, body: ${body}`);
                 await sendChatNotification(userObj.userId, clubId, club.name, currUserRole, body);
-                console.log("Send notification successfully")
+                console.log("Send notification successfully");
             } catch (err) {
                 // return callback(err);
                 console.log(err);

@@ -3,6 +3,7 @@ import { IUser } from "../User";
 import { IAnnouncement } from "../Announcement";
 import { IEvent } from "../Event";
 import { IMessage } from "@models/Message";
+import { IRole } from "@models/Role";
 
 export interface IClubInterface extends mongoose.Document {
     name: string,
@@ -11,6 +12,7 @@ export interface IClubInterface extends mongoose.Document {
     members: {
         member: mongoose.Schema.Types.ObjectId,
         role: string,
+        role2: mongoose.Schema.Types.ObjectId
     }[] | {
         member: IUser,
         role: string,
@@ -26,7 +28,7 @@ export interface IClubInterface extends mongoose.Document {
         requestedAt: Date
     }[],
     announcements: mongoose.Schema.Types.ObjectId[] | IAnnouncement[],
-    roles: { user: mongoose.Schema.Types.ObjectId, customTitle: string },
+    roles: mongoose.Schema.Types.ObjectId[] | IRole[],
     theme: string,
     tags: string[],
     isEnabled: boolean,

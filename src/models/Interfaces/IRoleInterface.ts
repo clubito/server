@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
-import { IClub } from "../Club";
 
 export interface IRoleInterface extends mongoose.Document {
-    customTitle: string,
+    name: string,
     permissions: string[],
-    clubId: mongoose.Schema.Types.ObjectId | IClub,
+    preset: boolean
 }

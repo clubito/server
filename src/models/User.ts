@@ -22,7 +22,8 @@ const userSchema = new mongoose.Schema<IUser>(
         clubs: [{
             club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
             role: { type: String, enum: CLUB_ROLE },
-            approvalDate: { type: Date, default: Date.now }
+            approvalDate: { type: Date, default: Date.now },
+            role2: { type: mongoose.Schema.Types.ObjectId, ref: "Role" }
         }],
         joinRequests: [{
             club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },

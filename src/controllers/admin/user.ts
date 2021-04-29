@@ -217,6 +217,10 @@ export const unbanUser = async (req: Request, res: Response, next: NextFunction)
                 populate: { path: "club" }
             })
             .populate({
+                path: "clubs",
+                populate: { path: "role2" }
+            })
+            .populate({
                 path: "joinRequests",
                 populate: { path: "club" }
             }).exec();
@@ -233,7 +237,8 @@ export const unbanUser = async (req: Request, res: Response, next: NextFunction)
                     if (club) {
                         club.members.push({
                             member: user._id,
-                            role: userClub.role
+                            role: userClub.role,
+                            role2: userClub.role2
                         });
                         await club.save();
                     }

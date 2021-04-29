@@ -7,9 +7,9 @@ export type IRole = IRoleInterface;
 
 export const roleSchema = new mongoose.Schema<IRole>(
     {
-        customTitle: { type: String, required: true },
+        name: { type: String, required: true },
         permissions: [{ type: String, enum: PERMISSIONS }],
-        clubId: { type: mongoose.Schema.Types.ObjectId, ref: "Club" }
+        preset: { type: Boolean, default: false }
     },
     { timestamps: true },
 );

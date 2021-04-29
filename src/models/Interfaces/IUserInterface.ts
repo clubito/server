@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { IClub } from "../Club";
 import { IEvent } from "@models/Event";
+import { IRole } from "@models/Role";
 
 export interface IUserInterface extends mongoose.Document {
     name: string;
@@ -9,7 +10,10 @@ export interface IUserInterface extends mongoose.Document {
     isDisabled: boolean;
     isConfirmed: boolean;
     profilePicture: string;
-    clubs: { club: mongoose.Schema.Types.ObjectId, role: string, approvalDate: Date }[] | { club: IClub, role: string, approvalDate: Date }[],
+    clubs: { club: mongoose.Schema.Types.ObjectId, role: string, approvalDate: Date, role2: mongoose.Schema.Types.ObjectId }[]
+    | { club: IClub, role: string, approvalDate: Date, role2: mongoose.Schema.Types.ObjectId }[]
+    | { club: mongoose.Schema.Types.ObjectId, role: string, approvalDate: Date, role2: IRole }[]
+    | { club: IClub, role: string, approvalDate: Date, role2: IRole }[],
     joinRequests: {
         club: mongoose.Schema.Types.ObjectId,
         status: string,
@@ -30,5 +34,5 @@ export interface IUserInterface extends mongoose.Document {
             enabled: boolean
         }
     },
-    allRSVP: mongoose.Schema.Types.ObjectId[] | IEvent[]
+    allRSVP: mongoose.Schema.Types.ObjectId[] | IEvent[],
 }

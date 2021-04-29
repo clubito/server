@@ -6,6 +6,7 @@ import logger from "@logger";
 import joi from "joi";
 import { CLUB_ROLE, JOIN_REQUEST_STATUS } from "@models/enums";
 import { sendJrApprovedNotificationToUser, sendKickedNotificationToUser, sendJrDeniedNotificationToUser } from "@notifications";
+import Role from "@models/Role";
 
 const postClubJoinSchema = joi.object().keys({
     id: joi.required()
@@ -170,8 +171,13 @@ export const postClubApprove = async (req: Request, res: Response, next: NextFun
         currClub.joinRequests = (currClub.joinRequests as any[]).filter(user => { return !user.user.equals(unapprovedUser._id); });
 
         // Step 5
-        currClub.members.push({ member: unapprovedUser._id, role: CLUB_ROLE.MEMBER });
-        unapprovedUser.clubs.push({ club: clubId, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()) });
+        const memberRole = await Role.findOne({ name: "Member" }).exec();
+        if (!memberRole) {
+            res.status(400).json({ error: "An error has occured, please try again" });
+            return;
+        }
+        currClub.members.push({ member: unapprovedUser._id, role: CLUB_ROLE.MEMBER, role2: memberRole._id });
+        unapprovedUser.clubs.push({ club: clubId, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()), role2: memberRole._id });
         await currClub.save();
         await unapprovedUser.save();
 

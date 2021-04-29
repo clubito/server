@@ -12,6 +12,7 @@ import joi from "joi";
 import logger from "@logger";
 import { APP_ROLE, CLUB_ROLE } from "@models/enums";
 import { ObjectId } from "bson";
+import Role from "@models/Role";
 
 
 const postApproveClubRequestSchema = joi.object().keys({
@@ -102,7 +103,9 @@ export const postApproveClubRequest = async (req: Request, res: Response, next: 
             return;
         }
 
-        ownerUser.clubs.push({ club: club._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()) });
+        const ownerRole = await Role.findOne({ name: "President" }).exec();
+
+        ownerUser.clubs.push({ club: club._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()), role2: ownerRole?._id });
         await ownerUser.save();
         await club.save();
         res.status(200).json({ message: "Successfully approved club request 😎" });

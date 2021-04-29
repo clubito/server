@@ -25,12 +25,13 @@ import Announcement from "@models/Announcement";
 import Event from "@models/Event";
 import Message from "@models/Message";
 
-import { CLUB_ROLE, CLUB_TAGS, APP_ROLE } from "@models/enums";
+import { CLUB_ROLE, CLUB_TAGS, APP_ROLE, PERMISSIONS } from "@models/enums";
 import { authenticateJWT } from "./util/auth";
 import errorHandler from "errorhandler";
 
 import { createServer } from "http";
 import { Server } from "socket.io";
+import Role from "@models/Role";
 
 
 // Create Express server
@@ -53,6 +54,18 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       Event.deleteMany({}),
       Message.deleteMany({})
     ]);
+
+    const memberRole = new Role({
+      name: "Member",
+      permissions: [],
+      preset: true
+    });
+
+    const ownerRole = new Role({
+      name: "President",
+      permissions: Object.values(PERMISSIONS),
+      preset: true
+    });
 
     const user1 = new User({
       name: "Aashir Aumir",
@@ -122,14 +135,6 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       { member: user3._id, role: CLUB_ROLE.MEMBER },
       { member: user4._id, role: CLUB_ROLE.MEMBER },
       { member: user6._id, role: CLUB_ROLE.OFFICER }],
-      tags: [CLUB_TAGS.MUSIC, CLUB_TAGS.SPORTS, CLUB_TAGS.VOLUNTEERING],
-      isEnabled: true,
-      logo: "https://i.pravatar.cc/150?u=PUDM@purdue.edu"
-    });
-    const club3 = new Club({
-      name: "Fake Club To Be Approved",
-      description: "I love fake clubs!",
-      members: [{ member: user2._id, role: CLUB_ROLE.OWNER }],
       tags: [CLUB_TAGS.MUSIC, CLUB_TAGS.SPORTS, CLUB_TAGS.VOLUNTEERING],
       isEnabled: true,
       logo: "https://i.pravatar.cc/150?u=PUDM@purdue.edu"
@@ -208,13 +213,16 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       attachment: "this is an attachment url.com"
     });
 
-    user1.clubs.push({ club: club1._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()) });
-    user2.clubs.push({ club: club1._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()) });
-    user2.clubs.push({ club: club2._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()) });
-    user3.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()) });
-    user4.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()) });
-    user5.clubs.push({ club: club1._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()) });
-    user6.clubs.push({ club: club2._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()) });
+    club1.roles.push(memberRole._id, ownerRole._id);
+    club2.roles.push(memberRole._id, ownerRole._id);
+
+    user1.clubs.push({ club: club1._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()), role2: ownerRole._id });
+    user2.clubs.push({ club: club1._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()), role2: memberRole._id });
+    user2.clubs.push({ club: club2._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()), role2: ownerRole._id });
+    user3.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()), role2: memberRole._id });
+    user4.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()), role2: memberRole._id });
+    user5.clubs.push({ club: club1._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()), role2: memberRole._id });
+    user6.clubs.push({ club: club2._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()), role2: memberRole._id });
 
     club1.messages.push(message1._id);
     club1.messages.push(message2._id);
@@ -248,6 +256,9 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     await message5.save();
     await message6.save();
     await message7.save();
+
+    await memberRole.save();
+    await ownerRole.save();
 
     logger.info("Finished populating DB with seed data");
   }
