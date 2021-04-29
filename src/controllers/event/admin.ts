@@ -88,12 +88,12 @@ export const postCreateEvent = (req: Request, res: Response): void => {
                     club.members.forEach(member => {
                         if (member.member.equals(userId)) {
                             userRole = member.role;
-                            if (member.role == CLUB_ROLE.MEMBER || member.role == CLUB_ROLE.NONMEMBER) {
-                                // If the user is only a normal member or not even a member,
-                                // then don't let them make an event
-                                res.status(400).json({ error: "Current user does not have permission to do that." });
-                                return;
-                            }
+                            // if (member.role == CLUB_ROLE.MEMBER || member.role == CLUB_ROLE.NONMEMBER) {
+                            //     // If the user is only a normal member or not even a member,
+                            //     // then don't let them make an event
+                            //     res.status(400).json({ error: "Current user does not have permission to do that." });
+                            //     return;
+                            // }
                         }
                     });
 
@@ -189,10 +189,10 @@ export const putEditEvent = (req: Request, res: Response): void => {
                     user.clubs.forEach(club => {
                         if (club.club.equals(event.club)) {
                             userRole = club.role;
-                            if (club.role != CLUB_ROLE.OFFICER && club.role != CLUB_ROLE.OWNER) {
-                                res.status(400).json({ error: "Current user does not have permission to do that." });
-                                return;
-                            }
+                            // if (club.role != CLUB_ROLE.OFFICER && club.role != CLUB_ROLE.OWNER) {
+                            //     res.status(400).json({ error: "Current user does not have permission to do that." });
+                            //     return;
+                            // }
                         }
                     });
 

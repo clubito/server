@@ -143,14 +143,14 @@ export const postClubApprove = async (req: Request, res: Response, next: NextFun
         */
 
         // Step 1
-        currUser.clubs.forEach(club => {
-            if (club.club.equals(clubId)) {
-                if (club.role != CLUB_ROLE.OFFICER && club.role != CLUB_ROLE.OWNER) {
-                    res.status(400).json({ error: "Current user does not have permission to do that." });
-                    return;
-                }
-            }
-        });
+        // currUser.clubs.forEach(club => {
+        //     if (club.club.equals(clubId)) {
+        //         if (club.role != CLUB_ROLE.OFFICER && club.role != CLUB_ROLE.OWNER) {
+        //             res.status(400).json({ error: "Current user does not have permission to do that." });
+        //             return;
+        //         }
+        //     }
+        // });
 
         // Step 2
         if (!unapprovedUser.joinRequests.some(joinRequest => joinRequest.club.equals(clubId))) {
@@ -223,14 +223,14 @@ export const postClubDeny = async (req: Request, res: Response, next: NextFuncti
             return;
         }
 
-        currUser.clubs.forEach(club => {
-            if (club.club.equals(clubId)) {
-                if (club.role != CLUB_ROLE.OFFICER && club.role != CLUB_ROLE.OWNER) {
-                    res.status(400).json({ error: "Current user does not have permission to do that." });
-                    return;
-                }
-            }
-        });
+        // currUser.clubs.forEach(club => {
+        //     if (club.club.equals(clubId)) {
+        //         if (club.role != CLUB_ROLE.OFFICER && club.role != CLUB_ROLE.OWNER) {
+        //             res.status(400).json({ error: "Current user does not have permission to do that." });
+        //             return;
+        //         }
+        //     }
+        // });
 
         if (!unapprovedUser.joinRequests.some(joinRequest => joinRequest.club.equals(clubId))) {
             // User does not have this club in their joinRequests
@@ -287,14 +287,14 @@ export const getAllJoinRequests = async (req: Request, res: Response, next: Next
             return;
         }
 
-        currUser.clubs.forEach(club => {
-            if (club.club.equals(clubId)) {
-                if (club.role != CLUB_ROLE.OFFICER && club.role != CLUB_ROLE.OWNER) {
-                    res.status(400).json({ error: "Current user does not have permission to do that." });
-                    return;
-                }
-            }
-        });
+        // currUser.clubs.forEach(club => {
+        //     if (club.club.equals(clubId)) {
+        //         if (club.role != CLUB_ROLE.OFFICER && club.role != CLUB_ROLE.OWNER) {
+        //             res.status(400).json({ error: "Current user does not have permission to do that." });
+        //             return;
+        //         }
+        //     }
+        // });
 
         const returnedUsers: IReturnedUserProfile[] = [];
 
@@ -359,15 +359,15 @@ export const postClubKick = async (req: Request, res: Response, next: NextFuncti
         // Makes sure the current user has permissions
         const kickedUserRole = (kickedUser.clubs as any[]).find(club => { return club.club.equals(clubId); }).role;
         const currUserRole = (currUser.clubs as any[]).find(club => { return club.club.equals(clubId); }).role;
-        if (kickedUserRole === CLUB_ROLE.OWNER) {
-            res.status(400).json({ error: "Cannot kick club owner" });
-            return;
-        }
-        if (currUserRole != CLUB_ROLE.OWNER) {
-            // Not the owner
-            res.status(400).json({ error: "Only owners can kick members, work your way up the ladder buddy" });
-            return;
-        }
+        // if (kickedUserRole === CLUB_ROLE.OWNER) {
+        //     res.status(400).json({ error: "Cannot kick club owner" });
+        //     return;
+        // }
+        // if (currUserRole != CLUB_ROLE.OWNER) {
+        //     // Not the owner
+        //     res.status(400).json({ error: "Only owners can kick members, work your way up the ladder buddy" });
+        //     return;
+        // }
 
         if (kickedUser.joinRequests.some(joinRequest => joinRequest.club.equals(clubId))) {
             // User has requested to join this club, remove it
