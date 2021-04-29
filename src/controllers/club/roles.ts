@@ -51,8 +51,10 @@ export const getClubRoles = async (req: Request, res: Response, next: NextFuncti
             returnedRoles.push({
                 name: role.name,
                 permissions: role.permissions,
-                preset: role.preset
+                preset: role.preset,
+                id: role._id
             });
+            console.log(role);
         });
 
         res.status(200).json(returnedRoles);
