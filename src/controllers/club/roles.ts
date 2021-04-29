@@ -28,7 +28,8 @@ const deleteRoleSchema = joi.object().keys({
 interface IReturnedRoles {
     name: string,
     permissions: string[],
-    preset: boolean
+    preset: boolean,
+    id: string
 }
 
 export const getClubRoles = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
