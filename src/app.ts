@@ -52,7 +52,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       Club.deleteMany({}),
       Announcement.deleteMany({}),
       Event.deleteMany({}),
-      Message.deleteMany({})
+      Message.deleteMany({}),
+      Role.deleteMany({})
     ]);
 
     const memberRole = new Role({
@@ -363,6 +364,11 @@ app.get("/clubs/events/current", authenticateJWT, EventController.getCurrentEven
 // Chat routes
 app.get("/clubs/threads", authenticateJWT, chatController.getThreadMessages);
 app.get("/clubs/messages", authenticateJWT, chatController.getMessagesByClub);
+
+// Role routes
+app.get("/clubs/roles", authenticateJWT, clubController.getClubRoles);
+app.put("/clubs/role", authenticateJWT, clubController.putClubRole);
+app.delete("/clubs/roles", authenticateJWT, clubController.deleteClubRoles);
 
 /*
 register:
