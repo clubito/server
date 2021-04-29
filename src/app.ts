@@ -370,6 +370,7 @@ app.get("/clubs/roles", authenticateJWT, clubController.getClubRoles);
 app.put("/clubs/role", authenticateJWT, clubController.putClubRole);
 app.post("/clubs/role", authenticateJWT, clubController.postClubRole);
 app.delete("/clubs/role", authenticateJWT, clubController.deleteClubRoles);
+app.post("/clubs/role/assign", authenticateJWT, clubController.postAssignClubRole);
 
 /*
 register:

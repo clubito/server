@@ -55,7 +55,6 @@ export const getClubRoles = async (req: Request, res: Response, next: NextFuncti
                 preset: role.preset,
                 id: role._id
             });
-            console.log(role);
         });
 
         res.status(200).json(returnedRoles);
@@ -108,6 +107,8 @@ export const putClubRole = async (req: Request, res: Response, next: NextFunctio
             res.status(400).json({ error: "The following permissions do not exist", permissions: wrongPermissions });
             return;
         }
+
+        await roleObj.save();
 
         res.status(200).json({ message: "Sucessfully updated role" });
         return;
@@ -171,6 +172,32 @@ export const postClubRole = async (req: Request, res: Response, next: NextFuncti
 };
 
 export const deleteClubRoles = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { error } = deleteRoleSchema.validate(req.body);
+
+    if (error) {
+        res.status(400).json({ "error": error.message });
+        logger.debug(error);
+        return;
+    }
+
+    try {
+        const roleId = req.body.id;
+        const roleObj = await Role.findById(roleId).exec();
+
+        if (!roleObj) {
+            res.status(400).json({ error: "No role with that id" });
+            return;
+        }
+
+        await roleObj.delete();
+        res.status(200).json({ message: "Sucessfully deleted role" });
+        return;
+    } catch (err) {
+        return next(err);
+    }
+};
+
+export const postAssignClubRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = deleteRoleSchema.validate(req.body);
 
     if (error) {
