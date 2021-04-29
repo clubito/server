@@ -318,6 +318,7 @@ app.get("/user/club/events", authenticateJWT, userController.getUsersEvents);
 app.get("/user/club/rsvp", authenticateJWT, userController.getUsersRsvps);
 
 // Club routes 
+app.post("/clubs/theme", authenticateJWT, clubController.editClubTheme);
 app.get("/clubs/tags", authenticateJWT, clubController.getAllTags);
 app.get("/clubs/profile", authenticateJWT, clubController.getClubProfile);
 app.post("/clubs/join", authenticateJWT, clubController.postClubJoin);

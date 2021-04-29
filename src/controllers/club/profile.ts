@@ -46,7 +46,8 @@ interface IReturnedClubProfile {
     joinRequestStatus: {
         status: string,
         approvalDate: Date
-    }
+    },
+    theme: string
 }
 
 export const getClubProfile = (req: Request, res: Response): void => {
@@ -112,7 +113,8 @@ export const getClubProfile = (req: Request, res: Response): void => {
                         joinRequestStatus: {
                             status: userJoinRequest,
                             approvalDate: approvalDate
-                        }
+                        },
+                        theme: club.theme
                     };
 
                     club.members.forEach(member => {
@@ -161,6 +163,40 @@ export const getClubProfile = (req: Request, res: Response): void => {
             return;
         });
 };
+
+
+const addClubThemeSchema = joi.object().keys({
+    id: joi.required(),
+    theme: joi.required()
+});
+
+export const editClubTheme = (req: Request, res: Response) => {
+    const { error } = addClubThemeSchema.validate(req.body);
+    if (error) {
+        res.status(400).json({ "error": error.message });
+        logger.debug(error);
+        return;
+    }
+    const {id, theme} = req.body;
+    Club.findOne({ _id: id, "deleted.isDeleted": false }).then(async club => {
+        if (!club) {
+            res.status(400).json({ error: "Club not found" });
+            return;
+        }
+        club.theme = theme;
+        await club.save();
+
+        res.status(200).json({
+            message: "Successfully edit the club's theme"
+        })
+        return;
+        
+    }).catch(err => {
+        logger.error(err);
+        res.status(500).json({ error: err });
+        return;
+    })
+}
 
 
 // export const putUserProfile = (req: Request, res: Response): void => {
