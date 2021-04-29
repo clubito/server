@@ -4,7 +4,6 @@ import { CLUB_ROLE, JOIN_REQUEST_STATUS, APP_ROLE, CLUB_TAGS } from "./enums";
 import { SALT_ROUNDS } from "@secrets";
 import bcrypt from "bcrypt";
 import { uid } from "uid";
-import mongooseAutoPopulate from "mongoose-autopopulate";
 
 const saltRounds = SALT_ROUNDS;
 
@@ -47,7 +46,8 @@ const userSchema = new mongoose.Schema<IUser>(
     { timestamps: true },
 );
 
-userSchema.plugin(mongooseAutoPopulate);
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+userSchema.plugin(require("mongoose-autopopulate"));
 
 userSchema.pre("save", async function save(next) {
     if (!this.isModified("password")) {

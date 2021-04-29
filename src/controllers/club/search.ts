@@ -68,7 +68,7 @@ export const searchClubByName = (req: Request, res: Response): void => {
             result: clubs.map(club => {
                 // check if the current userId is currently in the club members or not
                 // if not, then return role NONMEMBER
-                let userClubRole: string = CLUB_ROLE.NONMEMBER;
+                let userClubRole;
                 for (const member of club.members) {
                     if (String(member.member) === userId) {
                         userClubRole = member.role2;
