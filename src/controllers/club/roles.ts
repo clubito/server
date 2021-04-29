@@ -4,6 +4,7 @@ import logger from "@logger";
 import joi from "joi";
 import { PERMISSIONS } from "@models/enums";
 import Role from "@models/Role";
+import User from "@models/User";
 
 const getRoleSchema = joi.object().keys({
     id: joi.string().required()
@@ -23,6 +24,12 @@ const postRoleSchema = joi.object().keys({
 
 const deleteRoleSchema = joi.object().keys({
     id: joi.string().required()
+});
+
+const postAssignClubRoleSchema = joi.object().keys({
+    roleId: joi.string().required(),
+    userId: joi.string().required(),
+    clubId: joi.string().required(),
 });
 
 interface IReturnedRoles {
@@ -198,7 +205,7 @@ export const deleteClubRoles = async (req: Request, res: Response, next: NextFun
 };
 
 export const postAssignClubRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { error } = deleteRoleSchema.validate(req.body);
+    const { error } = postAssignClubRoleSchema.validate(req.body);
 
     if (error) {
         res.status(400).json({ "error": error.message });
@@ -207,16 +214,56 @@ export const postAssignClubRole = async (req: Request, res: Response, next: Next
     }
 
     try {
-        const roleId = req.body.id;
+        const { roleId, clubId, userId } = req.body;
+
         const roleObj = await Role.findById(roleId).exec();
+        const clubObj = await Club.findOne({ _id: clubId, "deleted.isDeleted": false })
+            .populate({
+                path: "members",
+                populate: { path: "member" }
+            })
+            .exec();
+        const userObj = await User.findById(userId)
+            .populate({
+                path: "clubs",
+                populate: { path: "club" }
+            })
+            .populate({
+                path: "clubs",
+                populate: { path: "role2" }
+            })
+            .exec();
 
         if (!roleObj) {
             res.status(400).json({ error: "No role with that id" });
             return;
         }
 
-        await roleObj.delete();
-        res.status(200).json({ message: "Sucessfully deleted role" });
+        if (!clubObj) {
+            res.status(400).json({ error: "No club with that id" });
+            return;
+        }
+
+        if (!userObj) {
+            res.status(400).json({ error: "No user with that id" });
+            return;
+        }
+
+        userObj.clubs.forEach(userClub => {
+            if (userClub.club._id.equals(clubId)) {
+                userClub.role2 = roleId;
+            }
+        });
+
+        clubObj.members.forEach(member => {
+            if (member.member._id.equals(userId)) {
+                member.role2 = roleId;
+            }
+        });
+
+        await userObj.save();
+        await clubObj.save();
+        res.status(200).json({ message: "Sucessfully updated user's role" });
         return;
     } catch (err) {
         return next(err);
