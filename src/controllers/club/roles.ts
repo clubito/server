@@ -15,6 +15,12 @@ const putRoleSchema = joi.object().keys({
     permissions: joi.array().items(joi.string())
 });
 
+const postRoleSchema = joi.object().keys({
+    id: joi.string().required(),
+    name: joi.string().required(),
+    permissions: joi.array().items(joi.string()).required()
+});
+
 const deleteRoleSchema = joi.object().keys({
     id: joi.string().required()
 });
@@ -101,6 +107,60 @@ export const putClubRole = async (req: Request, res: Response, next: NextFunctio
         }
 
         res.status(200).json({ message: "Sucessfully updated role" });
+        return;
+    } catch (err) {
+        return next(err);
+    }
+};
+
+export const postClubRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { error } = postRoleSchema.validate(req.body);
+
+    if (error) {
+        res.status(400).json({ "error": error.message });
+        logger.debug(error);
+        return;
+    }
+
+    try {
+        const { name, permissions } = req.body;
+        const clubId = req.body.id;
+
+        const club = await Club.findOne({ _id: clubId, "deleted.isDeleted": false }).exec();
+
+        if (!club) {
+            res.status(400).json({ error: "Club for that event does not exist" });
+            return;
+        }
+
+        const wrongPermissions: string[] = [];
+        const correctPermissions: string[] = [];
+
+        if (permissions) {
+            permissions.forEach((permission) => {
+                if (Object.values(PERMISSIONS).includes(permission.toUpperCase())) {
+                    correctPermissions.push(permission.toUpperCase());
+                } else {
+                    wrongPermissions.push(permission);
+                }
+            });
+        }
+
+        if (wrongPermissions.length > 0) {
+            res.status(400).json({ error: "The following permissions do not exist. Not creating a new role. Please try again.", permissions: wrongPermissions });
+            return;
+        }
+
+        const newRole = new Role({
+            name: name,
+            permissions: correctPermissions
+        });
+
+        club.roles.push(newRole._id);
+        await newRole.save();
+        await club.save();
+
+        res.status(200).json({ message: "Sucessfully created role" });
         return;
     } catch (err) {
         return next(err);

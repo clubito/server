@@ -368,6 +368,7 @@ app.get("/clubs/messages", authenticateJWT, chatController.getMessagesByClub);
 // Role routes
 app.get("/clubs/roles", authenticateJWT, clubController.getClubRoles);
 app.put("/clubs/role", authenticateJWT, clubController.putClubRole);
+app.post("/clubs/role", authenticateJWT, clubController.postClubRole);
 app.delete("/clubs/roles", authenticateJWT, clubController.deleteClubRoles);
 
 /*
