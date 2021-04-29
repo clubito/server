@@ -26,7 +26,7 @@ interface IReturnedRoles {
 }
 
 export const getClubRoles = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { error } = getRoleSchema.validate(req.body);
+    const { error } = getRoleSchema.validate(req.query);
 
     if (error) {
         res.status(400).json({ "error": error.message });
@@ -35,7 +35,7 @@ export const getClubRoles = async (req: Request, res: Response, next: NextFuncti
     }
 
     try {
-        const clubId = req.body.id;
+        const clubId = req.query.id;
 
         const currClub = await Club.findById(clubId).populate("roles").exec();
 
