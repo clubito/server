@@ -172,7 +172,7 @@ export const postClubRole = async (req: Request, res: Response, next: NextFuncti
 };
 
 export const deleteClubRoles = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { error } = deleteRoleSchema.validate(req.body);
+    const { error } = deleteRoleSchema.validate(req.query);
 
     if (error) {
         res.status(400).json({ "error": error.message });
@@ -181,7 +181,7 @@ export const deleteClubRoles = async (req: Request, res: Response, next: NextFun
     }
 
     try {
-        const roleId = req.body.id;
+        const roleId = req.query.id;
         const roleObj = await Role.findById(roleId).exec();
 
         if (!roleObj) {
