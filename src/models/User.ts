@@ -4,6 +4,7 @@ import { CLUB_ROLE, JOIN_REQUEST_STATUS, APP_ROLE, CLUB_TAGS } from "./enums";
 import { SALT_ROUNDS } from "@secrets";
 import bcrypt from "bcrypt";
 import { uid } from "uid";
+import mongooseAutoPopulate from "mongoose-autopopulate";
 
 const saltRounds = SALT_ROUNDS;
 
@@ -23,7 +24,7 @@ const userSchema = new mongoose.Schema<IUser>(
             club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
             role: { type: String, enum: CLUB_ROLE },
             approvalDate: { type: Date, default: Date.now },
-            role2: { type: mongoose.Schema.Types.ObjectId, ref: "Role" }
+            role2: { type: mongoose.Schema.Types.ObjectId, ref: "Role", autopopulate: true }
         }],
         joinRequests: [{
             club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
@@ -45,6 +46,8 @@ const userSchema = new mongoose.Schema<IUser>(
     },
     { timestamps: true },
 );
+
+userSchema.plugin(mongooseAutoPopulate);
 
 userSchema.pre("save", async function save(next) {
     if (!this.isModified("password")) {

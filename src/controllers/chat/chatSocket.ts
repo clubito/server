@@ -84,7 +84,7 @@ export const chatServer = (io: Server): void => {
                 console.log("save message to club - mongodb");
                 await message.save();
                 console.log("save message object - mongodb");
-                const currUserRole = (club.members as any[]).find(user => { return user.member.equals(userObj.userId); }).role;
+                const currUserRole = (club.members as any[]).find(user => { return user.member.equals(userObj.userId); }).role2;
                 console.log(`userId: ${userObj.userId}, clubId: ${clubId}, clubName: ${club.name}, currUserRole: ${currUserRole}, body: ${body}`);
                 await sendChatNotification(userObj.userId, clubId, club.name, currUserRole, body);
                 console.log("Send notification successfully");

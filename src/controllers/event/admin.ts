@@ -84,10 +84,10 @@ export const postCreateEvent = (req: Request, res: Response): void => {
                         return;
                     }
                     // Make sure the user is allowed to make events
-                    let userRole = CLUB_ROLE.NONMEMBER;
+                    let userRole;
                     club.members.forEach(member => {
                         if (member.member.equals(userId)) {
-                            userRole = member.role;
+                            userRole = member.role2;
                             // if (member.role == CLUB_ROLE.MEMBER || member.role == CLUB_ROLE.NONMEMBER) {
                             //     // If the user is only a normal member or not even a member,
                             //     // then don't let them make an event
@@ -96,6 +96,13 @@ export const postCreateEvent = (req: Request, res: Response): void => {
                             // }
                         }
                     });
+
+                    if (userRole === undefined) {
+                        userRole = {
+                            name: "Non-Member",
+                            permissions: []
+                        };
+                    }
 
                     // Event does not already exist
                     if (club.events.some(temp => temp.name === name)) {
@@ -184,17 +191,24 @@ export const putEditEvent = (req: Request, res: Response): void => {
                         return;
                     }
 
-                    let userRole = CLUB_ROLE.NONMEMBER;
+                    let userRole;
 
                     user.clubs.forEach(club => {
                         if (club.club.equals(event.club)) {
-                            userRole = club.role;
+                            userRole = club.role2;
                             // if (club.role != CLUB_ROLE.OFFICER && club.role != CLUB_ROLE.OWNER) {
                             //     res.status(400).json({ error: "Current user does not have permission to do that." });
                             //     return;
                             // }
                         }
                     });
+
+                    if (userRole === undefined) {
+                        userRole = {
+                            name: "Non-Member",
+                            permissions: []
+                        };
+                    }
 
                     if (name) {
                         event.name = name;

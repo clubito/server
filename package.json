@@ -47,6 +47,7 @@
     "lodash": "^4.17.20",
     "module-alias": "^2.2.2",
     "mongoose": "^5.11.17",
+    "mongoose-autopopulate": "^0.13.0",
     "pino": "^6.11.1",
     "socket.io": "^4.0.0",
     "uid": "^2.0.0"
@@ -60,6 +61,7 @@
     "@types/helmet": "^4.0.0",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mongoose": "^5.10.3",
+    "@types/mongoose-autopopulate": "^0.10.1",
     "@types/node": "^14.14.28",
     "@types/pino": "^6.3.6",
     "@typescript-eslint/eslint-plugin": "^4.15.1",

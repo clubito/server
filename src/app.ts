@@ -68,6 +68,12 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       preset: true
     });
 
+    const nonMemberRole = new Role({
+      name: "Non-Member",
+      permissions: [],
+      preset: true
+    });
+
     const user1 = new User({
       name: "Aashir Aumir",
       email: "aaumir@purdue.edu",
@@ -260,6 +266,7 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
 
     await memberRole.save();
     await ownerRole.save();
+    await nonMemberRole.save();
 
     logger.info("Finished populating DB with seed data");
   }

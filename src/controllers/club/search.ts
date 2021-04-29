@@ -71,7 +71,7 @@ export const searchClubByName = (req: Request, res: Response): void => {
                 let userClubRole: string = CLUB_ROLE.NONMEMBER;
                 for (const member of club.members) {
                     if (String(member.member) === userId) {
-                        userClubRole = member.role;
+                        userClubRole = member.role2;
                         break;
                     }
                 }

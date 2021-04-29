@@ -1,3 +1,5 @@
+import { IRole } from "@models/Role";
+
 export interface INotificationInterface {
     body?: string,
     title?: string,
@@ -5,6 +7,6 @@ export interface INotificationInterface {
         type?: string,
         id?: string,
         title?: string,
-        role?: string
+        role?: IRole
     }
 }
