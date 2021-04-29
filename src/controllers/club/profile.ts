@@ -17,7 +17,10 @@ interface IReturnedClubProfile {
     members: {
         id: string,
         name: string,
-        role: string,
+        role: {
+            name: string,
+            permissions: string[]
+        },
         profilePicture: string,
         approvalDate: Date
     }[],

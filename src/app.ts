@@ -128,9 +128,9 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     const club1 = new Club({
       name: "Drone Club",
       description: "A club for all drone enthusiasts at Purdue. Planes and multicopter pilots alike are welcome!",
-      members: [{ member: user1._id, role: CLUB_ROLE.OWNER },
-      { member: user2._id, role: CLUB_ROLE.OFFICER },
-      { member: user5._id, role: CLUB_ROLE.MEMBER }],
+      members: [{ member: user1._id, role: CLUB_ROLE.OWNER, role2: ownerRole },
+      { member: user2._id, role: CLUB_ROLE.MEMBER, role2: memberRole },
+      { member: user5._id, role: CLUB_ROLE.MEMBER, role2: memberRole }],
       tags: [CLUB_TAGS.TECHNOLOGY, CLUB_TAGS.SPORTS],
       isEnabled: true,
       logo: "https://i.pravatar.cc/150?u=DroneClub@purdue.edu"
@@ -138,10 +138,10 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     const club2 = new Club({
       name: "PUDM",
       description: "PUDM is the largest student-run philanthropy on campus, raising over $9 million for Riley Hospital for Children to date!",
-      members: [{ member: user2._id, role: CLUB_ROLE.OWNER },
-      { member: user3._id, role: CLUB_ROLE.MEMBER },
-      { member: user4._id, role: CLUB_ROLE.MEMBER },
-      { member: user6._id, role: CLUB_ROLE.OFFICER }],
+      members: [{ member: user2._id, role: CLUB_ROLE.OWNER, role2: ownerRole },
+      { member: user3._id, role: CLUB_ROLE.MEMBER, role2: memberRole },
+      { member: user4._id, role: CLUB_ROLE.MEMBER, role2: memberRole },
+      { member: user6._id, role: CLUB_ROLE.MEMBER, role2: memberRole }],
       tags: [CLUB_TAGS.MUSIC, CLUB_TAGS.SPORTS, CLUB_TAGS.VOLUNTEERING],
       isEnabled: true,
       logo: "https://i.pravatar.cc/150?u=PUDM@purdue.edu"
@@ -224,12 +224,12 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     club2.roles.push(memberRole._id, ownerRole._id);
 
     user1.clubs.push({ club: club1._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()), role2: ownerRole._id });
-    user2.clubs.push({ club: club1._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()), role2: memberRole._id });
+    user2.clubs.push({ club: club1._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()), role2: memberRole._id });
     user2.clubs.push({ club: club2._id, role: CLUB_ROLE.OWNER, approvalDate: new Date(Date.now()), role2: ownerRole._id });
     user3.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()), role2: memberRole._id });
     user4.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()), role2: memberRole._id });
     user5.clubs.push({ club: club1._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()), role2: memberRole._id });
-    user6.clubs.push({ club: club2._id, role: CLUB_ROLE.OFFICER, approvalDate: new Date(Date.now()), role2: memberRole._id });
+    user6.clubs.push({ club: club2._id, role: CLUB_ROLE.MEMBER, approvalDate: new Date(Date.now()), role2: memberRole._id });
 
     club1.messages.push(message1._id);
     club1.messages.push(message2._id);
