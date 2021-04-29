@@ -369,7 +369,7 @@ app.get("/clubs/messages", authenticateJWT, chatController.getMessagesByClub);
 app.get("/clubs/roles", authenticateJWT, clubController.getClubRoles);
 app.put("/clubs/role", authenticateJWT, clubController.putClubRole);
 app.post("/clubs/role", authenticateJWT, clubController.postClubRole);
-app.delete("/clubs/roles", authenticateJWT, clubController.deleteClubRoles);
+app.delete("/clubs/role", authenticateJWT, clubController.deleteClubRoles);
 
 /*
 register:
