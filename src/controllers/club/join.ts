@@ -358,7 +358,7 @@ export const postClubKick = async (req: Request, res: Response, next: NextFuncti
 
         // Makes sure the current user has permissions
         const kickedUserRole = (kickedUser.clubs as any[]).find(club => { return club.club.equals(clubId); }).role;
-        const currUserRole = (currUser.clubs as any[]).find(club => { return club.club.equals(clubId); }).role;
+        // const currUserRole = (currUser.clubs as any[]).find(club => { return club.club.equals(clubId); }).role;
         // if (kickedUserRole === CLUB_ROLE.OWNER) {
         //     res.status(400).json({ error: "Cannot kick club owner" });
         //     return;

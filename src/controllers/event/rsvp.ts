@@ -145,7 +145,7 @@ export const getRsvp = async (req: Request, res: Response, next: NextFunction): 
             return;
         }
 
-        const currUserRole = (user.clubs as any[]).find(userClub => { return userClub.club.equals(event.club); }).role;
+        // const currUserRole = (user.clubs as any[]).find(userClub => { return userClub.club.equals(event.club); }).role;
         // if (currUserRole === CLUB_ROLE.MEMBER || currUserRole === CLUB_ROLE.NONMEMBER) {
         //     res.status(400).json({ error: "Current user does not have permission to do that." });
         //     return;

@@ -3,7 +3,6 @@ import Club from "@models/Club";
 import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
-import { CLUB_ROLE } from "@models/enums";
 import { sendClubAnnouncementNotification } from "@notifications";
 import Announcement from "@models/Announcement";
 import { ObjectId } from "mongodb";
