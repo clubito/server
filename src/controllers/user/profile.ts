@@ -27,7 +27,10 @@ interface IReturnedUserProfile {
         name: string,
         description: string,
         logo: string,
-        role: string,
+        role: {
+            name: string,
+            permissions: string[]
+        },
         id: string
     }[],
     joinRequests: {
@@ -56,7 +59,10 @@ interface IReturnedAnotherUserProfile {
         name: string,
         description: string,
         logo: string,
-        role: string,
+        role: {
+            name: string,
+            permissions: string[]
+        },
         id: string
     }[],
     joinRequests: {
@@ -120,7 +126,7 @@ export const getUserProfile = (req: Request, res: Response): void => {
                         name: club.club.name,
                         description: club.club.description,
                         logo: club.club.logo,
-                        role: club.role,
+                        role: club.role2,
                         id: club.club._id
                     });
                 }
@@ -307,7 +313,7 @@ export const getAnotherUserProfile = (req: Request, res: Response): void => {
                         name: club.club.name,
                         description: club.club.description,
                         logo: club.club.logo,
-                        role: club.role,
+                        role: club.role2,
                         id: club.club._id
                     });
                 }

@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import { CLUB_ROLE, CLUB_TAGS, JOIN_REQUEST_STATUS } from "./enums";
 import { IClubInterface } from "./Interfaces/IClubInterface";
 
-
 export type IClub = IClubInterface;
 
 export const clubSchema = new mongoose.Schema<IClub>(
@@ -13,7 +12,7 @@ export const clubSchema = new mongoose.Schema<IClub>(
         members: [{
             member: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
             role: { type: String, enum: CLUB_ROLE },
-            role2: { type: mongoose.Schema.Types.ObjectId, ref: "Role" }
+            role2: { type: mongoose.Schema.Types.ObjectId, ref: "Role", autopopulate: true }
         }],
         events: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
         joinRequests: [{
@@ -34,6 +33,8 @@ export const clubSchema = new mongoose.Schema<IClub>(
     },
     { timestamps: true },
 );
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+clubSchema.plugin(require("mongoose-autopopulate"));
 
 const Club = mongoose.model<IClub>("Club", clubSchema);
 

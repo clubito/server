@@ -17,7 +17,10 @@ interface IReturnedClubProfile {
     members: {
         id: string,
         name: string,
-        role: string,
+        role: {
+            name: string,
+            permissions: string[]
+        },
         profilePicture: string,
         approvalDate: Date
     }[],
@@ -37,7 +40,10 @@ interface IReturnedClubProfile {
         picture: string,
         lastUpdated: Date
     }[],
-    role: string,
+    role: {
+        name: string,
+        permissions: string[]
+    },
     joinRequests?: {
         id: string,
         name: string,
@@ -82,17 +88,27 @@ export const getClubProfile = (req: Request, res: Response): void => {
                         return;
                     }
 
-                    let userClubRole = CLUB_ROLE.NONMEMBER;
+                    let userClubRole;
                     let userJoinRequest = "NOT REQUESTED";
                     let approvalDate = new Date("2001-09-11");
 
                     user.clubs.forEach(userClub => {
                         if (userClub.club._id.equals(club._id)) {
-                            userClubRole = userClub.role;
+                            userClubRole = {
+                                name: userClub.role2.name,
+                                permissions: userClub.role2.permissions
+                            };
                             userJoinRequest = JOIN_REQUEST_STATUS.ACCEPTED; // user is already in the club
                             approvalDate = userClub.approvalDate;
                         }
                     });
+
+                    if (userClubRole === undefined) {
+                        userClubRole = {
+                            name: "Non-Member",
+                            permissions: []
+                        };
+                    }
 
                     user.joinRequests.forEach(joinRequest => {
                         if (joinRequest.club.equals(club._id)) {
@@ -124,7 +140,7 @@ export const getClubProfile = (req: Request, res: Response): void => {
                             id: member.member._id,
                             name: member.member.name,
                             profilePicture: member.member.profilePicture,
-                            role: member.role,
+                            role: member.role2,
                             approvalDate
                         });
                     });

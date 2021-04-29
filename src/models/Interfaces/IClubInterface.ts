@@ -13,9 +13,17 @@ export interface IClubInterface extends mongoose.Document {
         member: mongoose.Schema.Types.ObjectId,
         role: string,
         role2: mongoose.Schema.Types.ObjectId
-    }[] | {
+    }[]
+    | {
         member: IUser,
         role: string,
+        role2: mongoose.Schema.Types.ObjectId
+    }[]
+    | {
+        member: IUser,
+        role: string,
+        role2: IRole
+
     }[],
     events: mongoose.Schema.Types.ObjectId[] | IEvent[],
     joinRequests: {

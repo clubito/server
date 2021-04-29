@@ -5,6 +5,7 @@ import logger from "@logger";
 import Club from "@models/Club";
 import Event from "@models/Event";
 import { CLUB_ROLE } from "@models/enums";
+import Role, { IRole } from "@models/Role";
 
 const expo = new Expo();
 
@@ -14,6 +15,7 @@ export const isValidPushToken = (pushToken: string): boolean => {
 
 export const sendJrApprovedNotificationToUser = async (userId: string, clubId: string, clubName: string): Promise<boolean> => {
     try {
+        const memberRole = await Role.findOne({ name: "Member" }).exec();
         const approvedNotification: INotificationInterface = {
             body: `You have to been accepted into ${clubName}!`,
             title: `Accepted into ${clubName}`,
@@ -21,7 +23,7 @@ export const sendJrApprovedNotificationToUser = async (userId: string, clubId: s
                 type: "club",
                 id: clubId,
                 title: clubName,
-                role: CLUB_ROLE.MEMBER
+                role: memberRole || undefined
             }
         };
         await sendNotificationToUser(userId, approvedNotification);
@@ -34,6 +36,7 @@ export const sendJrApprovedNotificationToUser = async (userId: string, clubId: s
 
 export const sendJrDeniedNotificationToUser = async (userId: string, clubId: string, clubName: string): Promise<boolean> => {
     try {
+        const memberRole = await Role.findOne({ name: "Member" }).exec();
         const deniedNotification: INotificationInterface = {
             body: `${clubName} has denied your request to join`,
             title: `Denied access into ${clubName}`,
@@ -41,7 +44,7 @@ export const sendJrDeniedNotificationToUser = async (userId: string, clubId: str
                 type: "club",
                 id: clubId,
                 title: clubName,
-                role: CLUB_ROLE.MEMBER
+                role: memberRole || undefined
             }
         };
         await sendNotificationToUser(userId, deniedNotification);
@@ -52,7 +55,7 @@ export const sendJrDeniedNotificationToUser = async (userId: string, clubId: str
     }
 };
 
-export const sendChatNotification = async (userId: string, clubId: string, clubName: string, clubRole: string, messageBody: string): Promise<boolean> => {
+export const sendChatNotification = async (userId: string, clubId: string, clubName: string, clubRole: IRole, messageBody: string): Promise<boolean> => {
     try {
         const chatNotification: INotificationInterface = {
             body: `${messageBody}`,
@@ -72,7 +75,7 @@ export const sendChatNotification = async (userId: string, clubId: string, clubN
     }
 };
 
-export const sendKickedNotificationToUser = async (userId: string, clubId: string, clubName: string, userRole: string, reason: string): Promise<boolean> => {
+export const sendKickedNotificationToUser = async (userId: string, clubId: string, clubName: string, userRole: IRole, reason: string): Promise<boolean> => {
     try {
         const kickNotification: INotificationInterface = {
             body: `Reason: ${reason ?? "N/A"}`,
@@ -110,7 +113,7 @@ export const sendBannedNotificationToUser = async (userId: string): Promise<bool
     }
 };
 
-export const sendClubAnnouncementNotification = async (clubId: string, clubName: string, userRole: string, message: string): Promise<boolean> => {
+export const sendClubAnnouncementNotification = async (clubId: string, clubName: string, userRole: IRole, message: string): Promise<boolean> => {
     try {
         const announcementNotification: INotificationInterface = {
             body: `${message}`,
@@ -131,7 +134,7 @@ export const sendClubAnnouncementNotification = async (clubId: string, clubName:
 };
 
 
-export const sendEventEditedNotification = async (eventId: string, clubName: string, userRole: string, eventName: string): Promise<boolean> => {
+export const sendEventEditedNotification = async (eventId: string, clubName: string, userRole: IRole, eventName: string): Promise<boolean> => {
     try {
         const eventEditedNotification: INotificationInterface = {
             body: `${eventName} by ${clubName} has been updated!`,
@@ -151,7 +154,7 @@ export const sendEventEditedNotification = async (eventId: string, clubName: str
     }
 };
 
-export const sendEventCreatedNotification = async (eventId: string, clubId: string, clubName: string, userRole: string, eventName: string): Promise<boolean> => {
+export const sendEventCreatedNotification = async (eventId: string, clubId: string, clubName: string, userRole: IRole, eventName: string): Promise<boolean> => {
     try {
         const eventCreatedNotification: INotificationInterface = {
             body: `${eventName} by ${clubName} has just been created`,

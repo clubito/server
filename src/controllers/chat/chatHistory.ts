@@ -40,7 +40,7 @@ export const getThreadMessages = async (req: Request, res: Response): Promise<vo
                     clubName: userClub.club.name,
                     clubLogo: userClub.club.logo,
                     messages: latestMessageArray,
-                    role: userClub.role
+                    role: userClub.role2
                 };
                 result.push(answer);
             });
@@ -163,7 +163,7 @@ export const getMessagesByClub = async (req: Request, res: Response): Promise<vo
             clubName: userClub.club.name,
             clubLogo: userClub.club.logo,
             messages: messageArray,
-            role: userClub.role
+            role: userClub.role2
         });
         return;
 

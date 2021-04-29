@@ -3,6 +3,7 @@ import logger from "@logger";
 import joi from "joi";
 import { sendNotificationToClub, sendNotificationToUser } from "@notifications";
 import { INotificationInterface } from "@models/Interfaces/INotificationInterface";
+import Role from "@models/Role";
 
 const postSendTestNotificationSchema = joi.object().keys({
     message: joi.string().required()
@@ -30,6 +31,7 @@ export const postSendTestNotification = async (req: Request, res: Response, next
             return;
         }
 
+        const ownerRole = await Role.findOne({ name: "President" }).exec();
 
         const newNotification: INotificationInterface = {
             body: message ?? "Test notification",
@@ -37,7 +39,7 @@ export const postSendTestNotification = async (req: Request, res: Response, next
             data: {
                 type: "event",
                 id: "test id",
-                role: "OWNER",
+                role: ownerRole || undefined,
                 title: "test title"
             }
         };
@@ -72,6 +74,7 @@ export const postSendTestClubNotification = async (req: Request, res: Response, 
             return;
         }
 
+        const ownerRole = await Role.findOne({ name: "President" }).exec();
 
         const newNotification: INotificationInterface = {
             body: message ?? "Test notification",
@@ -79,7 +82,7 @@ export const postSendTestClubNotification = async (req: Request, res: Response, 
             data: {
                 type: "event",
                 id: "test id",
-                role: "OWNER",
+                role: ownerRole || undefined,
                 title: "test title"
             }
         };

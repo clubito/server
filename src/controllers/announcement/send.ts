@@ -51,7 +51,7 @@ export const postSendAnnouncement = (req: Request, res: Response): void => {
                     }
 
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const currUserRole = (user.clubs as any[]).find(userClub => { return userClub.club.equals(clubId); }).role;
+                    const currUserRole = (user.clubs as any[]).find(userClub => { return userClub.club.equals(clubId); }).role2;
                     // if (currUserRole === CLUB_ROLE.MEMBER || currUserRole === CLUB_ROLE.NONMEMBER) {
                     //     res.status(400).json({ error: "Current user does not have permission to do that." });
                     //     return;

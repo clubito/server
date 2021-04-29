@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema<IUser>(
             club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
             role: { type: String, enum: CLUB_ROLE },
             approvalDate: { type: Date, default: Date.now },
-            role2: { type: mongoose.Schema.Types.ObjectId, ref: "Role" }
+            role2: { type: mongoose.Schema.Types.ObjectId, ref: "Role", autopopulate: true }
         }],
         joinRequests: [{
             club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
@@ -45,6 +45,9 @@ const userSchema = new mongoose.Schema<IUser>(
     },
     { timestamps: true },
 );
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+userSchema.plugin(require("mongoose-autopopulate"));
 
 userSchema.pre("save", async function save(next) {
     if (!this.isModified("password")) {
