@@ -62,6 +62,10 @@ export const searchClubByName = (req: Request, res: Response): void => {
         $in: false
     };
 
+    filterOptions["isEnabled"] = {
+        $in: true
+    };
+
     Club.find(filterOptions, returnFields).populate({
         path: "members",
     }).sort(sortBy).then(clubs => {
