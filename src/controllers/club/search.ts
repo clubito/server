@@ -2,6 +2,7 @@ import logger from "@logger";
 import { Request, Response } from "express";
 import Club from "@models/Club";
 import { CLUB_ROLE, CLUB_TAGS } from "@models/enums";
+import Role from "@models/Role";
 
 export const searchClubByName = (req: Request, res: Response): void => {
     if (req.query.name === undefined) {
@@ -74,6 +75,13 @@ export const searchClubByName = (req: Request, res: Response): void => {
                         userClubRole = member.role2;
                         break;
                     }
+                }
+
+                if (userClubRole === undefined) {
+                    userClubRole = {
+                        name: "Non-Member",
+                        permissions: []
+                    };
                 }
                 return {
                     "id": club._id,

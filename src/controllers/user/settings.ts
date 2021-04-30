@@ -10,7 +10,7 @@ const postSettingsSchema = joi.object().keys({
             enabled: joi.boolean().required()
         }
     }
-});
+    });
 
 interface ISettingsBody {
     settings: {
@@ -47,5 +47,4 @@ export const postSettings = async (req: Request, res: Response, next: NextFuncti
     } catch (err) {
         return next(err);
     }
-
 };

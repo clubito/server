@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema<IUser>(
         settings: {
             notifications: {
                 enabled: { type: Boolean, default: true },
+                club: [{
+                    enabled: { type: Boolean, default: true },
+                    id: { type: mongoose.Schema.Types.ObjectId, ref: "Club" }
+                }]
             }
         },
         allRSVP: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }]

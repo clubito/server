@@ -31,7 +31,15 @@ export interface IUserInterface extends mongoose.Document {
     bio: string,
     settings: {
         notifications: {
-            enabled: boolean
+            enabled: boolean,
+            club: {
+                enabled: boolean,
+                id: mongoose.Schema.Types.ObjectId
+            }[]
+            | {
+                enabled: boolean,
+                id: IClub
+            }[]
         }
     },
     allRSVP: mongoose.Schema.Types.ObjectId[] | IEvent[],

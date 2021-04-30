@@ -4,7 +4,6 @@ import { INotificationInterface } from "@models/Interfaces/INotificationInterfac
 import logger from "@logger";
 import Club from "@models/Club";
 import Event from "@models/Event";
-import { CLUB_ROLE } from "@models/enums";
 import Role, { IRole } from "@models/Role";
 
 const expo = new Expo();
