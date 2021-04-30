@@ -350,3 +350,57 @@ export const sendNotificationToEventRsvp = async (eventId: string, notification:
         throw err;
     }
 };
+
+
+export const sendAppAnnouncement = async (message: string): Promise<boolean> => {
+    try {
+        const announcementNotification: INotificationInterface = {
+            body: `${message}`,
+            title: "Clubito Announcement",
+            data: {
+                type: "adminAnnouncement",
+            }
+        };
+        await sendNotificationToEveryone(announcementNotification);
+        return Promise.resolve(true);
+    } catch (err) {
+        logger.error(err);
+        return Promise.resolve(false);
+    }
+};
+
+
+export const sendNotificationToEveryone = async (notification: INotificationInterface): Promise<boolean> => {
+    try {
+        logger.info("Sending app-wide notification", notification);
+
+        const users = await User.find({ banned: false, isDisabled: false }).exec();
+
+        const sendToArray: string[] = [];
+
+        users.forEach(user => {
+            if (user?.pushToken) {
+                sendToArray.push(user.pushToken);
+            }
+        });
+
+        if (sendToArray.length === 0) {
+            // The club has not members with notifications turned on
+            return Promise.resolve(true);
+        }
+
+        const messages: ExpoPushMessage[] = [];
+        messages.push({
+            to: sendToArray,
+            sound: "default",
+            body: notification.body ?? "New Clubito notification!",
+            data: notification.data,
+            title: notification.title ?? "Clubito"
+        });
+        await expo.sendPushNotificationsAsync(messages);
+        return Promise.resolve(true);
+    } catch (err) {
+        logger.error(err);
+        throw err;
+    }
+};
