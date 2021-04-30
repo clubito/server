@@ -167,7 +167,7 @@ export const putUserProfile = (req: Request, res: Response): void => {
 
     const userId = req.userId;
 
-    User.findOne({ _id: userId })
+    User.findOne({ _id: userId, "deleted.isDeleted": false  })
         .populate({
             path: "clubs",
             populate: { path: "club" }
@@ -233,7 +233,7 @@ export const putUserProfile = (req: Request, res: Response): void => {
 export const deleteUserProfile = (req: Request, res: Response): void => {
     const userId = req.userId;
 
-    User.findOne({ _id: userId })
+    User.findOne({ _id: userId, "deleted.isDeleted": false  })
         .populate({
             path: "clubs",
             populate: { path: "club" }
@@ -280,7 +280,7 @@ export const getAnotherUserProfile = (req: Request, res: Response): void => {
 
     const otherUserId = req.query.id;
 
-    User.findOne({ _id: otherUserId })
+    User.findOne({ _id: otherUserId, "deleted.isDeleted": false })
         .populate({
             path: "clubs",
             populate: { path: "club" }
@@ -337,7 +337,7 @@ export const getUsersEvents = async (req: Request, res: Response, next: NextFunc
 
     try {
         const user = await User
-            .findById(userId)
+            .findOne( { _id: userId, "deleted.isDeleted": false })
             .populate({
                 path: "clubs",
                 populate: { path: "club", populate: { path: "events" } }
@@ -377,7 +377,7 @@ export const getUsersRsvps = async (req: Request, res: Response, next: NextFunct
 
     try {
         const user = await User
-            .findById(userId)
+            .findOne({_id: userId, "deleted.isDeleted": false})
             .populate({
                 path: "allRSVP",
                 populate: { path: "club" }

@@ -109,7 +109,10 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
                 });
         });
 
-        await user.delete();
+        user.deleted.isDeleted = true;
+        user.deleted.deletedAt = new Date(Date.now());
+        await user.save();
+
         res.status(200).json({ message: "Successfully deleted user" });
         return;
     } catch (err) {
@@ -117,6 +120,100 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
     }
 };
 
+export const undeleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { error } = deleteUserSchema.validate(req.body); // uses the same schema as delete user
+
+    if (error) {
+        res.status(400).json({ "error": error.message });
+        logger.debug(error);
+        return;
+    }
+
+    const undeletedUserId = req.body.id;
+    const userId = req.userId;
+
+    try {
+        const currUser = await User.findById(userId).exec();
+        if (currUser?.appRole != APP_ROLE.ADMIN) {
+            // the current user is not an admin
+            res.status(403).json({ error: "Please use an admin account" });
+            return;
+        }
+
+        const user = await User.findById(undeletedUserId)
+            .populate({
+                path: "clubs",
+                populate: { path: "club" }
+            })
+            .populate({
+                path: "clubs",
+                populate: { path: "role2" }
+            })
+            .populate({
+                path: "joinRequests",
+                populate: { path: "club" }
+            }).exec();
+
+        if (!user) {
+            res.status(400).json({ error: "User not found" });
+            return;
+        }
+
+        if (!user.deleted.isDeleted || user.deleted.deletedAt == null) {
+            res.status(400).json({ error: "User is not deleted" });
+            return;
+        }
+
+        // check if the delete time has pass 30 days
+        const deleteDate = new Date(user.deleted.deletedAt);
+        const nowDate = new Date(Date.now());
+        const difference = Math.abs(<any>nowDate - <any>deleteDate);
+        const days = difference / (1000*3600*24);
+        if (days > 30) {
+            res.status(400).json({error: "User deletion has passed 30 days"});
+            return;
+        }
+
+        // this user is deleted from all their clubs, so add them back
+        user.clubs.forEach(userClub => {
+            Club.findOne({ _id: userClub.club._id })
+                .then(async club => {
+                    if (club) {
+                        club.members.push({
+                            member: user._id,
+                            role: userClub.role,
+                            role2: userClub.role2
+                        });
+                        await club.save();
+                    }
+                });
+        });
+
+        // also add back all their join requests
+        user.joinRequests.forEach(userClub => {
+            Club.findOne({ _id: userClub.club._id })
+                .then(async club => {
+                    if (club) {
+                        club.joinRequests.push({
+                            user: user._id,
+                            status: userClub.status,
+                            requestedAt: userClub.requestedAt
+                        });
+                        await club.save();
+                    }
+                });
+        });
+
+        user.deleted.isDeleted = false;
+        user.deleted.deletedAt = null;
+        await user.save();
+        
+        res.status(200).json({ message: "Successfully undelete user" });
+        return;
+    } catch (err) {
+        return next(err);
+    }
+}
 
 export const banUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = deleteUserSchema.validate(req.body); // uses the same schema as delete user
