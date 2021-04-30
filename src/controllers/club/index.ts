@@ -4,9 +4,10 @@ import { postClubJoin, postClubApprove, getAllJoinRequests, postClubDeny, postCl
 import { searchClubByName } from "./search";
 import { postRequestClub } from "./owner";
 import { deleteClubRoles, getClubRoles, putClubRole, postClubRole, postAssignClubRole } from "./roles";
+import { deleteClub } from "./delete";
 
 export {
     getAllTags, getClubProfile, postClubJoin, searchClubByName, postRequestClub, postClubApprove,
     getAllJoinRequests, postClubDeny, postClubKick, deleteClubRoles, getClubRoles, putClubRole, postClubRole,
-    postAssignClubRole, editClubTheme, postClubGallery, getClubGallery
+    postAssignClubRole, editClubTheme, postClubGallery, getClubGallery, deleteClub
 };
