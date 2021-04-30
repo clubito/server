@@ -7,6 +7,7 @@ import joi from "joi";
 import { CLUB_TAGS } from "@models/enums";
 import { ObjectId } from "mongoose";
 import { IClubInterface } from "@models/Interfaces/IClubInterface";
+import Event from "@models/Event";
 
 const putUserProfileSchema = joi.object().keys({
     email: joi.string().email().regex(/@purdue.edu$/i),
@@ -167,7 +168,7 @@ export const putUserProfile = (req: Request, res: Response): void => {
 
     const userId = req.userId;
 
-    User.findOne({ _id: userId, "deleted.isDeleted": false  })
+    User.findOne({ _id: userId, "deleted.isDeleted": false })
         .populate({
             path: "clubs",
             populate: { path: "club" }
@@ -233,7 +234,7 @@ export const putUserProfile = (req: Request, res: Response): void => {
 export const deleteUserProfile = (req: Request, res: Response): void => {
     const userId = req.userId;
 
-    User.findOne({ _id: userId, "deleted.isDeleted": false  })
+    User.findOne({ _id: userId, "deleted.isDeleted": false })
         .populate({
             path: "clubs",
             populate: { path: "club" }
@@ -337,7 +338,7 @@ export const getUsersEvents = async (req: Request, res: Response, next: NextFunc
 
     try {
         const user = await User
-            .findOne( { _id: userId, "deleted.isDeleted": false })
+            .findOne({ _id: userId, "deleted.isDeleted": false })
             .populate({
                 path: "clubs",
                 populate: { path: "club", populate: { path: "events" } }
@@ -348,21 +349,50 @@ export const getUsersEvents = async (req: Request, res: Response, next: NextFunc
 
         user?.clubs.forEach(club => {
             club.club.events.forEach(event => {
-                ret.push({
-                    name: event.name,
-                    description: event.description,
-                    startTime: event.startTime,
-                    endTime: event.endTime,
-                    longitude: event.longitude,
-                    latitude: event.latitude,
-                    shortLocation: event.shortLocation,
-                    picture: event.picture,
-                    clubId: event.club,
-                    clubName: club.club.name,
-                    lastUpdated: event.lastUpdated,
-                    id: event._id,
-                    isOpen: event.isOpen
-                });
+                if (!event.isOpen) {
+                    ret.push({
+                        name: event.name,
+                        description: event.description,
+                        startTime: event.startTime,
+                        endTime: event.endTime,
+                        longitude: event.longitude,
+                        latitude: event.latitude,
+                        shortLocation: event.shortLocation,
+                        picture: event.picture,
+                        clubId: event.club,
+                        clubName: club.club.name,
+                        lastUpdated: event.lastUpdated,
+                        id: event._id,
+                        isOpen: event.isOpen
+                    });
+                }
+            });
+        });
+
+        const openEvents = await Event.find({
+            endTime: {
+                $gt: new Date()
+            },
+            isOpen: true
+        })
+            .populate("club")
+            .exec();
+
+        openEvents.forEach((event: any) => {
+            ret.push({
+                name: event?.name,
+                description: event?.description,
+                startTime: event?.startTime,
+                endTime: event?.endTime,
+                longitude: event?.longitude,
+                latitude: event?.latitude,
+                shortLocation: event?.shortLocation,
+                picture: event?.picture,
+                clubId: event?.club,
+                clubName: event?.club?.name,
+                lastUpdated: event?.lastUpdated,
+                id: event?._id,
+                isOpen: event.isOpen
             });
         });
 
@@ -378,7 +408,7 @@ export const getUsersRsvps = async (req: Request, res: Response, next: NextFunct
 
     try {
         const user = await User
-            .findOne({_id: userId, "deleted.isDeleted": false})
+            .findOne({ _id: userId, "deleted.isDeleted": false })
             .populate({
                 path: "allRSVP",
                 populate: { path: "club" }
