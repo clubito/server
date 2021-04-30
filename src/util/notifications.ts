@@ -229,8 +229,9 @@ export const sendNotificationToClub = async (clubId: string, notification: INoti
         const sendToArray: string[] = [];
 
         club.members.forEach(member => {
+            const isDisabledClub = member?.member?.settings?.notifications.disabledClubs.some(club => club.equals(clubId));
             if (member?.member?.pushToken) {
-                if (member?.member?.settings?.notifications?.enabled) {
+                if (member?.member?.settings?.notifications?.enabled && !isDisabledClub) {
                     sendToArray.push(member.member.pushToken);
                 }
             }
@@ -274,9 +275,10 @@ export const sendNotificationToClubNotSelf = async (userId: string, clubId: stri
         const sendToArray: string[] = [];
 
         club.members.forEach(member => {
+            const isDisabledClub = member?.member?.settings?.notifications.disabledClubs.some(club => club.equals(clubId));
             if (!member.member.equals(userId)) { // dont send to self
                 if (member?.member?.pushToken) {
-                    if (member?.member?.settings?.notifications?.enabled) {
+                    if (member?.member?.settings?.notifications?.enabled && !isDisabledClub) {
                         sendToArray.push(member.member.pushToken);
                     }
                 }
@@ -319,8 +321,10 @@ export const sendNotificationToEventRsvp = async (eventId: string, notification:
         const sendToArray: string[] = [];
 
         event.rsvpUsers.forEach(member => {
+            const isDisabledClub = member?.member?.settings?.notifications.disabledClubs.some(club => club.equals(event.club));
+
             if (member?.pushToken) {
-                if (member?.settings?.notifications?.enabled) {
+                if (member?.settings?.notifications?.enabled && !isDisabledClub) {
                     sendToArray.push(member.pushToken);
                 }
             }
