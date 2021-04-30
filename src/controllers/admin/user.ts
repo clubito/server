@@ -218,7 +218,7 @@ export const undeleteUser = async (req: Request, res: Response, next: NextFuncti
     } catch (err) {
         return next(err);
     }
-}
+};
 
 export const banUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { error } = deleteUserSchema.validate(req.body); // uses the same schema as delete user
