@@ -352,6 +352,7 @@ app.get("/admin/users", authenticateJWT, adminController.getAllUsers);
 app.post("/admin/users/delete", authenticateJWT, adminController.deleteUser);
 app.post("/admin/users/ban", authenticateJWT, adminController.banUser);
 app.post("/admin/users/unban", authenticateJWT, adminController.unbanUser);
+app.put("/admin/profile", authenticateJWT, userController.putUserProfile);
 // TODO: delete/undelete users, ban/unban users
 
 
