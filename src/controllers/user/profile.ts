@@ -5,6 +5,8 @@ import Club from "@models/Club";
 import logger from "@logger";
 import joi from "joi";
 import { CLUB_TAGS } from "@models/enums";
+import { ObjectId } from "mongoose";
+import { IClubInterface } from "@models/Interfaces/IClubInterface";
 
 const putUserProfileSchema = joi.object().keys({
     email: joi.string().email().regex(/@purdue.edu$/i),
@@ -45,7 +47,8 @@ interface IReturnedUserProfile {
     bio: string,
     settings: {
         notifications: {
-            enabled: boolean
+            enabled: boolean,
+            disabledClubs: ObjectId[] | IClubInterface[]
         }
     }
 }
@@ -116,7 +119,8 @@ export const getUserProfile = (req: Request, res: Response): void => {
                 bio: user.bio,
                 settings: {
                     notifications: {
-                        enabled: user.settings.notifications.enabled
+                        enabled: user.settings.notifications.enabled,
+                        disabledClubs: user.settings.notifications.disabledClubs
                     }
                 }
             };
