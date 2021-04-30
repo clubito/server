@@ -29,7 +29,8 @@ export const clubSchema = new mongoose.Schema<IClub>(
             isDeleted: { type: Boolean, default: false },
             deletedAt: { type: Date, default: null }
         },
-        messages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }]
+        messages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }],
+        pictures: [{ type: String }]
     },
     { timestamps: true },
 );

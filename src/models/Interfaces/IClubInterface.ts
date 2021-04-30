@@ -44,5 +44,6 @@ export interface IClubInterface extends mongoose.Document {
         isDeleted: boolean,
         deletedAt: Date | null
     },
-    messages: mongoose.Schema.Types.ObjectId[] | IMessage[]
+    messages: mongoose.Schema.Types.ObjectId[] | IMessage[],
+    pictures: string[]
 }

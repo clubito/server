@@ -336,6 +336,8 @@ app.post("/clubs/request/approve", authenticateJWT, clubController.postClubAppro
 app.post("/clubs/request/deny", authenticateJWT, clubController.postClubDeny);
 app.post("/clubs/kick", authenticateJWT, clubController.postClubKick);
 app.post("/clubs/announcement/create", authenticateJWT, announcementController.postSendAnnouncement);
+app.post("/clubs/gallery", authenticateJWT, clubController.postClubGallery);
+app.get("/clubs/gallery", authenticateJWT, clubController.getClubGallery);
 // TODO: create/edit/delete club events, approve/reject member registration, remove user from club, get (maybe add filter/search) all club events, get 1 event
 
 // Admin routes
