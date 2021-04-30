@@ -226,11 +226,21 @@ export const undeleteClub = async (req: Request, res: Response, next: NextFuncti
             return;
         }
 
-        if (!club.deleted.isDeleted) {
+        if (!club.deleted.isDeleted || club.deleted.deletedAt == null) {
             res.status(400).json({ error: "Club is not deleted" });
             return;
         }
 
+        // check if the delete time has pass 30 days
+        const deleteDate = new Date(club.deleted.deletedAt);
+        const nowDate = new Date(Date.now());
+        const difference = Math.abs(<any>nowDate - <any>deleteDate);
+        const days = difference / (1000*3600*24);
+        if (days > 30) {
+            res.status(400).json({error: "Club deletion has passed 30 days"});
+            return;
+        }
+        
         club.deleted.isDeleted = false;
         club.deleted.deletedAt = null;
         await club.save();
