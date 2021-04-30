@@ -18,7 +18,8 @@ interface IReturnedEvent {
     clubId: string,
     clubName: string,
     lastUpdated: Date,
-    isRsvp: boolean
+    isRsvp: boolean,
+    isOpen: boolean
 }
 
 const getEventSchema = joi.object().keys({
@@ -79,7 +80,8 @@ export const getEvent = async (req: Request, res: Response, next: NextFunction):
             picture: event.picture,
             shortLocation: event.shortLocation,
             startTime: event.startTime,
-            isRsvp: false
+            isRsvp: false,
+            isOpen: event.isOpen
         };
 
         if (event.rsvpUsers.some(user => user.equals(userId))) {
@@ -131,7 +133,8 @@ export const getCurrentEvents = (req: Request, res: Response): void => {
                         clubId: club._id,
                         clubName: club.name,
                         lastUpdated: event.lastUpdated,
-                        isRsvp: false
+                        isRsvp: false,
+                        isOpen: event.isOpen
                     });
                 }
             });

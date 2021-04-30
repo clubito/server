@@ -25,7 +25,8 @@ const postCreateEventSchema = joi.object().keys({
         } else {
             return helper.message({ custom: "id is not valid" });
         }
-    }).required()
+    }).required(),
+    isOpen: joi.boolean()
 });
 
 
@@ -45,7 +46,8 @@ const putEditEventSchema = joi.object().keys({
             return helper.message({ custom: "id is not valid" });
         }
     }).required(),
-    notifyUsers: joi.boolean().required()
+    notifyUsers: joi.boolean().required(),
+    isOpen: joi.boolean()
 });
 
 export const postCreateEvent = (req: Request, res: Response): void => {
@@ -65,7 +67,8 @@ export const postCreateEvent = (req: Request, res: Response): void => {
         latitude,
         shortLocation,
         picture,
-        clubId } = req.body;
+        clubId,
+        isOpen } = req.body;
     const userId = req.userId;
 
     User.findById(userId)
@@ -119,7 +122,8 @@ export const postCreateEvent = (req: Request, res: Response): void => {
                         latitude,
                         shortLocation,
                         picture,
-                        club: clubId
+                        club: clubId,
+                        isOpen: isOpen
                     });
 
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -173,7 +177,8 @@ export const putEditEvent = (req: Request, res: Response): void => {
         shortLocation,
         picture,
         eventId,
-        notifyUsers } = req.body;
+        notifyUsers,
+        isOpen } = req.body;
     const userId = req.userId;
 
     User.findById(userId)
@@ -240,6 +245,10 @@ export const putEditEvent = (req: Request, res: Response): void => {
 
                     if (picture) {
                         event.picture = picture;
+                    }
+
+                    if (isOpen) {
+                        event.isOpen = isOpen;
                     }
 
                     event.save().then(() => {

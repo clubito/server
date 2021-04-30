@@ -13,5 +13,6 @@ export interface IEventInterface extends mongoose.Document {
     picture: string,
     club: mongoose.Schema.Types.ObjectId | IClub,
     lastUpdated: Date,
-    rsvpUsers: mongoose.Schema.Types.ObjectId[] | IUser[]
+    rsvpUsers: mongoose.Schema.Types.ObjectId[] | IUser[],
+    isOpen: boolean
 }

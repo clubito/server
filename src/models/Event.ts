@@ -15,7 +15,8 @@ const eventSchema = new mongoose.Schema<IEvent>(
         picture: { type: String, default: "https://picsum.photos/200" },
         club: { type: mongoose.Schema.Types.ObjectId, ref: "Club" },
         lastUpdated: { type: Date, default: Date.now },
-        rsvpUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
+        rsvpUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+        isOpen: { type: Boolean, default: false }
     },
     { timestamps: true },
 );
