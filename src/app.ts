@@ -351,6 +351,7 @@ app.post("/admin/clubs/undelete", authenticateJWT, adminController.undeleteClub)
 app.get("/admin/clubs", authenticateJWT, adminController.getAllClubs);
 app.get("/admin/users", authenticateJWT, adminController.getAllUsers);
 app.post("/admin/users/delete", authenticateJWT, adminController.deleteUser);
+app.post("/admin/users/undelete", authenticateJWT, adminController.undeleteUser);
 app.post("/admin/users/ban", authenticateJWT, adminController.banUser);
 app.post("/admin/users/unban", authenticateJWT, adminController.unbanUser);
 app.put("/admin/profile", authenticateJWT, userController.putUserProfile);
