@@ -360,7 +360,8 @@ export const getUsersEvents = async (req: Request, res: Response, next: NextFunc
                     clubId: event.club,
                     clubName: club.club.name,
                     lastUpdated: event.lastUpdated,
-                    id: event._id
+                    id: event._id,
+                    isOpen: event.isOpen
                 });
             });
         });
