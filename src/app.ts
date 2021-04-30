@@ -133,7 +133,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       { member: user5._id, role: CLUB_ROLE.MEMBER, role2: memberRole }],
       tags: [CLUB_TAGS.TECHNOLOGY, CLUB_TAGS.SPORTS],
       isEnabled: true,
-      logo: "https://i.pravatar.cc/150?u=DroneClub@purdue.edu"
+      logo: "https://i.pravatar.cc/150?u=DroneClub@purdue.edu",
+      gallery: ["https://picsum.photos/seed/test/200/300, https://picsum.photos/seed/1/200/300, https://picsum.photos/seed/2/200/300, https://picsum.photos/seed/3/200/300"]
     });
     const club2 = new Club({
       name: "PUDM",
@@ -144,7 +145,8 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
       { member: user6._id, role: CLUB_ROLE.MEMBER, role2: memberRole }],
       tags: [CLUB_TAGS.MUSIC, CLUB_TAGS.SPORTS, CLUB_TAGS.VOLUNTEERING],
       isEnabled: true,
-      logo: "https://i.pravatar.cc/150?u=PUDM@purdue.edu"
+      logo: "https://i.pravatar.cc/150?u=PUDM@purdue.edu",
+      gallery: ["https://picsum.photos/seed/4/200/300, https://picsum.photos/seed/5/200/300, https://picsum.photos/seed/6/200/300, https://picsum.photos/seed/7/200/300"]
     });
 
     const announcement1 = new Announcement({
