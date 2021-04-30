@@ -247,7 +247,7 @@ export const postClubGallery = async (req: Request, res: Response, next: NextFun
 };
 
 export const getClubGallery = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { error } = getClubProfileSchema.validate(req.body); // same schema, just want id
+    const { error } = getClubProfileSchema.validate(req.query); // same schema, just want id
     if (error) {
         res.status(400).json({ "error": error.message });
         logger.debug(error);
@@ -255,7 +255,7 @@ export const getClubGallery = async (req: Request, res: Response, next: NextFunc
     }
 
     try {
-        const clubId = req.body.id;
+        const clubId = req.query.id;
         const club = await Club.findOne({ _id: clubId, "deleted.isDeleted": false }).exec();
 
         if (!club) {
