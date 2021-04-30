@@ -5,7 +5,7 @@ import joi from "joi";
 import logger from "@logger";
 import { APP_ROLE } from "@models/enums";
 import { ObjectId } from "bson";
-import { sendBannedNotificationToUser } from "@notifications";
+import { sendBannedNotificationToUser, sendAppAnnouncement } from "@notifications";
 
 
 const deleteUserSchema = joi.object().keys({
@@ -17,6 +17,11 @@ const deleteUserSchema = joi.object().keys({
         }
     }).required()
 });
+
+const postSendAppAnnouncementSchema = joi.object().keys({
+    message: joi.string().required()
+});
+
 
 export const getAllUsers = (req: Request, res: Response): void => {
     const userId = req.userId;
@@ -360,6 +365,35 @@ export const unbanUser = async (req: Request, res: Response, next: NextFunction)
         user.banned = false;
         await user.save();
         res.status(200).json({ message: "Successfully unbanned user" });
+        return;
+    } catch (err) {
+        return next(err);
+    }
+};
+
+export const postSendAppAnnouncement = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { error } = postSendAppAnnouncementSchema.validate(req.body);
+
+    if (error) {
+        res.status(400).json({ "error": error.message });
+        logger.debug(error);
+        return;
+    }
+
+    const { message } = req.body;
+    const userId = req.userId;
+
+    try {
+        const currUser = await User.findById(userId).exec();
+        if (currUser?.appRole != APP_ROLE.ADMIN) {
+            // the current user is not an admin
+            res.status(403).json({ error: "Please use an admin account" });
+            return;
+        }
+
+        await sendAppAnnouncement(message);
+
+        res.status(200).json({ message: "Successfully sent announcement" });
         return;
     } catch (err) {
         return next(err);
