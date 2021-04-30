@@ -33,7 +33,9 @@ export const putSettings = async (req: Request, res: Response, next: NextFunctio
             return;
         }
 
-        if (notificationsEnabled) {
+        console.log(notificationsEnabled);
+
+        if (notificationsEnabled !== undefined) {
             user.settings.notifications.enabled = notificationsEnabled;
         }
 
