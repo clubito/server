@@ -3,7 +3,7 @@ import Club from "@models/Club";
 import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
-import { CLUB_ROLE, JOIN_REQUEST_STATUS } from "@models/enums";
+import { JOIN_REQUEST_STATUS } from "@models/enums";
 
 const getClubProfileSchema = joi.object().keys({
     id: joi.required()

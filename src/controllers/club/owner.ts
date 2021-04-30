@@ -6,6 +6,7 @@ import User from "@models/User";
 import logger from "@logger";
 import joi from "joi";
 import { CLUB_ROLE } from "@models/enums";
+import Role from "@models/Role";
 
 const postRequestClubSchema = joi.object().keys({
     name: joi.string().min(3).required(),
@@ -39,34 +40,36 @@ export const postRequestClub = (req: Request, res: Response): void => {
                     return;
                 }
 
-                const newClub = new Club({
-                    name,
-                    description,
-                    tags,
-                    logo,
-                    members: [{ member: userId, role: CLUB_ROLE.OWNER }]
-                });
-
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                newClub.save((err: any, createdClub) => {
-                    if (err || !createdClub) {
-                        if (err.code == 11000) {
-                            res.status(400).json({ "error": "Club with that name already exists" });
-                            logger.debug({ "error": "Tried adding club with existing name", name });
-                        } else {
-                            res.status(400).json({ "error": "Error requesting club creation: " + err?.message });
-                            logger.error(err?.message || `Cannot request to create club with name: ${name}`);
-                        }
-                        return;
-
-                    }
-
-                    res.status(200).json({
-                        "message": "Successfully requested to create club",
-                        "id": newClub["_id"]
+                Role.findOne({ name: "President" }).then(ownerRole => {
+                    const newClub = new Club({
+                        name,
+                        description,
+                        tags,
+                        logo,
+                        members: [{ member: userId, role: CLUB_ROLE.OWNER, role2: ownerRole }]
                     });
 
-                    return;
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    newClub.save((err: any, createdClub) => {
+                        if (err || !createdClub) {
+                            if (err.code == 11000) {
+                                res.status(400).json({ "error": "Club with that name already exists" });
+                                logger.debug({ "error": "Tried adding club with existing name", name });
+                            } else {
+                                res.status(400).json({ "error": "Error requesting club creation: " + err?.message });
+                                logger.error(err?.message || `Cannot request to create club with name: ${name}`);
+                            }
+                            return;
+
+                        }
+
+                        res.status(200).json({
+                            "message": "Successfully requested to create club",
+                            "id": newClub["_id"]
+                        });
+
+                        return;
+                    });
                 });
             });
         })
