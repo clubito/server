@@ -84,7 +84,7 @@ interface IReturnedAnotherUserProfile {
 export const getUserProfile = (req: Request, res: Response): void => {
     const userId = req.userId;
 
-    User.findOne({ _id: userId })
+    User.findOne({ _id: userId, "deleted.isDeleted": false })
         .populate({
             path: "clubs",
             populate: { path: "club" }
