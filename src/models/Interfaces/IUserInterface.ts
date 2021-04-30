@@ -36,4 +36,8 @@ export interface IUserInterface extends mongoose.Document {
         }
     },
     allRSVP: mongoose.Schema.Types.ObjectId[] | IEvent[],
+    deleted: {
+        isDeleted: boolean,
+        deletedAt: Date | null
+    }
 }

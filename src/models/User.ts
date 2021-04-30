@@ -42,7 +42,11 @@ const userSchema = new mongoose.Schema<IUser>(
                 disabledClubs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Club" }]
             }
         },
-        allRSVP: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }]
+        allRSVP: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
+        deleted: {
+            isDeleted: { type: Boolean, default: false },
+            deletedAt: { type: Date, default: null }
+        }
     },
     { timestamps: true },
 );
