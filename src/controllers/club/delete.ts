@@ -17,7 +17,7 @@ const deleteClubSchema = joi.object().keys({
 });
 
 export const deleteClub = async (req: Request, res: Response) => {
-    const { error } = deleteClubSchema.validate(req.body); // same schema so reusing here, dont @ me
+    const { error } = deleteClubSchema.validate(req.query); // same schema so reusing here, dont @ me
 
     if (error) {
         res.status(400).json({ "error": error.message });
@@ -25,7 +25,7 @@ export const deleteClub = async (req: Request, res: Response) => {
         return;
     }
 
-    const clubId = req.body.id;
+    const clubId = req.query.id;
     const userId = req.userId;
 
     try {
@@ -55,4 +55,4 @@ export const deleteClub = async (req: Request, res: Response) => {
         res.status(500).json({ error: err });
         return;
     }
-}
+};
