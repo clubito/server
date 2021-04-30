@@ -317,7 +317,7 @@ app.get("/file", authenticateJWT, fileController.getS3PresignedUrl);
 
 // Normal User routes
 app.get("/user/profile", authenticateJWT, userController.getUserProfile);
-app.post("/user/settings", authenticateJWT, userController.postSettings);
+app.put("/user/settings", authenticateJWT, userController.putSettings);
 app.put("/user/profile", authenticateJWT, userController.putUserProfile);
 app.delete("/user/profile", authenticateJWT, userController.deleteUserProfile);
 app.get("/user/other/profile", authenticateJWT, userController.getAnotherUserProfile);
